@@ -1,28 +1,48 @@
 import pandas as pd
 
-Class Dienstregeling(): 
+class Verbinding():
+    def __init__(self, time, station1, station2):
+        self.time = time
+        self.station1 = station1 
+        self.station2 = station2
+        self.driven = False
 
+class Station():
+    def __init__(self, name, x_cor, y_cor):
+        self.name = name
+        self.x_cor = x_cor 
+        self.y_cor = y_cor 
+    
+class Dienstregeling(): 
     def __init__(self, verbindingsframe, stationsframe):
         self.verbindingsframe = verbindingsframe
         self.stationsframe = stationsframe
         self.verbindingen = []
         self.stations = []
 
-    def maak_verbindingen(self):
-    """Creëer instanties van verbinding class"""
-
-        for verbinding in self.verbindingsframe.iterrows():
+    def create_connections(self):
+    
+    for verbinding in self.verbindingsframe.iterrows():
             tijd = verbinding['distance']
+
+            
             station1 = verbinding['station1']
             station2 = verbinding['station2']
+
             nieuwe_verbinding = Verbinding(tijd, station1, station2)
             self.verbindingen.append(nieuwe_verbinding)
+   
+    def create_stations(self):
     
-    def maak_stations(self):
-    """"""
+    for station in self.stationsframe.iterrows():
+        x_cor = station['x']
+        y_cor = station['y']
+        name = station['station']
+        nieuw_station = Station(name, x_cor, y_cor)
+        self.stations.append(nieuw_station)
 
-        for station in self.stationsframe.iterrows():
-            x_cor = station['x']
-            y_cor = station['y']
-            nieuw_station = Station(x_cor, y_cor)
-            self.stations.append(nieuw_station)
+    
+
+
+       
+    
