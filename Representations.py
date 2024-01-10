@@ -6,13 +6,18 @@ class Verbinding():
         self.station1 = station1 
         self.station2 = station2
         self.driven = False
-
+ 
 class Station():
     def __init__(self, name, x_cor, y_cor):
         self.name = name
         self.x_cor = x_cor 
         self.y_cor = y_cor 
-    
+
+class Traject():
+    def __init__(self, stations, time):
+        self.stations = stations 
+        self.time = time 
+
 class Dienstregeling(): 
     def __init__(self, verbindingsframe, stationsframe):
         self.verbindingsframe = verbindingsframe
