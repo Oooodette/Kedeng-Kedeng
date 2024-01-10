@@ -24,17 +24,16 @@ class Traject():
 
 
 class Dienstregeling():
-    def __init__(self, connectionsframe, stationsframe):
-        self.connectionsframe = connectionsframe
-        self.stationsframe = stationsframe
+    def __init__(self, connections_df, stations_df):
+        self.connections_df = connections_df
+        self.stations_df = stations_df
         self.connections = []
         self.stations = []
 
     def create_connections(self):
 
-    for connection in self.verbindingsframe.iterrows():
+        for connection in self.connections_df.iterrows():
             time = connection['distance']
-
 
             station1 = connection['station1']
             station2 = connection['station2']
@@ -44,12 +43,12 @@ class Dienstregeling():
 
     def create_stations(self):
 
-    for station in self.stationsframe.iterrows():
-        x_cor = station['x']
-        y_cor = station['y']
-        name = station['station']
-        new_station = Station(name, x_cor, y_cor)
-        self.stations.append(new_station)
+        for station in self.stations_df.iterrows():
+            x_cor = station['x']
+            y_cor = station['y']
+            name = station['station']
+            new_station = Station(name, x_cor, y_cor)
+            self.stations.append(new_station)
 
     def create_network(self):
         # check of alles bereden is
