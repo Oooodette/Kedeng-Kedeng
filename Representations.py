@@ -1,25 +1,29 @@
 import pandas as pd
 import random
 
-class Connection():
-    def __init__(self, time, station1, station2):
-        self.time = time
-        self.station1 = station1 
-        self.station2 = station2
-        self.driven = False
- 
+
 class Station():
     def __init__(self, name, x_cor, y_cor):
         self.name = name
-        self.x_cor = x_cor 
-        self.y_cor = y_cor 
+        self.x_cor = x_cor
+        self.y_cor = y_cor
+
+
+class Connection():
+    def __init__(self, time, station1, station2):
+        self.time = time
+        self.station1 = station1
+        self.station2 = station2
+        self.driven = False
+
 
 class Traject():
     def __init__(self, stations, time):
-        self.stations = stations 
-        self.time = time 
+        self.stations = stations
+        self.time = time
 
-class Dienstregeling(): 
+
+class Dienstregeling():
     def __init__(self, connectionsframe, stationsframe):
         self.connectionsframe = connectionsframe
         self.stationsframe = stationsframe
@@ -27,19 +31,19 @@ class Dienstregeling():
         self.stations = []
 
     def create_connections(self):
-    
+
     for connection in self.verbindingsframe.iterrows():
             time = connection['distance']
 
-            
+
             station1 = connection['station1']
             station2 = connection['station2']
 
             new_connection = Connection(time, station1, station2)
             self.connections.append(new_connection)
-   
+
     def create_stations(self):
-    
+
     for station in self.stationsframe.iterrows():
         x_cor = station['x']
         y_cor = station['y']
@@ -59,20 +63,20 @@ class Dienstregeling():
         trajectory_stations = []
 
         # only add more connections if total time is below 120
-        while time < 120: 
+        while time < 120:
 
             # create empty list to later select next connection from
             all_connections = []
-            
+
             # loop through your list of connections and look for a connection that has the current station as station 1
             for connection in self.connections:
                 if connection.station1 == current_station:
-                    
+
                     # create list of all stations that have current station as station 1
                     all_connections.append(connection)
-                
+
             # pick one of the connections with correct station
-            # LET OP!! Trajectory can now be longer than 120 minutes. 
+            # LET OP!! Trajectory can now be longer than 120 minutes.
             pick = random.randint(0, len(all_connections))
             new_connection = all_connections[pick]
             current_station = new_connection.station2
@@ -81,8 +85,3 @@ class Dienstregeling():
             trajectory_stations.append(new_connection.station1)
 
         new_trajectory = Trajectory(trajectory_stations, time)
-        
-
-
-       
-    
