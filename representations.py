@@ -81,9 +81,32 @@ class Dienstregeling():
             # LET OP!! Trajectory can now be longer than 120 minutes.
             pick = random.randint(0, len(all_connections))
             new_connection = all_connections[pick]
-            current_station = new_connection.station2
             time += new_connection.time
 
-            trajectory_stations.append(new_connection.station1)
+            if time > 120 and len(all_connections) > 1:
+
+                time -= new_connection.time
+                pick2 = random.randint(0, len(all_connections))
+                new_connection2 = all_connections[pick2]
+                time += new_connection2.time 
+
+                current_station = new_connection2.station2
+                trajectory_stations.append(new_connection2.station1)
+
+                if time > 120 and len(all_connections) > 2:
+                    time -= new_connection2.time 
+                    pick3 = random.randint(0, len(all_connections))
+                    new_connection3 = all_connections[pick3]
+                    time += new_connection3.time 
+
+                    current_station = new_connection3.station1
+                    trajectory_stations.append(new_connection3.station1)
+                
+                else:
+                    pass 
+
+            else:
+                current_station = new_connection.station2
+                trajectory_stations.append(new_connection.station1)
 
         new_trajectory = Trajectory(trajectory_stations, time)
