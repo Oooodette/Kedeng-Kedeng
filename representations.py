@@ -1,3 +1,4 @@
+from tkinter import W
 import pandas as pd
 import random
 
@@ -19,8 +20,10 @@ class Connection():
 
 class Trajectory():
     def __init__(self, stations, time):
+        # add trajectory name
         self.stations = stations
         self.time = time
+
 
 
 class Dienstregeling():
@@ -29,6 +32,8 @@ class Dienstregeling():
         self.stations_df = stations_df
         self.connections = []
         self.stations = []
+        self.trajectories = []
+        
 
     def create_connections(self):
 
@@ -51,9 +56,18 @@ class Dienstregeling():
             self.stations.append(new_station)
 
     def create_network(self):
-        # check of alles bereden is
-        if all([connection.driven=True for connection in connections]):
-            # output geven zoals in voorbeeld
+        # check if all connections are used
+        if all ([connection.driven=True for connection in connections]):
+            
+            # calculate score for this network
+            fraction = 
+            total_time = sum([trajectory.time for trajectory in self.tractories])
+            quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time)
+
+            # generate output
+            data = {'train': self.trajectories.name
+                    'stations': self.trajectories.stations}
+            output_df = pd.DataFrame(data) # output geven zoals in voorbeeld
         else: 
             # create trajectory
        
@@ -86,4 +100,6 @@ class Dienstregeling():
 
             trajectory_stations.append(new_connection.station1)
 
-        new_trajectory = Trajectory(trajectory_stations, time)
+        new_trajectory = Trajectory(trajectory_stations, time) 
+        # TODO: add trajectories to list?
+        
