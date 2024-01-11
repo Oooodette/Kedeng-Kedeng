@@ -64,11 +64,7 @@ def visualize_network(stations_df, connections_df, trajectories_dict, traject_co
     for index, row in trajectories_df.iterrows():
         value = (row['stations']).strip("[]").replace("'", "").split(", ")
 
-        print(value)
-
         trajectories_dict[row['train']] = value
-
-    print(trajectories_dict)
 
     #plot all stations and their connections
     image = visualize_stations_connections(stations_df, connections_df)
