@@ -60,13 +60,13 @@ class Dienstregeling():
         if all ([connection.driven=True for connection in connections]):
             
             # calculate score for this network
-            fraction = 
+            fraction = 1 #TODO: calculate total number of connections used
             total_time = sum([trajectory.time for trajectory in self.tractories])
             quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time)
 
             # generate output
-            data = {'train': self.trajectories.name
-                    'stations': self.trajectories.stations}
+            data = {'train': [trajectory.name for trajectory in self.trajectories]
+                    'stations': [trajectory.stations for trajectory in self.trajectories]} 
             output_df = pd.DataFrame(data) # output geven zoals in voorbeeld
         else: 
             # create trajectory
@@ -96,7 +96,7 @@ class Dienstregeling():
             pick = random.randint(0, len(all_connections))
             new_connection = all_connections[pick]
             if time + new_connection.time > 120:
-                
+
             else: 
 
                 time += new_connection.time
