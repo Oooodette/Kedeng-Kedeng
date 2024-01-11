@@ -95,7 +95,11 @@ class Dienstregeling():
             # LET OP!! Trajectory can now be longer than 120 minutes.
             pick = random.randint(0, len(all_connections))
             new_connection = all_connections[pick]
-            time += new_connection.time
+            if time + new_connection.time > 120:
+                
+            else: 
+
+                time += new_connection.time
 
             if time > 120 and len(all_connections) > 1:
 
