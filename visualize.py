@@ -43,15 +43,6 @@ def visualise_trajectory(stations_df, connections_df, train, c):
     for index, row in stations_df.iterrows():
         stations_dict[row['station']] = row['x'], row['y']
 
-
-    #NECESSARY??
-    # connections_dict = {}
-    # for index, row in connections_df.iterrows():
-    #     connections_dict.setdefault(row['station1'], []).append(row['station2'])
-    #------------------------------
-
-
-    #create lists of x and y coordinates of the trajectory
     x_list = []
     y_list = []
 
