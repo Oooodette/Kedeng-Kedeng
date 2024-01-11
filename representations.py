@@ -55,23 +55,6 @@ class Dienstregeling():
             new_station = Station(name, x_cor, y_cor)
             self.stations.append(new_station)
 
-    # def create_network(self):
-       
-    #     # check if all connections are used
-    #     while not all ([connection.driven==True for connection in self.connections]):
-    #         self.create_trajectory()
-
-    #     # calculate score for this network
-    #     fraction = 1 #TODO: calculate total number of connections used
-    #     total_time = sum([trajectory.time for trajectory in self.tractories])
-    #     quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time)
-
-    #     # generate output
-    #     data = {'train': [trajectory.name for trajectory in self.trajectories], 
-    #             'stations': [trajectory.stations for trajectory in self.trajectories],
-    #             'score' : quality_network} 
-    #     output_df = pd.DataFrame(data) # output geven zoals in voorbeeld
-
 
     def pick_valid_connection(self, all_connections, time):
      
