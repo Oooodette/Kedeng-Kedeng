@@ -142,12 +142,11 @@ class Dienstregeling():
 
         # generate output
         print(self.trajectories)
-        data = {'train': [trajectory.name for trajectory in self.trajectories], 
-                'stations': [trajectory.stations for trajectory in self.trajectories],
-                'score' : quality_network} 
+        data = {'train': [trajectory.name for trajectory in self.trajectories] + ['score'], 
+                'stations': [trajectory.stations for trajectory in self.trajectories] + [quality_network]} 
         output_df = pd.DataFrame(data) # output geven zoals in voorbeeld
 
-        output_df.to_csv('output.csv')
+        output_df.to_csv('output.csv', index=False)
 
 
 connections_df = pd.read_csv('ConnectiesHolland.csv', index_col=False)
