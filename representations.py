@@ -19,8 +19,8 @@ class Connection():
 
 
 class Trajectory():
-    def __init__(self, stations, time):
-        #TODO: add trajectory name
+    def __init__(self, name, stations, time):
+        self.name = name
         self.stations = stations
         self.time = time
 
@@ -82,7 +82,6 @@ class Dienstregeling():
         previous_connection = None
         position = random.randint(0, len(self.stations)-1)
         current_station = self.stations[position].name
-
         time = 0
         trajectory_stations = []
 
@@ -123,17 +122,18 @@ class Dienstregeling():
             
      
         
-        new_trajectory = Trajectory(trajectory_stations, time) 
-        print(new_trajectory.stations)
-        self.trajectories.append(new_trajectory)
+        new_trajectory = Trajectory('x', trajectory_stations, time) 
+        return new_trajectory
 
     def create_network(self):
-
+        counter = 1
         # check if all connections are used
         while not all ([connection.driven==True for connection in self.connections]):
             
-            self.create_trajectory()
-
+            new_trajectory = self.create_trajectory()
+            new_trajectory.name = counter
+            counter += 1
+            self.trajectories.append(new_trajectory)
 
         # calculate score for this network
         fraction = 1 #TODO: calculate total number of connections used
@@ -141,10 +141,13 @@ class Dienstregeling():
         quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time)
 
         # generate output
+        print(self.trajectories)
         data = {'train': [trajectory.name for trajectory in self.trajectories], 
                 'stations': [trajectory.stations for trajectory in self.trajectories],
                 'score' : quality_network} 
         output_df = pd.DataFrame(data) # output geven zoals in voorbeeld
+
+        output_df.to_csv('output.csv')
 
 
 connections_df = pd.read_csv('ConnectiesHolland.csv', index_col=False)
