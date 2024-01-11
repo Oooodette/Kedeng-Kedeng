@@ -70,7 +70,17 @@ class Dienstregeling():
             output_df = pd.DataFrame(data) # output geven zoals in voorbeeld
         else: 
             # create trajectory
-       
+
+    def pick_valid_connection(self, all_connections, time):
+        pick = random.randint(0, len(all_connections))
+        new_connection = all_connections[pick]
+
+        while time + new_connection.time > 120:
+            pick = random.randint(0, len(all_connections))
+            new_connection = all_connections[pick]
+
+        return new_connection 
+
     def create_trajectory(self):
         # pick a random station from the list of stations
         position = random.randint(0, len(self.stations))
@@ -92,41 +102,22 @@ class Dienstregeling():
                     all_connections.append(connection)
 
             # pick one of the connections with correct station
+<<<<<<< HEAD
             # LET OP!! Trajectory can now be longer than 120 minutes.
             pick = random.randint(0, len(all_connections))
             new_connection = all_connections[pick]
             if time + new_connection.time > 120:
 
             else: 
+=======
+            new_connection = pick_valid_connection(all_connections, time) 
+            current_station = new_connection.station2
+>>>>>>> ec1391dd6c09c560fe03c8dad96dd1948666655f
 
-                time += new_connection.time
-
-            if time > 120 and len(all_connections) > 1:
-
-                time -= new_connection.time
-                pick2 = random.randint(0, len(all_connections))
-                new_connection2 = all_connections[pick2]
-                time += new_connection2.time 
-
-                current_station = new_connection2.station2
-                trajectory_stations.append(new_connection2.station1)
-
-                if time > 120 and len(all_connections) > 2:
-                    time -= new_connection2.time 
-                    pick3 = random.randint(0, len(all_connections))
-                    new_connection3 = all_connections[pick3]
-                    time += new_connection3.time 
-
-                    current_station = new_connection3.station1
-                    trajectory_stations.append(new_connection3.station1)
-                
-                else:
-                    pass 
-
-            else:
-                current_station = new_connection.station2
-                trajectory_stations.append(new_connection.station1)
+            time += new_connection.time 
+            trajectory_stations.append(new_connection.station1)
 
         new_trajectory = Trajectory(trajectory_stations, time) 
+
         # TODO: add trajectories to list?
         
