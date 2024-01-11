@@ -17,7 +17,7 @@ class Connection():
         self.driven = False
 
 
-class Traject():
+class Trajectory():
     def __init__(self, stations, time):
         self.stations = stations
         self.time = time
@@ -52,8 +52,11 @@ class Dienstregeling():
 
     def create_network(self):
         # check of alles bereden is
-        # create new trajectory
-
+        if all([connection.driven=True for connection in connections]):
+            # output geven zoals in voorbeeld
+        else: 
+            # create trajectory
+       
     def create_trajectory(self):
         # pick a random station from the list of stations
         position = random.randint(0, len(self.stations))
