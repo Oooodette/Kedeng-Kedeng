@@ -20,7 +20,7 @@ class Connection():
 
 class Trajectory():
     def __init__(self, stations, time):
-        # add trajectory name
+        #TODO: add trajectory name
         self.stations = stations
         self.time = time
 
@@ -65,21 +65,32 @@ class Dienstregeling():
             quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time)
 
             # generate output
-            data = {'train': [trajectory.name for trajectory in self.trajectories]
-                    'stations': [trajectory.stations for trajectory in self.trajectories]} 
+            data = {'train': [trajectory.name for trajectory in self.trajectories], 
+                    'stations': [trajectory.stations for trajectory in self.trajectories],
+                    'score' : quality_network} 
             output_df = pd.DataFrame(data) # output geven zoals in voorbeeld
         else: 
             # create trajectory
 
     def pick_valid_connection(self, all_connections, time):
-        pick = random.randint(0, len(all_connections))
-        new_connection = all_connections[pick]
+     
+        chosen = False
 
-        while time + new_connection.time > 120:
+        # if no valid connection exists, return None
+        chosen_connection = None
+
+        # keep picking a new connection until either a valid connection is found, or all connections have been tried
+        while not chosen and len(all_connections) > 0: 
             pick = random.randint(0, len(all_connections))
             new_connection = all_connections[pick]
+            all_connections.remove(all_connections[pick])
 
-        return new_connection 
+            # check to see if the connection is correct
+            if time + new_connection.time < 120:
+                chosen = True
+                chosen_connection = new_connection
+        
+        return chosen_connection 
 
     def create_trajectory(self):
         # pick a random station from the list of stations
@@ -102,22 +113,14 @@ class Dienstregeling():
                     all_connections.append(connection)
 
             # pick one of the connections with correct station
-<<<<<<< HEAD
-            # LET OP!! Trajectory can now be longer than 120 minutes.
-            pick = random.randint(0, len(all_connections))
-            new_connection = all_connections[pick]
-            if time + new_connection.time > 120:
-
-            else: 
-=======
             new_connection = pick_valid_connection(all_connections, time) 
             current_station = new_connection.station2
->>>>>>> ec1391dd6c09c560fe03c8dad96dd1948666655f
 
             time += new_connection.time 
             trajectory_stations.append(new_connection.station1)
 
         new_trajectory = Trajectory(trajectory_stations, time) 
+        self.trajectories.append(new_trajectory)
 
         # TODO: add trajectories to list?
         
