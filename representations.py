@@ -34,43 +34,43 @@ class Dienstregeling():
         self.stations = []
         self.trajectories = []
         
-
+    
     def create_connections(self):
 
-        for connection in self.connections_df.iterrows():
-            time = connection['distance']
+        for index, connection in self.connections_df.iterrows():
+            time = connection.loc['distance']
 
-            station1 = connection['station1']
-            station2 = connection['station2']
+            station1 = connection.loc['station1']
+            station2 = connection.loc['station2']
 
             new_connection = Connection(time, station1, station2)
             self.connections.append(new_connection)
 
     def create_stations(self):
 
-        for station in self.stations_df.iterrows():
-            x_cor = station['x']
-            y_cor = station['y']
-            name = station['station']
+        for index, station in self.stations_df.iterrows():
+            x_cor = station.loc['x']
+            y_cor = station.loc['y']
+            name = station.loc['station']
             new_station = Station(name, x_cor, y_cor)
             self.stations.append(new_station)
 
-    def create_network(self):
+    # def create_network(self):
        
-        # check if all connections are used
-        while not all ([connection.driven=True for connection in connections]):
-            self.create_trajectory()
+    #     # check if all connections are used
+    #     while not all ([connection.driven==True for connection in self.connections]):
+    #         self.create_trajectory()
 
-        # calculate score for this network
-        fraction = 1 #TODO: calculate total number of connections used
-        total_time = sum([trajectory.time for trajectory in self.tractories])
-        quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time)
+    #     # calculate score for this network
+    #     fraction = 1 #TODO: calculate total number of connections used
+    #     total_time = sum([trajectory.time for trajectory in self.tractories])
+    #     quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time)
 
-        # generate output
-        data = {'train': [trajectory.name for trajectory in self.trajectories], 
-                'stations': [trajectory.stations for trajectory in self.trajectories],
-                'score' : quality_network} 
-        output_df = pd.DataFrame(data) # output geven zoals in voorbeeld
+    #     # generate output
+    #     data = {'train': [trajectory.name for trajectory in self.trajectories], 
+    #             'stations': [trajectory.stations for trajectory in self.trajectories],
+    #             'score' : quality_network} 
+    #     output_df = pd.DataFrame(data) # output geven zoals in voorbeeld
 
 
     def pick_valid_connection(self, all_connections, time):
@@ -82,9 +82,10 @@ class Dienstregeling():
 
         # keep picking a new connection until either a valid connection is found, or all connections have been tried
         while not chosen and len(all_connections) > 0: 
-            pick = random.randint(0, len(all_connections))
+            pick = random.randint(0, len(all_connections)-1)
             new_connection = all_connections[pick]
             all_connections.remove(all_connections[pick])
+
 
             # check to see if the connection is correct
             if time + new_connection.time < 120:
@@ -95,8 +96,10 @@ class Dienstregeling():
 
     def create_trajectory(self):
         # pick a random station from the list of stations
-        position = random.randint(0, len(self.stations))
+        previous_connection = None
+        position = random.randint(0, len(self.stations)-1)
         current_station = self.stations[position].name
+
         time = 0
         trajectory_stations = []
 
@@ -106,22 +109,65 @@ class Dienstregeling():
             # create empty list to later select next connection from
             all_connections = []
 
-            # loop through your list of connections and look for a connection that has the current station as station 1
+            # loop through your list of connections and look for a connection that has the current station as station 1 or 2
             for connection in self.connections:
-                if connection.station1 == current_station:
+               
+                if connection.station1 == current_station or connection.station2 == current_station:
 
                     # create list of all stations that have current station as station 1
                     all_connections.append(connection)
-
+            
             # pick one of the connections with correct station
-            new_connection = pick_valid_connection(all_connections, time) 
-            current_station = new_connection.station2
+            new_connection = self.pick_valid_connection(all_connections, time) 
+            
+            # if valid connection is found, add it to the trajectory
+            if new_connection != None and new_connection != previous_connection: 
 
-            time += new_connection.time 
-            trajectory_stations.append(new_connection.station1)
+                # pick correct station to move further with
+                if current_station == new_connection.station1:
+                    current_station = new_connection.station2
+                else: 
+                    current_station = new_connection.station1
+                time += new_connection.time 
+                trajectory_stations.append(current_station)
+                new_connection.driven = True
+                previous_connection = new_connection 
+         
 
+            # if no valid connection is found, break the loop
+            else:
+                break
+            
+     
+        
         new_trajectory = Trajectory(trajectory_stations, time) 
+        print(new_trajectory.stations)
         self.trajectories.append(new_trajectory)
 
-        # TODO: add trajectories to list?
-        
+    def create_network(self):
+
+        # check if all connections are used
+        while not all ([connection.driven==True for connection in self.connections]):
+            
+            self.create_trajectory()
+
+
+        # calculate score for this network
+        fraction = 1 #TODO: calculate total number of connections used
+        total_time = sum([trajectory.time for trajectory in self.trajectories])
+        quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time)
+
+        # generate output
+        data = {'train': [trajectory.name for trajectory in self.trajectories], 
+                'stations': [trajectory.stations for trajectory in self.trajectories],
+                'score' : quality_network} 
+        output_df = pd.DataFrame(data) # output geven zoals in voorbeeld
+
+
+connections_df = pd.read_csv('ConnectiesHolland.csv', index_col=False)
+stations_df = pd.read_csv('StationsHolland.csv', index_col=False)
+nieuwe_regeling = Dienstregeling(connections_df, stations_df)
+nieuwe_regeling.create_stations() 
+nieuwe_regeling.create_connections()
+# print(len(nieuwe_regeling.stations))
+nieuwe_regeling.create_network()
