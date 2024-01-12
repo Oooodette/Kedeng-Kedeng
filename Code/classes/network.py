@@ -5,7 +5,7 @@ import pandas as pd
 import random
 class Network():
     def __init__(self, connections_file, stations_file):
-        print(connections_file)
+        
         self.connections_df = self.load_data(connections_file)
         self.stations_df = self.load_data(stations_file)
         self.connections = []
@@ -126,7 +126,6 @@ class Network():
 
         # calculate score for this network
         fraction = sum([connection.used for connection in self.connections]) / len(self.connections)
-        print(sum([connection.used for connection in self.connections]))
         total_time = sum([trajectory.time for trajectory in self.trajectories])
         self.quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time)
 
@@ -141,7 +140,7 @@ class Network():
         self.create_network()  
         counter = 0
         while len(self.trajectories) > 7:
-            print(len(self.trajectories))
+        
             for connection in self.connections:
                 connection.used = False 
             self.trajectories = []
