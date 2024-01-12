@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from code.classes import stations, connection, trajectory, network
 # from code.algorithms import
 # from code.algorithms import
@@ -19,4 +18,4 @@ if __name__ == "__main__":
     test_network.get_score()
 
     # visualize
-    vis.visualize_network('data/StationsNationaal.csv', 'data/ConnectiesNationaal.csv', 'output.csv')
+    vis.visualize_network(test_network.stations_df, test_network.connections_df, 'data/output.csv')

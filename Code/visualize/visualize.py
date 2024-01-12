@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import random as random
 
 """
 Visualizing all stations in NL and their connections
@@ -35,7 +36,7 @@ def visualize_stations_connections(stations_df, connections_df):
                 plt.plot(x_list, y_list, c='b', linestyle='-')
 
 
-def visualise_trajectory(stations_df, connections_df, train):
+def visualise_trajectory(stations_df, connections_df, train, c):
     """visualize a single trajectory from a list of stations"""
 
     #create dictionaries from the dataframes
@@ -81,7 +82,8 @@ def visualize_network(stations_file, connections_file, trajectories_file):
         trajectory = trajectories_dict[train]
         image = visualise_trajectory(stations_df, connections_df, trajectory, c=color)
 
-visualize_network('data/StationsNationaal.csv', 'ConnectiesNationaal.csv', 'output.csv')
+
+visualize_network('stations.csv', 'connections.csv', 'output.csv')
 
 plt.show()
 
