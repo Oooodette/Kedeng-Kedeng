@@ -95,8 +95,8 @@ traject_colors = ['#ff8c00', '#228b22', '#b22222', '#9370db', '#bc8f8f',
                 '#800000', '#00ff00', '#ffffff', '#ffd700', '#2f4f4f']
 
 
-stations_df = pd.read_csv('StationsHolland.csv')
-connections_df = pd.read_csv('ConnectiesHolland.csv')
+stations_df = pd.read_csv('data\StationsHolland.csv')
+connections_df = pd.read_csv('data\ConnectiesHolland.csv')
 trajectories_df = pd.read_csv('output.csv', skipfooter=1, engine='python')
 
 
