@@ -1,46 +1,41 @@
 train,stations
-1,"['Heemstede-Aerdenhout', 'Leiden Centraal', 'Schiphol Airport', 'Amsterdam Zuid', 'Amsterdam Sloterdijk', 'Amsterdam Centraal']"
-2,['Zaandam']
-3,"['Zaandam', 'Castricum']"
-4,"['Zaandam', 'Beverwijk', 'Haarlem']"
-5,['Dordrecht']
-6,['Leiden Centraal']
-7,"['Haarlem', 'Heemstede-Aerdenhout']"
-8,"['Rotterdam Alexander', 'Rotterdam Centraal', 'Dordrecht']"
-9,"['Alkmaar', 'Hoorn']"
-10,"['Rotterdam Alexander', 'Rotterdam Centraal', 'Dordrecht']"
-11,"['Amsterdam Sloterdijk', 'Zaandam', 'Beverwijk', 'Castricum', 'Alkmaar']"
-12,"['Alkmaar', 'Hoorn', 'Zaandam', 'Amsterdam Sloterdijk', 'Amsterdam Zuid', 'Amsterdam Amstel']"
-13,['Castricum']
-14,['Delft']
-15,['Amsterdam Sloterdijk']
-16,"['Gouda', 'Rotterdam Alexander', 'Rotterdam Centraal']"
-17,"['Beverwijk', 'Haarlem']"
-18,['Schiedam Centrum']
-19,"['Leiden Centraal', 'Den Haag Centraal']"
-20,"['Beverwijk', 'Haarlem', 'Heemstede-Aerdenhout', 'Leiden Centraal', 'Den Haag Centraal', 'Gouda', 'Rotterdam Alexander']"
-21,"['Castricum', 'Zaandam', 'Hoorn']"
-22,['Den Haag Centraal']
-23,"['Schiphol Airport', 'Leiden Centraal', 'Den Haag Centraal', 'Delft', 'Schiedam Centrum', 'Rotterdam Centraal']"
-24,"['Leiden Centraal', 'Heemstede-Aerdenhout', 'Haarlem']"
-25,"['Den Haag Centraal', 'Delft', 'Schiedam Centrum', 'Rotterdam Centraal', 'Rotterdam Alexander']"
-26,['Dordrecht']
-27,"['Gouda', 'Alphen a/d Rijn']"
-28,"['Rotterdam Alexander', 'Gouda']"
-29,['Haarlem']
-30,['Haarlem']
-31,"['Beverwijk', 'Castricum', 'Alkmaar', 'Den Helder']"
-32,"['Leiden Centraal', 'Den Haag Centraal', 'Gouda', 'Alphen a/d Rijn']"
-33,"['Rotterdam Centraal', 'Rotterdam Alexander']"
-34,"['Amsterdam Sloterdijk', 'Amsterdam Zuid']"
-35,"['Alkmaar', 'Hoorn', 'Zaandam', 'Beverwijk', 'Castricum', 'Zaandam', 'Amsterdam Sloterdijk']"
-36,"['Gouda', 'Den Haag Centraal']"
-37,"['Rotterdam Alexander', 'Gouda']"
-38,['Zaandam']
-39,"['Rotterdam Centraal', 'Schiedam Centrum', 'Delft', 'Den Haag Centraal', 'Leiden Centraal']"
-40,['Gouda']
-41,"['Amsterdam Zuid', 'Amsterdam Amstel', 'Amsterdam Centraal', 'Amsterdam Sloterdijk', 'Zaandam', 'Castricum', 'Alkmaar']"
-42,['Rotterdam Centraal']
-43,"['Castricum', 'Zaandam', 'Beverwijk']"
-44,"['Haarlem', 'Heemstede-Aerdenhout']"
-score,3977
+1,"['Alphen a/d Rijn', 'Leiden Centraal']"
+2,"['Delft', 'Schiedam Centrum']"
+3,"['Alphen a/d Rijn', 'Leiden Centraal', 'Heemstede-Aerdenhout']"
+4,"['Schiphol Airport', 'Amsterdam Zuid']"
+5,"['Amsterdam Sloterdijk', 'Amsterdam Centraal']"
+6,"['Hoorn', 'Alkmaar']"
+7,"['Amsterdam Zuid', 'Amsterdam Sloterdijk', 'Haarlem', 'Beverwijk']"
+8,"['Leiden Centraal', 'Alphen a/d Rijn']"
+9,"['Haarlem', 'Beverwijk', 'Zaandam', 'Amsterdam Sloterdijk', 'Amsterdam Zuid', 'Amsterdam Amstel']"
+10,"['Amsterdam Zuid', 'Amsterdam Amstel']"
+11,"['Rotterdam Centraal', 'Dordrecht']"
+12,"['Delft', 'Schiedam Centrum']"
+13,"['Castricum', 'Zaandam', 'Amsterdam Sloterdijk', 'Haarlem', 'Heemstede-Aerdenhout']"
+14,"['Gouda', 'Alphen a/d Rijn']"
+15,"['Alphen a/d Rijn', 'Gouda']"
+16,"['Amsterdam Sloterdijk', 'Amsterdam Zuid', 'Amsterdam Amstel', 'Amsterdam Centraal', 'Amsterdam Sloterdijk']"
+17,"['Den Haag Centraal', 'Gouda']"
+18,"['Rotterdam Centraal', 'Schiedam Centrum']"
+19,"['Leiden Centraal', 'Den Haag Centraal', 'Delft']"
+20,"['Leiden Centraal', 'Alphen a/d Rijn', 'Gouda', 'Den Haag Centraal', 'Delft']"
+21,"['Schiedam Centrum', 'Delft']"
+22,"['Rotterdam Alexander', 'Gouda']"
+23,"['Leiden Centraal', 'Heemstede-Aerdenhout']"
+24,"['Amsterdam Centraal', 'Amsterdam Amstel']"
+25,"['Leiden Centraal', 'Alphen a/d Rijn']"
+26,"['Beverwijk', 'Castricum']"
+27,"['Delft', 'Schiedam Centrum']"
+28,"['Schiedam Centrum', 'Rotterdam Centraal']"
+29,"['Beverwijk', 'Zaandam', 'Castricum']"
+30,"['Alkmaar', 'Castricum', 'Beverwijk', 'Zaandam', 'Hoorn']"
+31,"['Amsterdam Centraal', 'Amsterdam Sloterdijk']"
+32,"['Delft', 'Schiedam Centrum', 'Rotterdam Centraal']"
+33,"['Rotterdam Centraal', 'Dordrecht']"
+34,"['Amsterdam Zuid', 'Amsterdam Sloterdijk']"
+35,"['Amsterdam Amstel', 'Amsterdam Centraal']"
+36,"['Den Haag Centraal', 'Delft', 'Schiedam Centrum']"
+37,"['Den Helder', 'Alkmaar']"
+38,"['Gouda', 'Den Haag Centraal', 'Leiden Centraal', 'Heemstede-Aerdenhout']"
+39,"['Delft', 'Schiedam Centrum', 'Rotterdam Centraal', 'Rotterdam Alexander']"
+score,5041

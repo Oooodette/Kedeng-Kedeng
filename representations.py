@@ -9,7 +9,6 @@ class Station():
         self.x_cor = x_cor
         self.y_cor = y_cor
 
-
 class Connection():
     def __init__(self, time, station1, station2):
         self.time = time
@@ -17,14 +16,11 @@ class Connection():
         self.station2 = station2
         self.driven = False
 
-
 class Trajectory():
     def __init__(self, name, stations, time):
         self.name = name
         self.stations = stations
         self.time = time
-
-
 
 class Dienstregeling():
     def __init__(self, connections_df, stations_df):
@@ -33,9 +29,8 @@ class Dienstregeling():
         self.connections = []
         self.stations = []
         self.trajectories = []
-        
-    
-    def create_connections(self):
+         
+    def load_connections(self):
 
         for index, connection in self.connections_df.iterrows():
             time = connection.loc['distance']
@@ -46,7 +41,7 @@ class Dienstregeling():
             new_connection = Connection(time, station1, station2)
             self.connections.append(new_connection)
 
-    def create_stations(self):
+    def load_stations(self):
 
         for index, station in self.stations_df.iterrows():
             x_cor = station.loc['x']
@@ -54,8 +49,7 @@ class Dienstregeling():
             name = station.loc['station']
             new_station = Station(name, x_cor, y_cor)
             self.stations.append(new_station)
-
-
+    
     def pick_valid_connection(self, all_connections, time):
      
         chosen = False
@@ -68,7 +62,6 @@ class Dienstregeling():
             pick = random.randint(0, len(all_connections)-1)
             new_connection = all_connections[pick]
             all_connections.remove(all_connections[pick])
-
 
             # check to see if the connection is correct
             if time + new_connection.time < 120:
@@ -108,20 +101,22 @@ class Dienstregeling():
                 # pick correct station to move further with
                 if current_station == new_connection.station1:
                     current_station = new_connection.station2
+                    next_station = new_connection.station1
                 else: 
                     current_station = new_connection.station1
+                    next_station = new_connection.station2
                 time += new_connection.time 
                 trajectory_stations.append(current_station)
                 new_connection.driven = True
                 previous_connection = new_connection 
          
-
             # if no valid connection is found, break the loop
             else:
+                # when only one connection has been driven, we also want to add the next station  
+                if len(trajectory_stations) == 1:
+                    trajectory_stations.append(next_station)
                 break
             
-     
-        
         new_trajectory = Trajectory('x', trajectory_stations, time) 
         return new_trajectory
 
@@ -141,7 +136,6 @@ class Dienstregeling():
         quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time)
 
         # generate output
-        print(self.trajectories)
         data = {'train': [trajectory.name for trajectory in self.trajectories] + ['score'], 
                 'stations': [trajectory.stations for trajectory in self.trajectories] + [quality_network]} 
         output_df = pd.DataFrame(data) # output geven zoals in voorbeeld
@@ -152,7 +146,6 @@ class Dienstregeling():
 connections_df = pd.read_csv('ConnectiesHolland.csv', index_col=False)
 stations_df = pd.read_csv('StationsHolland.csv', index_col=False)
 nieuwe_regeling = Dienstregeling(connections_df, stations_df)
-nieuwe_regeling.create_stations() 
-nieuwe_regeling.create_connections()
-# print(len(nieuwe_regeling.stations))
+nieuwe_regeling.load_stations() 
+nieuwe_regeling.load_connections()
 nieuwe_regeling.create_network()
