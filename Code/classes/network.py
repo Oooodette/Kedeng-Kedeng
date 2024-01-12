@@ -7,7 +7,7 @@ class Network():
         self.trajectories = []
         
     
-    def create_connections(self):
+    def load_connections(self):
 
         for index, connection in self.connections_df.iterrows():
             time = connection.loc['distance']
@@ -18,7 +18,7 @@ class Network():
             new_connection = Connection(time, station1, station2)
             self.connections.append(new_connection)
 
-    def create_stations(self):
+    def load_stations(self):
 
         for index, station in self.stations_df.iterrows():
             x_cor = station.loc['x']
@@ -80,8 +80,10 @@ class Network():
                 # pick correct station to move further with
                 if current_station == new_connection.station1:
                     current_station = new_connection.station2
+                    next_station = new_connection.station1
                 else: 
                     current_station = new_connection.station1
+                    next_station = new_connection.station2
                 time += new_connection.time 
                 trajectory_stations.append(current_station)
                 new_connection.used = True
@@ -90,6 +92,9 @@ class Network():
 
             # if no valid connection is found, break the loop
             else:
+                # when only one connection has been driven, we also want to add the next station  
+                if len(trajectory_stations) == 1:
+                    trajectory_stations.append(next_station)
                 break
             
      
