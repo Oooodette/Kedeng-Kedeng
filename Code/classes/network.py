@@ -153,4 +153,4 @@ class Network():
     def get_score(self):
         print(f'the score of this network is {self.quality_network}')
         print('\n')
-        print({len(self.trajectories)})
+        print(len(self.trajectories))
