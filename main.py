@@ -13,7 +13,8 @@ if __name__ == "__main__":
     test_network.load_stations()
     test_network.load_connections()
 
-    test_network.create_network()
+    
+    test_network.find_network()
 
     test_network.get_score()
 
