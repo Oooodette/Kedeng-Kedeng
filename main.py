@@ -1,7 +1,7 @@
-from Code.classes import stations, connection, trajectory, network
+from code.classes import stations, connection, trajectory, network
 # from code.algorithms import
 # from code.algorithms import
-from Code.visualize import visualize as vis
+from code.visualize import visualize as vis
 
 
 
