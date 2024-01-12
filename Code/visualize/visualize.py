@@ -61,9 +61,8 @@ def visualize_network(stations_file, connections_file, trajectories_file):
     """visualize all trajectories"""
 
     #convert the dataframe to dictionary
-    stations_df = pd.read_csv('StationsNationaal.csv')
-    connections_df = pd.read_csv('ConnectiesNationaal.csv')
-    trajectories_df = pd.read_csv('output.csv', skipfooter=1, engine='python')
+
+    trajectories_df = pd.read_csv(trajectories_file, skipfooter=1, engine='python')
 
     trajectories_dict = {}
     for index, row in trajectories_df.iterrows():
