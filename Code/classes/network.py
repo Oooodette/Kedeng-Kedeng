@@ -133,12 +133,11 @@ class Network():
         self.quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time)
 
         # generate output
-        print(self.trajectories)
         data = {'train': [trajectory.name for trajectory in self.trajectories] + ['score'], 
                 'stations': [trajectory.stations for trajectory in self.trajectories] + [self.quality_network]} 
         output_df = pd.DataFrame(data) # output geven zoals in voorbeeld
 
-        output_df.to_csv('output.csv', index=False)
+        output_df.to_csv('data\output.csv', index=False)
 
     def get_score(self):
         print(f'the score of this network is {self.quality_network}')
