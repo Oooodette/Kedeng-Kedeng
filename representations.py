@@ -1,4 +1,4 @@
-from tkinter import W
+    from tkinter import W
 import pandas as pd
 import random
 
@@ -9,14 +9,12 @@ class Station():
         self.x_cor = x_cor
         self.y_cor = y_cor
 
-
 class Connection():
     def __init__(self, time, station1, station2):
         self.time = time
         self.station1 = station1
         self.station2 = station2
-        self.driven = False
-
+        self.used= False
 
 class Trajectory():
     def __init__(self, name, stations, time):
@@ -26,16 +24,20 @@ class Trajectory():
 
 
 
-class Dienstregeling():
-    def __init__(self, connections_df, stations_df):
-        self.connections_df = connections_df
-        self.stations_df = stations_df
-        self.connections = []
-        self.stations = []
+class Network():
+    def __init__(self, connections_file, stations_file):
+        self.connections_df = load_data(connections_file)
+        self.stations_df = load_data(stations_file)
+        self.connections = [] #TODO: call function here
+        self.stations = [] # TODO: call function here
         self.trajectories = []
+        self.quality_network = None
+        
+    def load_data(self, filepath): 
+        return pd.read_csv(filepath, index_col=False)
         
     
-    def create_connections(self):
+    def load_connections(self):
 
         for index, connection in self.connections_df.iterrows():
             time = connection.loc['distance']
@@ -46,7 +48,7 @@ class Dienstregeling():
             new_connection = Connection(time, station1, station2)
             self.connections.append(new_connection)
 
-    def create_stations(self):
+    def load_stations(self):
 
         for index, station in self.stations_df.iterrows():
             x_cor = station.loc['x']
@@ -54,8 +56,7 @@ class Dienstregeling():
             name = station.loc['station']
             new_station = Station(name, x_cor, y_cor)
             self.stations.append(new_station)
-
-
+    
     def pick_valid_connection(self, all_connections, time):
      
         chosen = False
@@ -68,7 +69,6 @@ class Dienstregeling():
             pick = random.randint(0, len(all_connections)-1)
             new_connection = all_connections[pick]
             all_connections.remove(all_connections[pick])
-
 
             # check to see if the connection is correct
             if time + new_connection.time < 120:
@@ -108,27 +108,34 @@ class Dienstregeling():
                 # pick correct station to move further with
                 if current_station == new_connection.station1:
                     current_station = new_connection.station2
+                    next_station = new_connection.station1
                 else: 
                     current_station = new_connection.station1
+                    next_station = new_connection.station2
                 time += new_connection.time 
                 trajectory_stations.append(current_station)
-                new_connection.driven = True
+                new_connection.used = True
                 previous_connection = new_connection 
          
-
             # if no valid connection is found, break the loop
             else:
+                # when only one connection has been driven, we also want to add the next station  
+                if len(trajectory_stations) == 1:
+                    trajectory_stations.append(next_station)
                 break
             
-     
-        
         new_trajectory = Trajectory('x', trajectory_stations, time) 
         return new_trajectory
-
+    def is_valid(self):
+        if all ([connection.used==True for connection in self.connections]):
+            return True
+        else:
+            return False
+    
     def create_network(self):
         counter = 1
-        # check if all connections are used
-        while not all ([connection.driven==True for connection in self.connections]):
+        # check if all connections are used and keep making trajectories 
+        while not self.is_valid():
             
             new_trajectory = self.create_trajectory()
             new_trajectory.name = counter
@@ -138,21 +145,15 @@ class Dienstregeling():
         # calculate score for this network
         fraction = 1 #TODO: calculate total number of connections used
         total_time = sum([trajectory.time for trajectory in self.trajectories])
-        quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time)
+        self.quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time)
 
         # generate output
-        print(self.trajectories)
         data = {'train': [trajectory.name for trajectory in self.trajectories] + ['score'], 
                 'stations': [trajectory.stations for trajectory in self.trajectories] + [quality_network]} 
         output_df = pd.DataFrame(data) # output geven zoals in voorbeeld
 
         output_df.to_csv('output.csv', index=False)
 
+    def get_score(self):
+        print(f'the score of this network = {self.quality_network}')
 
-connections_df = pd.read_csv('ConnectiesHolland.csv', index_col=False)
-stations_df = pd.read_csv('StationsHolland.csv', index_col=False)
-nieuwe_regeling = Dienstregeling(connections_df, stations_df)
-nieuwe_regeling.create_stations() 
-nieuwe_regeling.create_connections()
-# print(len(nieuwe_regeling.stations))
-nieuwe_regeling.create_network()
