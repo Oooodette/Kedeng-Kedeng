@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-class Network():
-    def __init__(self, connections_df, stations_df):
-        self.connections_df = connections_df
-        self.stations_df = stations_df
-        self.connections = []
-        self.stations = []
-        self.trajectories = []
-        
-=======
 from .stations import Station
 from .connection import Connection
 from .trajectory import Trajectory
@@ -25,7 +15,6 @@ class Network():
     
     def load_data(self, filepath): 
         return pd.read_csv(filepath)
->>>>>>> d1331b092d0a25524e2bb0f4dc34de0d726531a6
     
     def load_connections(self):
 
@@ -121,10 +110,7 @@ class Network():
         
         new_trajectory = Trajectory('x', trajectory_stations, time) 
         return new_trajectory
-<<<<<<< HEAD
-=======
     
->>>>>>> d1331b092d0a25524e2bb0f4dc34de0d726531a6
     def is_valid(self):
         if all ([connection.used==True for connection in self.connections]):
             return True
@@ -144,21 +130,11 @@ class Network():
         # calculate score for this network
         fraction = 1 #TODO: calculate total number of connections used
         total_time = sum([trajectory.time for trajectory in self.trajectories])
-<<<<<<< HEAD
-        quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time)
-=======
         self.quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time)
->>>>>>> d1331b092d0a25524e2bb0f4dc34de0d726531a6
 
         # generate output
         print(self.trajectories)
         data = {'train': [trajectory.name for trajectory in self.trajectories] + ['score'], 
-<<<<<<< HEAD
-                'stations': [trajectory.stations for trajectory in self.trajectories] + [quality_network]} 
-        output_df = pd.DataFrame(data) # output geven zoals in voorbeeld
-
-        output_df.to_csv('output.csv', index=False)
-=======
                 'stations': [trajectory.stations for trajectory in self.trajectories] + [self.quality_network]} 
         output_df = pd.DataFrame(data) # output geven zoals in voorbeeld
 
@@ -166,4 +142,3 @@ class Network():
 
     def get_score(self):
         print(f'the score of this network is {self.quality_network}')
->>>>>>> d1331b092d0a25524e2bb0f4dc34de0d726531a6
