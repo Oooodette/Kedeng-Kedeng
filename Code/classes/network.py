@@ -37,7 +37,7 @@ class Network():
             self.stations.append(new_station)
 
 
-    def pick_valid_connection(self, all_connections, time):
+    def pick_valid_connection(self, all_connections, previous_connection, time):
      
         chosen = False
 
@@ -52,7 +52,7 @@ class Network():
 
 
             # check to see if the connection is correct
-            if time + new_connection.time < 120:
+            if time + new_connection.time < 120 and new_connection != previous_connection:
                 chosen = True
                 chosen_connection = new_connection
         
@@ -64,7 +64,7 @@ class Network():
         position = random.randint(0, len(self.stations)-1)
         current_station = self.stations[position].name
         time = 0
-        trajectory_stations = []
+        trajectory_stations = [current_station]
 
         # only add more connections if total time is below 120
         while time < 120:
@@ -81,18 +81,18 @@ class Network():
                     all_connections.append(connection)
             
             # pick one of the connections with correct station
-            new_connection = self.pick_valid_connection(all_connections, time) 
+            new_connection = self.pick_valid_connection(all_connections, previous_connection, time) 
             
             # if valid connection is found, add it to the trajectory
-            if new_connection != None and new_connection != previous_connection: 
+            if new_connection != None:
 
                 # pick correct station to move further with
                 if current_station == new_connection.station1:
                     current_station = new_connection.station2
-                    next_station = new_connection.station1
+                    previous_station = new_connection.station1
                 else: 
                     current_station = new_connection.station1
-                    next_station = new_connection.station2
+                    previous_station = new_connection.station2
                 time += new_connection.time 
                 trajectory_stations.append(current_station)
                 new_connection.used = True
@@ -101,18 +101,15 @@ class Network():
 
             # if no valid connection is found, break the loop
             else:
-                # when only one connection has been driven, we also want to add the next station  
-                if len(trajectory_stations) == 1:
-                    trajectory_stations.append(next_station)
                 break
             
-     
-        
+    
         new_trajectory = Trajectory('x', trajectory_stations, time) 
         return new_trajectory
     
     def is_valid(self):
-        if all ([connection.used==True for connection in self.connections]):
+        # if len(self.trajectories) <=7: 
+        if all ([connection.used==True for connection in self.connections]): 
             return True
         else:
             return False
