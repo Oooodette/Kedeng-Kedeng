@@ -1,3 +1,5 @@
+from code.classes import Trajectory, Network
+import pandas as pd
 import random
 
 def create_available_stations(current_station, connection_list): 
@@ -117,7 +119,7 @@ def create_trajectory(station_list, connection_list):
         
         return new_trajectory
 
-def create_network(): 
+def create_network(connections_file, stations_file): 
     """"""
     new_network = Network(connections_file, stations_file) 
     new_trajectory = create_trajectory()
@@ -129,7 +131,7 @@ def create_network():
         
         new_trajectory = create_trajectory(station_list, connection_list)
         new_network.add_trajectory(new_trajectory)
-        
+
         # update used connections
         # TODO: this can be done better with a different way to save used connectionss.
         for connection, value in new_trajectory.connections:
@@ -138,86 +140,89 @@ def create_network():
         # change used connections based on new trajectory
         new_trajectory.name = counter
         counter += 1
+
+    return new_network
   
 
 
-############################################################## OLD FUNCTIONS START HERE
+# ############################################################## OLD FUNCTIONS START HERE
          
-def create_trajectory(station_list,  ):
-        #TODO: Dit is een random algoritme, zet dit in mapje algoritme en roep hem aan. We willen geen algoritmes in de oplossing. 
-        # pick a random station from the list of stations
-        previous_connection = None
-        position = random.randint(0, len(station_list)-1)
-        current_station = station_list[position].name
-        time = 0
+# def create_trajectory(station_list,  ):
+#         #TODO: Dit is een random algoritme, zet dit in mapje algoritme en roep hem aan. We willen geen algoritmes in de oplossing. 
+#         # pick a random station from the list of stations
+#         previous_connection = None
+#         position = random.randint(0, len(station_list)-1)
+#         current_station = station_list[position].name
+#         time = 0
 
-        # save first station as starting station for this trajectory
-        trajectory_stations = [current_station]
+#         # save first station as starting station for this trajectory
+#         trajectory_stations = [current_station]
 
-        # only add more connections if total time is below 120
-        while time < 120:
+#         # only add more connections if total time is below 120
+#         while time < 120:
             
-            create_station_list(current_station, connection_list)
-            # create empty list to later select next connection from
-            all_connections = []
+#             create_station_list(current_station, connection_list)
+#             # create empty list to later select next connection from
+#             all_connections = []
 
-            # loop through your list of connections and look for a connection that has the current station as station 1 or 2
-            for connection in self.connections:
+#             # loop through your list of connections and look for a connection that has the current station as station 1 or 2
+#             for connection in self.connections:
                
-                if connection.station1 == current_station or connection.station2 == current_station:
+#                 if connection.station1 == current_station or connection.station2 == current_station:
 
-                    # create list of all stations that have current station as station 1
-                    all_connections.append(connection)
+#                     # create list of all stations that have current station as station 1
+#                     all_connections.append(connection)
             
-            # pick one of the connections with correct station
-            new_connection = pick_valid_connection(all_connections, previous_connection, time) 
+#             # pick one of the connections with correct station
+#             new_connection = pick_valid_connection(all_connections, previous_connection, time) 
             
-            # if valid connection is found, add it to the trajectory
-            if new_connection != None:
+#             # if valid connection is found, add it to the trajectory
+#             if new_connection != None:
 
-                # pick correct station to move further with
-                if current_station == new_connection.station1:
-                    current_station = new_connection.station2
-                    previous_station = new_connection.station1
-                else: 
-                    current_station = new_connection.station1
-                    previous_station = new_connection.station2
-                time += new_connection.time 
-                trajectory_stations.append(current_station)
-                new_connection.used = True
-                previous_connection = new_connection 
+#                 # pick correct station to move further with
+#                 if current_station == new_connection.station1:
+#                     current_station = new_connection.station2
+#                     previous_station = new_connection.station1
+#                 else: 
+#                     current_station = new_connection.station1
+#                     previous_station = new_connection.station2
+#                 time += new_connection.time 
+#                 trajectory_stations.append(current_station)
+#                 new_connection.used = True
+#                 previous_connection = new_connection 
          
 
-            # if no valid connection is found, break the loop
-            else:
-                break
+#             # if no valid connection is found, break the loop
+#             else:
+#                 break
             
-        new_trajectory = Trajectory('x', trajectory_stations, time) 
+#         new_trajectory = Trajectory('x', trajectory_stations, time) 
         
-        return new_trajectory
+#         return new_trajectory
 
-    def create_network(connections_file, stations_file):
-        #TODO: This should be a function that calls on an algorithm
-        new_network = Network(connections_file, stations_file) 
-        new_trajectory = create_trajectory()
+#     def create_network(connections_file, stations_file):
+#         #TODO: This should be a function that calls on an algorithm
+#         new_network = Network(connections_file, stations_file) 
+#         new_trajectory = create_trajectory()
 
-        counter = 1
-        # check if all connections are used and keep making trajectories 
-        while not self.is_valid():
+#         counter = 1
+#         # check if all connections are used and keep making trajectories 
+#         while not self.is_valid():
             
-            new_trajectory = self.create_trajectory()
-            new_trajectory.name = counter
-            counter += 1
-            self.trajectories.append(new_trajectory)
+#             new_trajectory = self.create_trajectory()
+#             new_trajectory.name = counter
+#             counter += 1
+#             self.trajectories.append(new_trajectory)
 
-        # calculate score for this network
-        fraction = sum([connection.used for connection in self.connections]) / len(self.connections)
-        total_time = sum([trajectory.time for trajectory in self.trajectories])
-        self.quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time)
+#         # calculate score for this network
+#         fraction = sum([connection.used for connection in self.connections]) / len(self.connections)
+#         total_time = sum([trajectory.time for trajectory in self.trajectories])
+#         self.quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time)
 
-        # generate output
-        data = {'train': [trajectory.name for trajectory in self.trajectories] + ['score'], 
-                'stations': [trajectory.stations for trajectory in self.trajectories] + [self.quality_network]} 
-        output_df = pd.DataFrame(data) # output geven zoals in voorbeeld
+#         # generate output
+#         data = {'train': [trajectory.name for trajectory in self.trajectories] + ['score'], 
+#                 'stations': [trajectory.stations for trajectory in self.trajectories] + [self.quality_network]} 
+#         output_df = pd.DataFrame(data) # output geven zoals in voorbeeld
 
-        output_df.to_csv('data\output.csv', index=False) 
+#         output_df.to_csv('data\output.csv', index=False) 
+        
