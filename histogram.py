@@ -17,9 +17,7 @@ for i in range(1000):
   test_network.load_connections()
 
   test_network.create_network()
-
-  score = test_network.get_score()
-  scores.append(score)
+  scores.append(test_network.quality_network)
 
 plt.bar(counts, scores)
 plt.show()

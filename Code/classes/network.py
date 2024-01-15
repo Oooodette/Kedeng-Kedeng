@@ -12,7 +12,8 @@ class Network():
         self.stations = []
         self.trajectories = []
         self.quality_network = None
-    
+        self.used = {}
+
     def load_data(self, filepath): 
         return pd.read_csv(filepath)
     
@@ -57,6 +58,10 @@ class Network():
                 chosen_connection = new_connection
         
         return chosen_connection 
+    
+    def connections_used(self):
+        for connection in self.connections:
+            self.used[connection] = False 
 
     def create_trajectory(self):
         #TODO: Dit is een random algoritme, zet dit in mapje algoritme en roep hem aan. We willen geen algoritmes in de oplossing. 
@@ -75,7 +80,6 @@ class Network():
 
             # loop through your list of connections and look for a connection that has the current station as station 1 or 2
             for connection in self.connections:
-               
                 if connection.station1 == current_station or connection.station2 == current_station:
 
                     # create list of all stations that have current station as station 1
@@ -96,27 +100,25 @@ class Network():
                     previous_station = new_connection.station2
                 time += new_connection.time 
                 trajectory_stations.append(current_station)
-                new_connection.used = True
+                self.used[new_connection] = True
                 previous_connection = new_connection 
          
-
             # if no valid connection is found, break the loop
             else:
                 break
-            
+
         new_trajectory = Trajectory('x', trajectory_stations, time) 
         return new_trajectory
     
     def is_valid(self):
         # if len(self.trajectories) <=7: 
-        if all ([connection.used==True for connection in self.connections]): 
+        if all ([driven == True for driven in self.used.values()]): 
             return True
         else:
             return False
     
     def create_network(self):
         #TODO: This should be a function that calls on an algorithm
-        
         counter = 1
         # check if all connections are used and keep making trajectories 
         while not self.is_valid():
@@ -127,7 +129,7 @@ class Network():
             self.trajectories.append(new_trajectory)
 
         # calculate score for this network
-        fraction = sum([connection.used for connection in self.connections]) / len(self.connections)
+        fraction = sum([driven == True for driven in self.used.values()]) / len(self.connections)
         total_time = sum([trajectory.time for trajectory in self.trajectories])
         self.quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time)
 
@@ -154,5 +156,3 @@ class Network():
         
     def get_score(self):
         print(f'the score of this network is {self.quality_network}')
-        print('\n')
-        print(len(self.trajectories))

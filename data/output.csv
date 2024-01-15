@@ -1,9 +1,0 @@
-train,stations
-1,"['Amsterdam Sloterdijk', 'Haarlem', 'Heemstede-Aerdenhout', 'Leiden Centraal', 'Alphen a/d Rijn', 'Gouda', 'Rotterdam Alexander', 'Rotterdam Centraal', 'Schiedam Centrum', 'Delft', 'Den Haag Centraal', 'Leiden Centraal']"
-2,"['Amsterdam Zuid', 'Schiphol Airport', 'Leiden Centraal', 'Alphen a/d Rijn', 'Gouda', 'Den Haag Centraal', 'Leiden Centraal', 'Heemstede-Aerdenhout', 'Haarlem', 'Amsterdam Sloterdijk']"
-3,"['Amsterdam Amstel', 'Amsterdam Centraal', 'Amsterdam Sloterdijk', 'Zaandam', 'Castricum', 'Alkmaar', 'Hoorn', 'Zaandam', 'Amsterdam Sloterdijk', 'Haarlem', 'Heemstede-Aerdenhout']"
-4,"['Dordrecht', 'Rotterdam Centraal', 'Rotterdam Alexander', 'Gouda', 'Alphen a/d Rijn', 'Leiden Centraal', 'Den Haag Centraal', 'Gouda', 'Rotterdam Alexander', 'Rotterdam Centraal']"
-5,"['Leiden Centraal', 'Schiphol Airport', 'Amsterdam Zuid', 'Amsterdam Sloterdijk', 'Haarlem', 'Beverwijk', 'Castricum', 'Alkmaar', 'Hoorn']"
-6,"['Schiphol Airport', 'Amsterdam Zuid', 'Amsterdam Sloterdijk', 'Zaandam', 'Hoorn', 'Alkmaar', 'Den Helder']"
-7,"['Amsterdam Centraal', 'Amsterdam Amstel', 'Amsterdam Zuid', 'Amsterdam Sloterdijk', 'Haarlem', 'Beverwijk', 'Zaandam', 'Castricum', 'Beverwijk']"
-score,8503.0
