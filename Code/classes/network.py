@@ -5,7 +5,7 @@ import pandas as pd
 import random
 class Network():
     def __init__(self, connections_file, stations_file):
-        
+
         self.connections_df = self.load_data(connections_file)
         self.stations_df = self.load_data(stations_file)
         self.connections = []
@@ -59,6 +59,7 @@ class Network():
         return chosen_connection
 
     def create_trajectory(self):
+        #TODO: Dit is een random algoritme, zet dit in mapje algoritme en roep hem aan. We willen geen algoritmes in de oplossing.
         # pick a random station from the list of stations
         previous_connection = None
         position = random.randint(0, len(self.stations)-1)
@@ -105,6 +106,7 @@ class Network():
 
 
         new_trajectory = Trajectory('x', trajectory_stations, time)
+
         return new_trajectory
 
     def is_valid(self):
@@ -140,16 +142,16 @@ class Network():
         self.create_network()  
         counter = 0
         while len(self.trajectories) > 7:
-        
+
             for connection in self.connections:
-                connection.used = False 
+                connection.used = False
             self.trajectories = []
-            counter +=1 
+            counter +=1
             self.create_network()
             # if counter % 30 == 0 :
             #     print(counter)
 
-        
+
     def get_score(self):
         print(f'the score of this network is {self.quality_network}')
         print('\n')
