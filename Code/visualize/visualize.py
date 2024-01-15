@@ -12,7 +12,7 @@ def visualize_stations_connections(stations_df, connections_df):
 
     #create dictionaries from the dataframes
     stations_dict = {}
-    
+
     for index, row in stations_df.iterrows():
         stations_dict[row['station']] = row['x'], row['y']
 
@@ -81,12 +81,8 @@ def visualize_network(stations_df, connections_df, trajectories_file):
 
         trajectory = trajectories_dict[train]
         image = visualise_trajectory(stations_df, connections_df, trajectory, c=color)
-    
+
     plt.show()
-
-
-
-
 
 
 
