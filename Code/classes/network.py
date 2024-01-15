@@ -15,11 +15,7 @@ class Network():
 <<<<<<< HEAD
         self.used = {}
 
-    def load_data(self, filepath): 
-=======
-
     def load_data(self, filepath):
->>>>>>> f58284045386d3c2e822918bd5fd57e488c92769
         return pd.read_csv(filepath)
 
     def load_connections(self):
@@ -61,17 +57,12 @@ class Network():
             if time + new_connection.time < 120 and new_connection != previous_connection:
                 chosen = True
                 chosen_connection = new_connection
-<<<<<<< HEAD
-        
-        return chosen_connection 
-    
-    def connections_used(self):
-        for connection in self.connections:
-            self.used[connection] = False 
-=======
 
         return chosen_connection
->>>>>>> f58284045386d3c2e822918bd5fd57e488c92769
+
+    def connections_used(self):
+        for connection in self.connections:
+            self.used[connection] = False
 
     def create_trajectory(self):
         #TODO: Dit is een random algoritme, zet dit in mapje algoritme en roep hem aan. We willen geen algoritmes in de oplossing.
@@ -116,8 +107,8 @@ class Network():
                 trajectory_stations.append(current_station)
 <<<<<<< HEAD
                 self.used[new_connection] = True
-                previous_connection = new_connection 
-         
+                previous_connection = new_connection
+
 =======
                 new_connection.used = True
                 previous_connection = new_connection
@@ -129,7 +120,7 @@ class Network():
                 break
 
 <<<<<<< HEAD
-        new_trajectory = Trajectory('x', trajectory_stations, time) 
+        new_trajectory = Trajectory('x', trajectory_stations, time)
 =======
 
         new_trajectory = Trajectory('x', trajectory_stations, time)
@@ -139,8 +130,8 @@ class Network():
 
     def is_valid(self):
 <<<<<<< HEAD
-        # if len(self.trajectories) <=7: 
-        if all ([driven == True for driven in self.used.values()]): 
+        # if len(self.trajectories) <=7:
+        if all ([driven == True for driven in self.used.values()]):
 =======
         # if len(self.trajectories) <=7:
         if all ([connection.used==True for connection in self.connections]):
@@ -173,7 +164,7 @@ class Network():
         output_df.to_csv('data\output.csv', index=False)
 
     def find_network(self):
-        self.create_network()  
+        self.create_network()
         counter = 0
         while len(self.trajectories) > 7:
 
