@@ -64,6 +64,9 @@ class Network():
         for connection in self.connections:
             self.used[connection] = False 
 
+    def add_trajectory(self, trajectory):
+        self.trajectories.append(trajectory) 
+
     def create_trajectory(self):
         #TODO: Dit is een random algoritme, zet dit in mapje algoritme en roep hem aan. We willen geen algoritmes in de oplossing.
         # pick a random station from the list of stations
