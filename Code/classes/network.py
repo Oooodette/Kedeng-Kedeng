@@ -115,6 +115,8 @@ class Network():
             return False
     
     def create_network(self):
+        #TODO: This should be a function that calls on an algorithm
+        
         counter = 1
         # check if all connections are used and keep making trajectories 
         while not self.is_valid():
