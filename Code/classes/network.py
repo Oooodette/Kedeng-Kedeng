@@ -4,6 +4,7 @@ from .trajectory import Trajectory
 import pandas as pd
 import random
 class Network():
+    """"""
     def __init__(self, connections_file, stations_file):
 
         self.connections_df = self.load_data(connections_file)
@@ -12,14 +13,9 @@ class Network():
         self.stations = []
         self.trajectories = []
         self.quality_network = None
-<<<<<<< HEAD
         self.used = {}
 
     def load_data(self, filepath): 
-=======
-
-    def load_data(self, filepath):
->>>>>>> f58284045386d3c2e822918bd5fd57e488c92769
         return pd.read_csv(filepath)
 
     def load_connections(self):
@@ -61,17 +57,12 @@ class Network():
             if time + new_connection.time < 120 and new_connection != previous_connection:
                 chosen = True
                 chosen_connection = new_connection
-<<<<<<< HEAD
         
         return chosen_connection 
     
     def connections_used(self):
         for connection in self.connections:
             self.used[connection] = False 
-=======
-
-        return chosen_connection
->>>>>>> f58284045386d3c2e822918bd5fd57e488c92769
 
     def create_trajectory(self):
         #TODO: Dit is een random algoritme, zet dit in mapje algoritme en roep hem aan. We willen geen algoritmes in de oplossing.
@@ -90,10 +81,6 @@ class Network():
 
             # loop through your list of connections and look for a connection that has the current station as station 1 or 2
             for connection in self.connections:
-<<<<<<< HEAD
-=======
-
->>>>>>> f58284045386d3c2e822918bd5fd57e488c92769
                 if connection.station1 == current_station or connection.station2 == current_station:
 
                     # create list of all stations that have current station as station 1
@@ -114,37 +101,19 @@ class Network():
                     previous_station = new_connection.station2
                 time += new_connection.time
                 trajectory_stations.append(current_station)
-<<<<<<< HEAD
                 self.used[new_connection] = True
                 previous_connection = new_connection 
          
-=======
-                new_connection.used = True
-                previous_connection = new_connection
-
-
->>>>>>> f58284045386d3c2e822918bd5fd57e488c92769
             # if no valid connection is found, break the loop
             else:
                 break
 
-<<<<<<< HEAD
         new_trajectory = Trajectory('x', trajectory_stations, time) 
-=======
-
-        new_trajectory = Trajectory('x', trajectory_stations, time)
-
->>>>>>> f58284045386d3c2e822918bd5fd57e488c92769
         return new_trajectory
 
     def is_valid(self):
-<<<<<<< HEAD
         # if len(self.trajectories) <=7: 
         if all ([driven == True for driven in self.used.values()]): 
-=======
-        # if len(self.trajectories) <=7:
-        if all ([connection.used==True for connection in self.connections]):
->>>>>>> f58284045386d3c2e822918bd5fd57e488c92769
             return True
         else:
             return False
