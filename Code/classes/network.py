@@ -59,6 +59,7 @@ class Network():
         return chosen_connection 
 
     def create_trajectory(self):
+        #TODO: Dit is een random algoritme, zet dit in mapje algoritme en roep hem aan. We willen geen algoritmes in de oplossing. 
         # pick a random station from the list of stations
         previous_connection = None
         position = random.randint(0, len(self.stations)-1)
@@ -103,7 +104,6 @@ class Network():
             else:
                 break
             
-    
         new_trajectory = Trajectory('x', trajectory_stations, time) 
         return new_trajectory
     
