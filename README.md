@@ -16,7 +16,7 @@ p = fraction of connections that have been driven
 T = number of trajectories in the network
 min = total time of the network in minutes
 
-The goal is the maximize the score for the algorithm.
+The goal is the maximize the score of the network
 
 classes in this project:
 - Station (attr: x_cor, y_cor, name)
@@ -27,15 +27,22 @@ classes in this project:
 The class Network reads in the data of the stations and connections.
 
 Separately, algorithms are defined in the folder 'algorithms'.
+These are all different algorithms and each have their own specifications
+
+Algorithms;
+- random_alg: random algorithm that creates trajectories in a random way, until all connections have been used.
+
+- #algorithm2#
 
 #TODO: SPECIFY WHETHER CLASS NETWORK CALLS ALGORITHMS OR OTHER WAY AROUND
 
-INSTALLATIONS
+INSTALLATIONS/LIBRARY IMPORTS
+1) Python 3
 
+Python libraries
+2) Pandas as pd
+3) Matplotlib.pyplot as plt
+4) Random
+5)
 
-
-USAGE
-
-
-
-#
+USAGE/EXAMPLES
