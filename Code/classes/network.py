@@ -5,16 +5,16 @@ import pandas as pd
 import random
 class Network():
     """
-    class Network: create Network object;
-        attributes:
-         - connections (list of connection objects)
-         - stations (list of station objects)
-         - trajectories (list of trajectory objects)
-         - quality network (float) - quality specified as K = p * 10000 - (T * 100 + min); where:
+    Class Network: create Network object;
+        Attributes:
+        - connections (list of connection objects)
+        - stations (list of station objects)
+        - trajectories (list of trajectory objects)
+        - quality network (float) - quality specified as K = p * 10000 - (T * 100 + min); where:
                 # p = fraction of driven connections; T = number of trajectories; min = total used time of the network
         - used (dict) - dict that records whether connection has been used or not; in format connection: boolean
 
-        methods:
+        Methods:
         - load_data - read in csv-files
         - load_connections - create connection objects
         - load_stations - create station objects
@@ -24,46 +24,62 @@ class Network():
         - get_score - retrieves the score of the network
     """
     def __init__(self, connections_file, stations_file):
-        """initialize attributes of the network object"""
+        """
+        Method that initializes attributes of the network object
 
-        self.connections = self.load_connections(self.load_data(connections_file))
-        self.stations = self.load_stations(self.load_data(stations_file))
+        Args:
+        - connections_file: the file containing the train connections
+        - stations file: the file containing the train stations
+        """
+        self.connections = self.load_connections(pd.read_csv(connections_file))
+        self.stations = self.load_stations(pd.read_csv(stations_file))
         self.trajectories = []
         self.quality_network = None
         self.used = {}
 
-    def load_data(self, filepath):
-        """method to load csv-files"""
-        return pd.read_csv(filepath)
-
     def load_connections(self, connections_df):
-        """method to create connection objects"""
+        """
+        Method to create a list of connection instances 
 
+        Args:
+        - connections_df: the dataframe containing the connections 
+
+        Returns:
+        - a list containing the connection instances 
+        """
         connections = []
 
-        #loop over dataframe rows, specify connection attributes
+        # loop over dataframe rows, specify connection attributes
         for index, connection in connections_df.iterrows():
             time = connection.loc['distance']
             station1 = connection.loc['station1']
             station2 = connection.loc['station2']
 
-            #create connection object, add connection to list, return list
+            # create connection object, add connection to list, return list
             new_connection = Connection(time, station1, station2)
             connections.append(new_connection)
         return connections
 
     def load_stations(self, stations_df):
-        """method to create station objects"""
+        """
+        Method that creates a list of stations instances from a dataframe 
+        containing the stations 
+        
+        Args: 
+        - station_df: the dataframe containing the stations 
 
+        Returns:
+        - a list containing the stations instances 
+        """
         stations = []
 
-        #loop over dataframe rows, specify stations attributes
+        # loop over dataframe rows, specify stations attributes
         for index, station in stations_df.iterrows():
             x_cor = station.loc['x']
             y_cor = station.loc['y']
             name = station.loc['station']
 
-            #create station object, add connection to list, return list
+            # create station object, add connection to list, return list
             new_station = Station(name, x_cor, y_cor)
             stations.append(new_station)
         return stations
@@ -76,7 +92,7 @@ class Network():
 
          """method to create network, calculate its score, create its output"""
 
-        #initialize counter for output trajectories
+        # initialize counter for output trajectories
         counter = 1
 
         # # check if all connections are used and keep making trajectories
