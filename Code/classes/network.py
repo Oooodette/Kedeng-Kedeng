@@ -4,41 +4,71 @@ from .trajectory import Trajectory
 import pandas as pd
 import random
 class Network():
-    """"""
-    def __init__(self, connections_file, stations_file):
+    """
+    class Network: create Network object;
+        attributes:
+         - connections (list of connection objects)
+         - stations (list of station objects)
+         - trajectories (list of trajectory objects)
+         - quality network (float) - quality specified as K = p * 10000 - (T * 100 + min); where:
+                # p = fraction of driven connections; T = number of trajectories; min = total used time of the network
+        - used (dict) - dict that records whether connection has been used or not; in format connection: boolean
 
-        self.connections_df = self.load_data(connections_file)
-        self.stations_df = self.load_data(stations_file)
-        self.connections = []
-        self.stations = []
+        methods:
+        - load_data - read in csv-files
+        - load_connections - create connection objects
+        - load_stations - create station objects
+        - add_trajectory - add trajectory to the network
+        - #remove_trajectory#
+        - #change_trajectory#
+        - get_score - retrieves the score of the network
+    """
+    def __init__(self, connections_file, stations_file):
+        """initialize attributes of the network object"""
+
+        self.connections = self.load_connections(self.load_data(connections_file))
+        self.stations = self.load_stations(self.load_data(stations_file))
         self.trajectories = []
         self.quality_network = None
         self.used = {}
 
-    def load_data(self, filepath): 
+    def load_data(self, filepath):
+        """method to load csv-files"""
         return pd.read_csv(filepath)
 
     def load_connections(self):
+        """method to create connection objects"""
 
+        connections = []
+
+        #loop over dataframe rows, specify connection attributes
         for index, connection in self.connections_df.iterrows():
             time = connection.loc['distance']
-
             station1 = connection.loc['station1']
             station2 = connection.loc['station2']
 
+            #create connection object, add connection to list, return list
             new_connection = Connection(time, station1, station2)
-            self.connections.append(new_connection)
+            connections.append(new_connection)
+        return connections
 
     def load_stations(self):
+        """method to create station objects"""
 
+        stations = []
+
+        #loop over dataframe rows, specify stations attributes
         for index, station in self.stations_df.iterrows():
             x_cor = station.loc['x']
             y_cor = station.loc['y']
             name = station.loc['station']
+
+            #create station object, add connection to list, return list
             new_station = Station(name, x_cor, y_cor)
-            self.stations.append(new_station)
+            stations.append(new_station)
+        return stations
 
-
+"""
     def pick_valid_connection(self, all_connections, previous_connection, time):
 
         chosen = False
@@ -48,7 +78,7 @@ class Network():
 
         # keep picking a new connection until either a valid connection is found, or all connections have been tried
         while not chosen and len(all_connections) > 0:
-            pick = random.randint(0, len(all_connections)-1)
+            pick = random.randint(0, len(all_connections) - 1)
             new_connection = all_connections[pick]
             all_connections.remove(all_connections[pick])
 
@@ -57,16 +87,20 @@ class Network():
             if time + new_connection.time < 120 and new_connection != previous_connection:
                 chosen = True
                 chosen_connection = new_connection
-        
-        return chosen_connection 
-    
+
+        return chosen_connection
+"""
+
+"""
     def connections_used(self):
         for connection in self.connections:
-            self.used[connection] = False 
+            self.used[connection] = False
+"""
 
     def add_trajectory(self, trajectory):
-        self.trajectories.append(trajectory) 
+        self.trajectories.append(trajectory)
 
+"""
     def create_trajectory(self):
         #TODO: Dit is een random algoritme, zet dit in mapje algoritme en roep hem aan. We willen geen algoritmes in de oplossing.
         # pick a random station from the list of stations
@@ -105,47 +139,58 @@ class Network():
                 time += new_connection.time
                 trajectory_stations.append(current_station)
                 self.used[new_connection] = True
-                previous_connection = new_connection 
-         
+                previous_connection = new_connection
+
             # if no valid connection is found, break the loop
             else:
                 break
 
-        new_trajectory = Trajectory('x', trajectory_stations, time) 
+        new_trajectory = Trajectory('x', trajectory_stations, time)
         return new_trajectory
+"""
 
+"""
     def is_valid(self):
-        # if len(self.trajectories) <=7: 
-        if sum(self.used.values()) == len(self.used): 
+        # if len(self.trajectories) <=7:
+        if sum(self.used.values()) == len(self.used):
             return True
         else:
             return False
+"""
+
 
     def create_network(self):
-        #TODO: This should be a function that calls on an algorithm
-        counter = 1
-        # check if all connections are used and keep making trajectories
-        while not self.is_valid():
+        #TODO: change method name?
 
-            new_trajectory = self.create_trajectory()
-            new_trajectory.name = counter
-            counter += 1
-            self.trajectories.append(new_trajectory)
+        """method to create network, calculate its score, create its output""""
+
+        #initialize counter for output trajectories
+        counter = 1
+
+        # # check if all connections are used and keep making trajectories
+        # while not self.is_valid():
+        #
+        #     new_trajectory = self.create_trajectory()
+        #     new_trajectory.name = counter
+        #     counter += 1
+        #     self.trajectories.append(new_trajectory)
 
         # calculate score for this network
         fraction = sum(self.used.values()) / len(self.connections)
         total_time = sum([trajectory.time for trajectory in self.trajectories])
         self.quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time)
 
-        # generate output
+        # generate output as dataframe
         data = {'train': [trajectory.name for trajectory in self.trajectories] + ['score'],
                 'stations': [trajectory.stations for trajectory in self.trajectories] + [self.quality_network]}
         output_df = pd.DataFrame(data) # output geven zoals in voorbeeld
 
+        #create csv-file from output
         output_df.to_csv('data\output.csv', index=False)
 
+"""
     def find_network(self):
-        self.create_network()  
+        self.create_network()
         counter = 0
         while len(self.trajectories) > 7:
 
@@ -156,7 +201,9 @@ class Network():
             self.create_network()
             # if counter % 30 == 0 :
             #     print(counter)
-
+"""
 
     def get_score(self):
+        """method to print the score of the network"""
+
         print(f'the score of this network is {self.quality_network}')
