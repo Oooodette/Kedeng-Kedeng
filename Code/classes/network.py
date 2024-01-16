@@ -116,7 +116,7 @@ class Network():
 
     def is_valid(self):
         # if len(self.trajectories) <=7: 
-        if all ([driven == True for driven in self.used.values()]): 
+        if sum(self.used.values()) == len(self.used): 
             return True
         else:
             return False
@@ -133,7 +133,7 @@ class Network():
             self.trajectories.append(new_trajectory)
 
         # calculate score for this network
-        fraction = sum([driven == True for driven in self.used.values()]) / len(self.connections)
+        fraction = sum(self.used.values()) / len(self.connections)
         total_time = sum([trajectory.time for trajectory in self.trajectories])
         self.quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time)
 
