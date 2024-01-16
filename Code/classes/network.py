@@ -11,7 +11,7 @@ class Network():
         - stations (list of station objects)
         - trajectories (list of trajectory objects)
         - quality network (float) - quality specified as K = p * 10000 - (T * 100 + min); where:
-                # p = fraction of driven connections; T = number of trajectories; min = total used time of the network
+          p = fraction of driven connections; T = number of trajectories; min = total used time of the network
         - used (dict) - dict that records whether connection has been used or not; in format connection: boolean
 
         Methods:
@@ -37,7 +37,7 @@ class Network():
         self.stations = self.load_stations(self.stations_df)
         self.trajectories = []
         self.quality_network = None
-        self.used = self.connections_used()
+        self.used = self.connections_used() 
 
     def load_connections(self, connections_df):
         """
@@ -87,23 +87,43 @@ class Network():
         return stations
     
     def connections_used(self):
+        """
+        Method that creates a dictionary named 'used' with the connection instances as attribute 
+        and whether the connection is already used or not as value with True and False 
+
+        To start, the connections values are all set to false because no connections are used yet 
+
+        Returns:
+        - the completed dictionary 
+        """
         used = {}
         for connection in self.connections:
-            used[connection] = False
+            used[connection] = False 
         return used
+ 
 
     def add_trajectory(self, trajectory):
+        """
+        Method that adds the trajectory lists to a list 
+
+        Args:
+        - trajectory: a list of connections 
+        """
         self.trajectories.append(trajectory)
 
     def is_valid(self):
-        # if len(self.trajectories) <=7:
+        """
+        Method that checks if all connections have been used 
+        """
         if sum(self.used.values()) == len(self.used):
             return True
         else:
             return False
         
     def calculate_score(self):
-
+        """
+        Method that calculates the score of the network of trajectories 
+        """
         # calculate score for this network
         fraction = sum(self.used.values()) / len(self.connections)
         total_time = sum([trajectory.time for trajectory in self.trajectories])
@@ -111,7 +131,9 @@ class Network():
 
     
     def save_network(self):
-        
+        """
+        Method that saves the network to a csv file 
+        """
         # generate output as dataframe
         data = {'train': [trajectory.name for trajectory in self.trajectories] + ['score'],
                 'stations': [trajectory.stations for trajectory in self.trajectories] + [self.quality_network]}
@@ -122,6 +144,8 @@ class Network():
     
 
     def get_score(self):
-        """method to print the score of the network"""
+        """
+        Method that prints the score of the network
+        """
         print(f'the score of this network is {self.quality_network}')
 
