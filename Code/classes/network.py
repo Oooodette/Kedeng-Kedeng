@@ -52,7 +52,7 @@ class Network():
             connections.append(new_connection)
         return connections
 
-    def load_stations(self, stations_df):
+    def load_stations(self):
         """method to create station objects"""
 
         stations = []

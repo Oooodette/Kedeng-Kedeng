@@ -9,6 +9,7 @@ if __name__ == "__main__":
     random_algo = Random_algo(network)
     # Create network from our data
     test_network = random_algo.create_network()
+    test_network.get_score()
     # test_network = network.Network('data\ConnectiesHolland.csv', 'data\StationsHolland.csv')
 
     # test_network.load_stations()

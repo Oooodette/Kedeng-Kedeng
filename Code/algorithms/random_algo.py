@@ -18,21 +18,23 @@ class Random_algo():
         Returns: 
             all_connections(list): list of instances of connection class that have current station as one of their stations.
         """
-        all_connections = []
+        
         available_connections = {}
         for station in station_list:
+            all_connections = []
             # loop through your list of connections and look for a connection that has the current station as station 1 or 2
             for connection in connection_list:
 
-                if connection.station1 == station or connection.station2 == station:
+                if connection.station1 == station.name or connection.station2 == station.name:
 
                     # create list of all stations that have current station as station 1
                     all_connections.append(connection)
             
             # add the list of available connections to the dictionary of stations
-            available_connections[station] = all_connections
+            available_connections[station.name] = all_connections
+            
                     #TODO: add which station was picked?
-
+           
         return available_connections
 
     def pick_valid_connection(self, all_connections, previous_connection, time):
@@ -132,6 +134,7 @@ class Random_algo():
 
     def create_network(self): 
         """"""
+        
         self.available_connections = self.create_available_connections(self.station_list, self.connection_list)
         new_trajectory = self.create_trajectory(self.station_list, self.connection_list)
         counter = 1
