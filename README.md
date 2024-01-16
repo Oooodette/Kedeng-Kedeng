@@ -1,6 +1,6 @@
 # Kedeng-Kedeng, RailNL
-##### Subject: Algoritmen en Heuristieken
-##### People: Odette, Mette, Bas
+#### Subject: Algoritmen en Heuristieken
+#### People: Odette, Mette, Bas
 
 ### Description
 Project to optimize the (simplified) railnetwork in the Netherlands.
