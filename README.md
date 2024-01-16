@@ -2,7 +2,7 @@
 Subject: Algoritmen en Heuristieken
 People: Odette, Mette, Bas
 
-DESCRIPTION
+### DESCRIPTION
 Project to optimize the (simplified) railnetwork in the Netherlands.
 
 The Dutch railnet of NL used in this project consists of a number of stations, and a (different) number of connections between stations.
@@ -18,7 +18,7 @@ min = total time of the network in minutes
 
 The goal is the maximize the score of the network
 
-classes in this project:
+Classes in this project:
 - Station (attr: x_cor, y_cor, name)
 - Connection (attr: station1, station2, time)
 - Trajectory (attr: name, stations, time)
@@ -29,14 +29,14 @@ The class Network reads in the data of the stations and connections.
 Separately, algorithms are defined in the folder 'algorithms'.
 These are all different algorithms and each have their own specifications
 
-Algorithms;
+Algorithm specs;
 - random_alg: random algorithm that creates trajectories in a random way, until all connections have been used.
 
-- #algorithm2#
+- #algorithm2
 
 #TODO: SPECIFY WHETHER CLASS NETWORK CALLS ALGORITHMS OR OTHER WAY AROUND
 
-INSTALLATIONS/LIBRARY IMPORTS
+### INSTALLATIONS/LIBRARY IMPORTS
 1) Python 3
 
 Python libraries
@@ -44,4 +44,4 @@ Python libraries
 2) Matplotlib.pyplot as plt
 3) Random
 
-USAGE/EXAMPLES
+### USAGE/EXAMPLES
