@@ -2,7 +2,7 @@
 Subject: Algoritmen en Heuristieken
 People: Odette, Mette, Bas
 
-### DESCRIPTION
+### Description
 Project to optimize the (simplified) railnetwork in the Netherlands.
 
 The Dutch railnet of NL used in this project consists of a number of stations, and a (different) number of connections between stations.
@@ -36,7 +36,7 @@ Algorithm specs;
 
 #TODO: SPECIFY WHETHER CLASS NETWORK CALLS ALGORITHMS OR OTHER WAY AROUND
 
-### INSTALLATIONS/LIBRARY IMPORTS
+### Installations and python libraries to import
 1) Python 3
 
 Python libraries
@@ -44,4 +44,4 @@ Python libraries
 2) Matplotlib.pyplot as plt
 3) Random
 
-### USAGE/EXAMPLES
+### Usage and examples
