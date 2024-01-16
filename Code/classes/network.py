@@ -36,13 +36,13 @@ class Network():
         """method to load csv-files"""
         return pd.read_csv(filepath)
 
-    def load_connections(self):
+    def load_connections(self, connections_df):
         """method to create connection objects"""
 
         connections = []
 
         #loop over dataframe rows, specify connection attributes
-        for index, connection in self.connections_df.iterrows():
+        for index, connection in connections_df.iterrows():
             time = connection.loc['distance']
             station1 = connection.loc['station1']
             station2 = connection.loc['station2']
@@ -52,13 +52,13 @@ class Network():
             connections.append(new_connection)
         return connections
 
-    def load_stations(self):
+    def load_stations(self, stations_df):
         """method to create station objects"""
 
         stations = []
 
         #loop over dataframe rows, specify stations attributes
-        for index, station in self.stations_df.iterrows():
+        for index, station in stations_df.iterrows():
             x_cor = station.loc['x']
             y_cor = station.loc['y']
             name = station.loc['station']
