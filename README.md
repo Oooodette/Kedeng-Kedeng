@@ -12,9 +12,9 @@ A network is a combination of multiple trajectories that fulfill certain require
 
 The score is calculated by the formula K = p * 10000 - (N*100 + min)
 where:
-p = fraction of connections that have been driven
-T = number of trajectories in the network
-min = total time of the network in minutes
+- p = fraction of connections that have been driven
+- T = number of trajectories in the network
+- min = total time of the network in minutes
 
 The goal is the maximize the score of the network
 
