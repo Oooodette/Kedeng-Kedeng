@@ -67,6 +67,50 @@ class Network():
             new_station = Station(name, x_cor, y_cor)
             stations.append(new_station)
         return stations
+    
+    def add_trajectory(self, trajectory):
+        self.trajectories.append(trajectory)
+
+        def create_network(self):
+        #TODO: change method name?
+
+         """method to create network, calculate its score, create its output"""
+
+        #initialize counter for output trajectories
+        counter = 1
+
+        # # check if all connections are used and keep making trajectories
+        # while not self.is_valid():
+        #
+        #     new_trajectory = self.create_trajectory()
+        #     new_trajectory.name = counter
+        #     counter += 1
+        #     self.trajectories.append(new_trajectory)
+
+        # calculate score for this network
+        fraction = sum(self.used.values()) / len(self.connections)
+        total_time = sum([trajectory.time for trajectory in self.trajectories])
+        self.quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time)
+
+        # generate output as dataframe
+        data = {'train': [trajectory.name for trajectory in self.trajectories] + ['score'],
+                'stations': [trajectory.stations for trajectory in self.trajectories] + [self.quality_network]}
+        output_df = pd.DataFrame(data) # output geven zoals in voorbeeld
+
+        #create csv-file from output
+        output_df.to_csv('data\output.csv', index=False)
+    
+    def is_valid(self):
+        # if len(self.trajectories) <=7:
+        if sum(self.used.values()) == len(self.used):
+            return True
+        else:
+            return False
+
+    def get_score(self):
+        """method to print the score of the network"""
+
+        print(f'the score of this network is {self.quality_network}')
 
 """
     def pick_valid_connection(self, all_connections, previous_connection, time):
@@ -96,9 +140,6 @@ class Network():
         for connection in self.connections:
             self.used[connection] = False
 """
-
-    def add_trajectory(self, trajectory):
-        self.trajectories.append(trajectory)
 
 """
     def create_trajectory(self):
@@ -159,34 +200,6 @@ class Network():
 """
 
 
-    def create_network(self):
-        #TODO: change method name?
-
-        """method to create network, calculate its score, create its output""""
-
-        #initialize counter for output trajectories
-        counter = 1
-
-        # # check if all connections are used and keep making trajectories
-        # while not self.is_valid():
-        #
-        #     new_trajectory = self.create_trajectory()
-        #     new_trajectory.name = counter
-        #     counter += 1
-        #     self.trajectories.append(new_trajectory)
-
-        # calculate score for this network
-        fraction = sum(self.used.values()) / len(self.connections)
-        total_time = sum([trajectory.time for trajectory in self.trajectories])
-        self.quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time)
-
-        # generate output as dataframe
-        data = {'train': [trajectory.name for trajectory in self.trajectories] + ['score'],
-                'stations': [trajectory.stations for trajectory in self.trajectories] + [self.quality_network]}
-        output_df = pd.DataFrame(data) # output geven zoals in voorbeeld
-
-        #create csv-file from output
-        output_df.to_csv('data\output.csv', index=False)
 
 """
     def find_network(self):
@@ -203,7 +216,4 @@ class Network():
             #     print(counter)
 """
 
-    def get_score(self):
-        """method to print the score of the network"""
-
-        print(f'the score of this network is {self.quality_network}')
+    
