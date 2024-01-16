@@ -26,7 +26,6 @@ class Network():
     def __init__(self, connections_file, stations_file):
         """
         Method that initializes attributes of the network object
-
         Args:
         - connections_file: the file containing the train connections
         - stations file: the file containing the train stations
@@ -42,10 +41,8 @@ class Network():
     def load_connections(self, connections_df):
         """
         Method to create a list of connection instances 
-
         Args:
         - connections_df: the dataframe containing the connections 
-
         Returns:
         - a list containing the connection instances 
         """
@@ -66,10 +63,8 @@ class Network():
         """
         Method that creates a list of stations instances from a dataframe 
         containing the stations 
-        
         Args: 
         - station_df: the dataframe containing the stations 
-
         Returns:
         - a list containing the stations instances 
         """
@@ -90,9 +85,7 @@ class Network():
         """
         Method that creates a dictionary named 'used' with the connection instances as attribute 
         and whether the connection is already used or not as value with True and False 
-
-        To start, the connections values are all set to false because no connections are used yet 
-
+        To start, the connections values are all set to False because no connections are used yet 
         Returns:
         - the completed dictionary 
         """
@@ -105,7 +98,6 @@ class Network():
     def add_trajectory(self, trajectory):
         """
         Method that adds the trajectory lists to a list 
-
         Args:
         - trajectory: a list of connections 
         """
@@ -113,7 +105,10 @@ class Network():
 
     def is_valid(self):
         """
-        Method that checks if all connections have been used 
+        Method that checks if all connections have been used
+        Returns:
+        - True; if all connections have been used
+        - False; if not all connections have been used
         """
         if sum(self.used.values()) == len(self.used):
             return True
@@ -145,7 +140,7 @@ class Network():
 
     def get_score(self):
         """
-        Method that prints the score of the network
+        Method that returns the score of the network
         """
         return self.quality_network
 

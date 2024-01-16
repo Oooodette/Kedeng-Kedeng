@@ -3,14 +3,16 @@ from code.algorithms.random_algo import Random_algo
 from code.visualize import visualize as vis
 
 
-minimal_score = 8900
-
 if __name__ == "__main__":
+
+    #difine criteria
+    minimal_score = 8750
     score = -1000
     it = 0
     nr_traj = 1000
 
-    while nr_traj > 20 or score < minimal_score:
+    #looping until criteria are met
+    while nr_traj > 7 or score < minimal_score:
         network = Network('data\ConnectiesHolland.csv', 'data\StationsHolland.csv')
         random_algo = Random_algo(network)
 
@@ -21,11 +23,13 @@ if __name__ == "__main__":
 
         it += 1
 
-
+    #printing #iterations, number of trajectories and score of the network
     print(it)
     print(nr_traj)
     print(score)
+
+    #explicitly save the network that fulfills the criteria
     network.save_network()
 
-    # visualize
+    #visualize
     vis.visualize_network(test_network.stations_df, test_network.connections_df, 'data\output.csv')

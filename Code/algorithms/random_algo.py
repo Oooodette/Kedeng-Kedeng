@@ -88,7 +88,11 @@ class Random_algo():
 
     def pick_random_station(self, station_list):
         """"
-        Picks a starting station for a trajectory.
+        Picks a starting station for a trajectory
+        Args:
+        - station_list(list of station objects)
+        Returns:
+        - randomly picked station from stations_list
         """
         position = random.randint(0, len(station_list)-1)
         current_station = station_list[position].name
@@ -98,6 +102,10 @@ class Random_algo():
     def create_trajectory(self, station_list):
         """
         Creates a new trajectory (i.e. a sequence of connections)
+        Args:
+        - station_list(list of station objects)
+        Returns:
+        - new_trajectory(trajectory object)
         """
         # initialize variables
         current_station = self.pick_random_station(station_list)
@@ -137,7 +145,11 @@ class Random_algo():
         return new_trajectory
 
     def create_network(self): 
-        """"""
+        """
+        Creates a network; consisting of trajectories
+        Returns:
+        - self.network(network object) - attribute of algorithm object
+        """
         
         self.available_connections = self.create_available_connections(self.station_list, self.network.connections)
         self.network.connections_used()
@@ -166,6 +178,5 @@ class Random_algo():
             counter += 1
         
         self.network.calculate_score()
-        #self.network.save_network()
 
         return self.network
