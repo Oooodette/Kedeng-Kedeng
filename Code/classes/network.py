@@ -37,7 +37,7 @@ class Network():
         self.stations = self.load_stations(self.stations_df)
         self.trajectories = []
         self.quality_network = None
-        self.used = self.connections_used()
+        self.used = self.connections_used() 
 
     def load_connections(self, connections_df):
         """
@@ -98,8 +98,9 @@ class Network():
         """
         used = {}
         for connection in self.connections:
-            used[connection] = False
+            used[connection] = False 
         return used
+ 
 
     def add_trajectory(self, trajectory):
         """
@@ -114,7 +115,6 @@ class Network():
         """
         Method that checks if all connections have been used 
         """
-        # if len(self.trajectories) <=7:
         if sum(self.used.values()) == len(self.used):
             return True
         else:
