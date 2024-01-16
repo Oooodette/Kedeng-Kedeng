@@ -20,5 +20,5 @@ if __name__ == "__main__":
 
     # test_network.get_score()
 
-    # # visualize
-    # vis.visualize_network(test_network.stations_df, test_network.connections_df, 'data\output.csv')
+    # visualize
+    vis.visualize_network(test_network.stations_df, test_network.connections_df, 'data\output.csv')
