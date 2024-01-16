@@ -147,5 +147,5 @@ class Network():
         """
         Method that prints the score of the network
         """
-        print(f'the score of this network is {self.quality_network}')
+        return self.quality_network
 

@@ -166,6 +166,6 @@ class Random_algo():
             counter += 1
         
         self.network.calculate_score()
-        self.network.save_network()
+        #self.network.save_network()
 
         return self.network
