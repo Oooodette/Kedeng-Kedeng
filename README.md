@@ -40,9 +40,8 @@ INSTALLATIONS/LIBRARY IMPORTS
 1) Python 3
 
 Python libraries
-2) Pandas as pd
-3) Matplotlib.pyplot as plt
-4) Random
-5)
+1) Pandas as pd
+2) Matplotlib.pyplot as plt
+3) Random
 
 USAGE/EXAMPLES
