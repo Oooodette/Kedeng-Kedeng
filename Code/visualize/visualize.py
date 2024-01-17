@@ -1,6 +1,9 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import random as random
+import geopandas as gpd
+
+
 
 """
 Visualizing all stations in NL and their connections
@@ -58,9 +61,35 @@ def visualise_trajectory(stations_df, connections_df, train, c):
     plt.plot(x_list, y_list, c=c, linestyle='--')
 
 
+def plot_netherlands(datafile):
+    """
+    Create plot of country to plot train lines on.
+    Args:
+    - json file with geopandas data
+    Returns:
+    - country_plot(axes object): object containing country plot
+    """
+    # load data from file
+    mapdf = gpd.read_file(datafile)
+
+    # remove irrelevant columns
+    dropnames = ['GID_1', 'GID_0', 'ISO_1', 'COUNTRY', 'VARNAME_1', 'NL_NAME_1', 'TYPE_1', 'ENGTYPE_1', 'CC_1',
+        'HASC_1',]
+    mapdf = mapdf.drop(dropnames, axis = 1)
+
+    # plot country
+    country_plot = mapdf.plot()
+    
+    return country_plot
+
+
+
+
+
 def visualize_network(stations_df, connections_df, trajectories_file):
     """visualize all trajectories"""
 
+    plot_netherlands("data/gadm41_NLD_1.json")
     #convert the dataframe to dictionary
 
     trajectories_df = pd.read_csv(trajectories_file, skipfooter=1, engine='python')
