@@ -5,7 +5,6 @@ import pprint
 import numpy as np
 import math
 
-datafile = "data/gadm41_NLD_1.json"
 def plot_netherlands(datafile):
     """
     Create plot of country to plot train lines on.

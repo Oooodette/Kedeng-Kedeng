@@ -84,8 +84,6 @@ def plot_netherlands(datafile):
 
 
 
-
-
 def visualize_network(stations_df, connections_df, trajectories_file):
     """visualize all trajectories"""
 
