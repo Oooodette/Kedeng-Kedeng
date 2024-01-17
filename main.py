@@ -1,19 +1,19 @@
 from code.classes import Station, Connection, Trajectory, Network
 from code.algorithms.random_algo import Random_algo
-from code.visualize import visualize as vis
+#from code.visualize import visualize as vis
 
 
 if __name__ == "__main__":
 
     #difine criteria
-    minimal_score = 8750
+    minimal_score = 0
     score = -1000
     it = 0
     nr_traj = 1000
 
     #looping until criteria are met
     while nr_traj > 7 or score < minimal_score:
-        network = Network('data\ConnectiesHolland.csv', 'data\StationsHolland.csv')
+        network = Network('data\ConnectiesHolland.csv', 'data\StationsHolland.csv', 7, 120)
         random_algo = Random_algo(network)
 
         # Create network from our data
@@ -32,4 +32,4 @@ if __name__ == "__main__":
     network.save_network()
 
     #visualize
-    vis.visualize_network(test_network.stations_df, test_network.connections_df, 'data\output.csv')
+    #vis.visualize_network(test_network.stations_df, test_network.connections_df, 'data\output.csv')
