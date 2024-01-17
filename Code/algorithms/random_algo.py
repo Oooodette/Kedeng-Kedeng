@@ -155,7 +155,7 @@ class Random_algo():
         self.available_connections = self.create_available_connections(self.station_list, self.network.connections)
         self.network.connections_used()
 
-        nr_trajectories = self.network.max_trajectories
+        nr_trajectories = random.randint(0, self.network.max_trajectories)
         # new_trajectory = self.create_trajectory(self.station_list, self.connection_list)
         counter = 1
         
