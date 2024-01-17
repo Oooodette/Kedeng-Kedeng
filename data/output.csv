@@ -1,9 +1,0 @@
-train,stations
-1,"['Rotterdam Centraal', 'Rotterdam Alexander', 'Gouda', 'Alphen a/d Rijn', 'Leiden Centraal', 'Heemstede-Aerdenhout', 'Haarlem', 'Beverwijk', 'Zaandam']"
-2,"['Delft', 'Den Haag Centraal']"
-3,"['Beverwijk', 'Castricum', 'Zaandam', 'Amsterdam Sloterdijk']"
-4,"['Rotterdam Alexander', 'Rotterdam Centraal', 'Schiedam Centrum', 'Delft', 'Den Haag Centraal', 'Gouda', 'Rotterdam Alexander', 'Rotterdam Centraal', 'Dordrecht']"
-5,"['Rotterdam Centraal', 'Dordrecht']"
-6,"['Amsterdam Zuid', 'Amsterdam Amstel', 'Amsterdam Centraal', 'Amsterdam Sloterdijk', 'Amsterdam Zuid', 'Schiphol Airport', 'Leiden Centraal', 'Den Haag Centraal', 'Gouda']"
-7,"['Castricum', 'Zaandam', 'Hoorn', 'Alkmaar', 'Den Helder']"
-score,8138.714285714286
