@@ -1,6 +1,6 @@
 from code.classes import Station, Connection, Trajectory, Network
 from code.algorithms.random_algo import Random_algo
-#from code.visualize import visualize as vis
+from code.visualize import visualize as vis
 
 #defining parameters for different datasets
 max_trajectories_holland = 7
@@ -36,4 +36,4 @@ if __name__ == "__main__":
     network.save_network()
 
     #visualize
-    #vis.visualize_network(test_network.stations_df, test_network.connections_df, 'data\output.csv')
+    vis.visualize_network(test_network.stations_df, test_network.connections_df, 'data\output.csv')
