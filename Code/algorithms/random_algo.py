@@ -157,12 +157,8 @@ class Random_algo():
 
     def create_network(self): 
         """
-<<<<<<< HEAD
-        Creates a network; consisting of trajectories
-        
-=======
         Creates a network; consists of trajectories
->>>>>>> eb3216771fef3f66c4f951a9814ca327af923bcf
+
         Returns:
         - network(network object) - attribute of algorithm object
         """
@@ -170,7 +166,7 @@ class Random_algo():
         self.available_connections = self.create_available_connections(self.station_list, self.network.connections)
         self.network.connections_used()
 
-        nr_trajectories = random.randint(0, self.network.max_trajectories)
+        nr_trajectories = 7 #random.randint(0, self.network.max_trajectories)
         # new_trajectory = self.create_trajectory(self.station_list, self.connection_list)
         counter = 1
         

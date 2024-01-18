@@ -99,7 +99,7 @@ def visualize_network(stations_df, connections_df, trajectories_file):
         trajectories_dict[row['train']] = value
 
     #plot all stations and their connections
-    image = visualize_stations_connections(stations_df, connections_df)
+    image = visualize_stations_connections(stations_df, connections_df) 
 
     #loop over all trains (trajectories) and generate random color
     for train in trajectories_dict:
