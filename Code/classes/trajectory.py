@@ -7,9 +7,11 @@ class Trajectory():
     - stations (list): list of stations to check the connections each station has 
     - time (int): the total time of the trajectory 
     - route (list): list of the connections of the trajectory 
+    - color (str): starts of as None, but is assigned a color during visualize
     """
     def __init__(self, name, stations, time):
         self.name = name
         self.stations = stations
         self.time = time
         self.route = []
+        self.color = None
