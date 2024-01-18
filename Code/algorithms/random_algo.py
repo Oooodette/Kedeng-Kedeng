@@ -13,9 +13,11 @@ class Random_algo():
 
     def create_available_connections(self, station_list, connection_list): 
         """Creates a list of all connections that have the current station as one of their stations
+
         Args: 
         - current_station(str): name of current station
         - connection_list(list): list of instances of connection class available for this network
+
         Returns: 
         - all_connections(list): list of instances of connection class that have current station as one of their stations.
         """
@@ -42,13 +44,15 @@ class Random_algo():
         """"
         Pick a new connection to add to the trajectory that does not pass the time limit or is the same connection as the previous one (i.e.
         makes the train go back)
+
         Args: 
         - all_connections(list): list of instances of connection class that have current station as one of their stations.
         - previous_connection(instance of connection class): connection that brought us to current station.
         - time(int): total time of current trajectory (=sequence of connections) 
+
         Returns:
         - chosen_connection(instance of connection class): valid connection to add to trajectory. If no valid connection is found, 
-           None is returned.
+            None is returned.
         """
         chosen = False
 
@@ -72,9 +76,11 @@ class Random_algo():
     def determine_station(self, current_station, new_connection):
         """
         Determine what next station will be, depending on whether previous station was station1 or station2.
+
         Args: 
         - current_station(str): name of current station
         - new_connection(instance of connection class): connection that was picked as the next connection
+
         Returns: 
         - current_station: name of new current station
         """
@@ -89,8 +95,10 @@ class Random_algo():
     def pick_random_station(self, station_list):
         """"
         Picks a starting station for a trajectory
+
         Args:
         - station_list(list of station objects)
+
         Returns:
         - randomly picked station from stations_list
         """
@@ -102,8 +110,10 @@ class Random_algo():
     def create_trajectory(self, station_list):
         """
         Creates a new trajectory (i.e. a sequence of connections)
+
         Args:
         - station_list(list of station objects)
+
         Returns:
         - new_trajectory(trajectory object)
         """
@@ -147,6 +157,7 @@ class Random_algo():
     def create_network(self): 
         """
         Creates a network; consisting of trajectories
+        
         Returns:
         - self.network(network object) - attribute of algorithm object
         """
