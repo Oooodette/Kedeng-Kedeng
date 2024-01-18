@@ -1,19 +1,23 @@
 from code.classes import Station, Connection, Trajectory, Network
 from code.algorithms.random_algo import Random_algo
-from code.visualize import visualize as vis
+#from code.visualize import visualize as vis
 
+#defining parameters for different datasets
+max_trajectories_holland = 7
+max_trajectory_time_holland = 120
+max_trajectories_nl = 20
+max_trajectory_time_nl = 180
 
 if __name__ == "__main__":
 
     #difine criteria
-    minimal_score = 8750
+    minimal_score = 8000
+    iterations = 0
     score = -1000
-    it = 0
-    nr_traj = 1000
 
     #looping until criteria are met
-    while nr_traj > 7 or score < minimal_score:
-        network = Network('data\ConnectiesHolland.csv', 'data\StationsHolland.csv')
+    while score < minimal_score:
+        network = Network('data\ConnectiesHolland.csv', 'data\StationsHolland.csv', max_trajectories_holland, max_trajectory_time_holland)
         random_algo = Random_algo(network)
 
         # Create network from our data
@@ -21,15 +25,15 @@ if __name__ == "__main__":
         score = test_network.get_score()
         nr_traj = len(test_network.trajectories)
 
-        it += 1
+        iterations += 1
 
     #printing #iterations, number of trajectories and score of the network
-    print(it)
-    print(nr_traj)
-    print(score)
+    print(f'number of iterations: {iterations}')
+    print(f'number of trajectories in network: {nr_traj}')
+    print(f'score of the network {score}')
 
     #explicitly save the network that fulfills the criteria
     network.save_network()
 
     #visualize
-    vis.visualize_network(test_network.stations_df, test_network.connections_df, 'data\output.csv')
+    #vis.visualize_network(test_network.stations_df, test_network.connections_df, 'data\output.csv')

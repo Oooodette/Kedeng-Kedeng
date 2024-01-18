@@ -121,11 +121,12 @@ class Random_algo():
         current_station = self.pick_random_station(station_list)
         previous_connection = None
         time = 0
+        trajectory_time = random.randint(0, self.network.max_trajectory_time)
         trajectory_stations = [current_station]
         trajectory_connections = []
 
         # only add more connections if total time is below 120
-        while time < 120:
+        while time < trajectory_time:
             new_connection = self.pick_valid_connection(self.available_connections[current_station], previous_connection, time) 
            
             # if a valid connection is found, change the current station to the next station of this connection
@@ -156,19 +157,25 @@ class Random_algo():
 
     def create_network(self): 
         """
+<<<<<<< HEAD
         Creates a network; consisting of trajectories
         
+=======
+        Creates a network; consists of trajectories
+>>>>>>> eb3216771fef3f66c4f951a9814ca327af923bcf
         Returns:
-        - self.network(network object) - attribute of algorithm object
+        - network(network object) - attribute of algorithm object
         """
         
         self.available_connections = self.create_available_connections(self.station_list, self.network.connections)
         self.network.connections_used()
+
+        nr_trajectories = random.randint(0, self.network.max_trajectories)
         # new_trajectory = self.create_trajectory(self.station_list, self.connection_list)
         counter = 1
         
         # check if all connections are used and keep making trajectories 
-        while not self.network.is_valid():
+        while len(self.network.trajectories) < nr_trajectories:
             
             new_trajectory = self.create_trajectory(self.station_list) 
             self.network.add_trajectory(new_trajectory)

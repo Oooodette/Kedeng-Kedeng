@@ -23,7 +23,7 @@ class Network():
         - #change_trajectory#
         - get_score - retrieves the score of the network
     """
-    def __init__(self, connections_file, stations_file):
+    def __init__(self, connections_file, stations_file, max_trajectories, max_trajectory_time):
         """
         Method that initializes attributes of the network object
         Args:
@@ -34,6 +34,8 @@ class Network():
         self.connections = self.load_connections(self.connections_df)
         self.stations_df = pd.read_csv(stations_file)
         self.stations = self.load_stations(self.stations_df)
+        self.max_trajectories = max_trajectories
+        self.max_trajectory_time = max_trajectory_time
         self.trajectories = []
         self.quality_network = None
         self.used = self.connections_used() 
