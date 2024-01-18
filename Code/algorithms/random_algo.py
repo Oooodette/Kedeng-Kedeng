@@ -177,11 +177,6 @@ class Random_algo():
             self.network.add_trajectory(new_trajectory)
 
             # update used connections
-            # TODO: this can be done better with a different way to save used connectionss.
-            for key, value in self.network.used.items(): 
-                if key in new_trajectory.route:
-                    value = True
-
             for connection in new_trajectory.route:
                 
                 self.network.used[connection] = True
