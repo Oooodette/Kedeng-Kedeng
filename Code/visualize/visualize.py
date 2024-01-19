@@ -87,7 +87,7 @@ def plot_netherlands(datafile):
 def visualize_network(stations_df, connections_df, trajectories_file):
     """visualize all trajectories"""
 
-    plot_netherlands("data/gadm41_NLD_1.json")
+    # plot_netherlands("data/gadm41_NLD_1.json")
     #convert the dataframe to dictionary
 
     trajectories_df = pd.read_csv(trajectories_file, skipfooter=1, engine='python')

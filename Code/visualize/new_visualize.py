@@ -86,7 +86,7 @@ def get_coordinates(connection, stations):
     y_cor = [station1.y_cor, station2.y_cor] 
 
     return x_cor, y_cor
-def connection_set_maker(used_connections):
+def connection_list_maker(used_connections):
     """
     Select all connections that were used for a network.
     Args:
@@ -95,9 +95,9 @@ def connection_set_maker(used_connections):
     Returns:
     - connection_set(set): set containing all used connections for this network.
     """
-    connection_set =  set([connection for connection, is_used in used_connections.items() if is_used])
+    connection_list = [connection for connection, is_used in used_connections.items() if is_used]
 
-    return connection_set
+    return connection_list
 
 def plot_connections(used_connections, trajectories, stations):
     """"
@@ -113,7 +113,7 @@ def plot_connections(used_connections, trajectories, stations):
     pick_train_color(trajectories)
     
     # get a set of all connections that were used in the network
-    connection_set = connection_set_maker(used_connections) 
+    connection_set = connection_list_maker(used_connections) 
     
     # loop over all used connections
     for connection in connection_set: 
@@ -132,7 +132,7 @@ def plot_connections(used_connections, trajectories, stations):
 
 def plot_all(stations_df, connections_df, datafile, used_connections, trajectories, stations):
     plot_netherlands(datafile)
-    plot_connections(used_connections, trajectories, stations)
-    visualize_stations_connections(stations_df, connections_df)
+    # plot_connections(used_connections, trajectories, stations)
+    # visualize_stations_connections(stations_df, connections_df)
     
     plt.show()
