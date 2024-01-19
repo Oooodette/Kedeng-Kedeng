@@ -40,6 +40,8 @@ if __name__ == "__main__":
     vis.plot_all(test_network.stations_df, test_network.connections_df, 'data\gadm41_NLD_1.json', test_network.used, test_network.trajectories, test_network.stations)
     
     # vis.visualize_stations_connections(test_network.stations_df, test_network.connections_df)
+    # vis.visualize_network(test_network.stations_df, test_network.connections_df, 'data\output.csv')
+
     # vis.plot_netherlands()
     # vis.plot_connections()
     
