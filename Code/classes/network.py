@@ -124,7 +124,7 @@ class Network():
         # calculate score for this network
         fraction = sum(self.used.values()) / len(self.connections)
         total_time = sum([trajectory.time for trajectory in self.trajectories])
-        self.quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time) 
+        self.quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time)
 
     
     def save_network(self):
