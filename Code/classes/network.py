@@ -146,3 +146,4 @@ class Network():
         """
         return self.quality_network
 
+        

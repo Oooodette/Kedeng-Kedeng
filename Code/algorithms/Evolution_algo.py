@@ -1,9 +1,16 @@
-class Hillclimb_algo():
+from ..classes import Trajectory
+import pandas as pd
+import random 
+import pprint as pp 
+import copy 
+
+class Evo_algo():
 
     def __init__(self, network):
         self.network = network
         self.station_list = self.network.stations 
         self.available_connections = {} 
+        self.create_network() 
 
     def create_available_connections(self, station_list, connection_list): 
         """Creates a list of all connections that have the current station as one of their stations
@@ -102,7 +109,7 @@ class Hillclimb_algo():
         return current_station
 
 
-    def create_trajectory(self, station_list):
+    def create_trajectory(self, station_list, start_station = None):
         """
         Creates a new trajectory (i.e. a sequence of connections)
 
@@ -113,7 +120,11 @@ class Hillclimb_algo():
         - new_trajectory(trajectory object)
         """
         # initialize variables
-        current_station = self.pick_random_station(station_list)
+        if start_station == None:
+            current_station = self.pick_random_station(station_list)
+        else:
+            current_station = start_station
+
         previous_connection = None
         time = 0
         trajectory_time = random.randint(0, self.network.max_trajectory_time)
@@ -145,7 +156,7 @@ class Hillclimb_algo():
         new_trajectory = Trajectory('x', trajectory_stations, time) 
             
         # add used connections to route attribute of trajectory
-        new_trajectory.route = set(trajectory_connections)
+        new_trajectory.route = trajectory_connections
         
         
         return new_trajectory
@@ -164,10 +175,8 @@ class Hillclimb_algo():
         nr_trajectories = 7 #random.randint(0, self.network.max_trajectories)
         # new_trajectory = self.create_trajectory(self.station_list, self.connection_list)
         counter = 1
-        
         # check if all connections are used and keep making trajectories 
         while len(self.network.trajectories) < nr_trajectories:
-            
             new_trajectory = self.create_trajectory(self.station_list) 
             self.network.add_trajectory(new_trajectory)
 
@@ -182,5 +191,45 @@ class Hillclimb_algo():
             counter += 1
         
         self.network.calculate_score()
-
         return self.network
+    
+    def deletion(self):
+        self.pick_random_traject = random.randint(1, len(self.network.trajectories))
+        random_traject = self.network.trajectories[self.pick_random_traject]
+        traject = copy.copy(random_traject)
+        pick_connections_amount = random.randint(1, len(traject.route)-1)
+        
+        for i in range(1, pick_connections_amount):
+            connection = traject.route.pop()
+            station = traject.stations.pop()
+            traject.time -= connection.time
+
+        return traject
+
+    def survival_of_the_fittest(self, N):
+        best_score = 0
+        traject = self.deletion()
+        trajectories_children = []
+        last_station = traject.stations[-1]
+        trajectroute = traject.route.pop()
+
+        for i in range(N):
+            trajectory = self.create_trajectory(self.station_list, last_station)
+            trajectories_children.append(trajectory)
+
+        for child in trajectories_children:
+            traject.route.append(child)
+            self.network.trajectories.remove[self.network.trajectories[self.pick_random_traject]]
+            self.network.trajectories.append[traject.route]
+
+            score = self.network.get_score()
+            if score > best_score:
+                best_traject = child 
+
+        self.network.trajectories.remove[self.network.trajectories[self.pick_random_traject]]
+        traject.route.append(best_traject)
+        self.network.trajectories.append[traject.route]
+        
+
+
+        
