@@ -95,7 +95,6 @@ class Network():
         for connection in self.connections:
             used[connection] = False 
         return used
- 
 
     def add_trajectory(self, trajectory):
         """
@@ -125,7 +124,6 @@ class Network():
         fraction = sum(self.used.values()) / len(self.connections)
         total_time = sum([trajectory.time for trajectory in self.trajectories])
         self.quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time) 
-
     
     def save_network(self):
         """
@@ -139,7 +137,6 @@ class Network():
         #create csv-file from output
         output_df.to_csv('data\output.csv', index=False)
     
-
     def get_score(self):
         """
         Method that returns the score of the network
