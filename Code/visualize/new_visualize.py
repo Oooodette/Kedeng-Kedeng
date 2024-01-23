@@ -25,18 +25,19 @@ def visualize_stations_connections(stations_df, connections_df,ax):
         x, y = stations_dict.get(station)
         ax.scatter(x=x, y=y, s=25, edgecolors='black', c='white', zorder = 10)
 
-        # #check and retrieve connections of station
-        # if station in connections_dict:
-        #     connected_stations = connections_dict[station]
+        #check and retrieve connections of station
+        if station in connections_dict:
+            connected_stations = connections_dict[station]
 
-        #     #plot the connections of the station
-        #     for connected_station in connected_stations:
-        #         x_conection, y_connection = stations_dict.get(connected_station)
-        #         x_list = [x, x_conection]
-        #         y_list = [y, y_connection]
-        #         plt.plot(x_list, y_list, c='b', linestyle='--')
+            #plot the connections of the station
+            for connected_station in connected_stations:
+                x_conection, y_connection = stations_dict.get(connected_station)
+                x_list = [x, x_conection]
+                y_list = [y, y_connection]
+                plt.plot(x_list, y_list, c='black', linewidth = 0.5, linestyle='dotted')
 
     return ax
+
 def plot_netherlands(datafile,ax):
     """
     Create plot of country to plot train lines on.
@@ -46,14 +47,16 @@ def plot_netherlands(datafile,ax):
     - country_plot(axes object): object containing country plot
     """
     # load data from file
-    mapdf = gpd.read_file(datafile)
+    mapdf = gpd.read_file(datafile, index = False)
 
-    # remove irrelevant columns
+    # remove irrelevant columns and rows containing lakes)
     dropnames = ['GID_1', 'GID_0', 'ISO_1', 'COUNTRY', 'VARNAME_1', 'NL_NAME_1', 'TYPE_1', 'ENGTYPE_1', 'CC_1',
-        'HASC_1',]
-    mapdf = mapdf.drop(dropnames, axis = 1)
+        'HASC_1']
+    droplakes = [5,12]
+    mapdf = mapdf.drop(dropnames, axis=1)
+    mapdf = mapdf.drop(droplakes, axis=0)
     # partial_df = mapdf.loc[(mapdf['NAME_1'] == 'Noord-Holland') | (mapdf['NAME_1'] == 'NA')]
-
+    pprint.pprint(mapdf)
     # plot country
     country_plot = mapdf.plot(ax=ax, facecolor = 'lightgrey', edgecolor = 'black') 
     
@@ -130,19 +133,12 @@ def plot_connections(used_connections, trajectories, stations, ax):
         trains = []
         for train in trajectories:
             if connection in train.route:
-
-                # create shift if there is more than 1 train on this connection, so all lines are visible
-                # TODO: maybe instead of a shift make certain lines wider?
-                # if train_counter % 2 == 0:
-                shift = train_counter * 0.001
-                # else: 
-                #     shift = train_counter * -0.01
-                # WITH SHIFT: [x + shift for x in x_cor], [y + shift for y in y_cor
                 train_counter += 1
                 trains.append(train)
                 offset_counter = 0 
+        # loop through trains that run over this connection. Every train gets assigned it's color and linestyle (so position of dashes 
+        # the line) is adapted to number of trains. 
         for train in trains:
-            
             ax.plot(x_cor,y_cor, c=train.color, linestyle=(offset_counter*2, (2, train_counter*2- 2)), linewidth = 3)
             offset_counter += 1
         train_counter += 1
