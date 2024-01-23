@@ -18,12 +18,11 @@ if __name__ == "__main__":
 
     #looping until criteria are met
     # while score < minimal_score:
-    network = Network('data\ConnectiesHolland.csv', 'data\StationsHolland.csv', max_trajectories_holland, max_trajectory_time_holland)
-    print("main")
+    network = Network('data\ConnectiesNationaal.csv', 'data\StationsNationaal.csv', max_trajectories_holland, max_trajectory_time_holland)
     evo_algo = Evo_algo(network)
 
     # Create network from our data
-    reproduction = evo_algo.survival_of_the_fittest(1000)  
+    test_network = evo_algo.fill_in(30)  
     score = test_network.get_score()
     nr_traj = len(test_network.trajectories)
 
