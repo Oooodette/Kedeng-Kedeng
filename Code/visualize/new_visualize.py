@@ -5,8 +5,7 @@ import pprint
 import numpy as np
 import math
 import random
-
-
+from matplotlib.pyplot import cm
 def visualize_stations_connections(stations_df, connections_df,ax):
     """visualize all stations and their connections"""
 
@@ -69,12 +68,13 @@ def pick_train_color(trajectories):
     Args: 
     - trajectories(list): list of trajectories made by a network. 
     """
-    # colors = ['red', 'green', 'blue', 'yellow', 'purple', 'pink', 'orange']
+
+    # Use the first 20 colors
+    # create distinct colors for every trajectory
+    color = cm.rainbow(np.linspace(0, 1, len(trajectories)))
     counter = 0
     for train in trajectories:
-        #TODO: make sure two trains can't have the same color
-        color = f'#{"%06x" % random.randint(0, 0xFFFFFF)}'
-        train.color = color
+        train.color = color[counter]
         counter += 1
 
 def get_coordinates(connection, stations):
