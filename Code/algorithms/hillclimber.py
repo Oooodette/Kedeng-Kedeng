@@ -24,7 +24,7 @@ class Hillclimber():
         
     def add(self):
 
-        previous_score = 0
+        previous_score = 0 
         # while score is improving, add more trajectories
         add_count = 0
         while add_count < self.attempts:

@@ -100,11 +100,19 @@ class Network():
 
     def add_trajectory(self, trajectory):
         """
-        Method that adds the trajectory lists to a list 
+        Method that adds a trajectory to the trajectory list 
         Args:
-        - trajectory: a list of connections 
+        - trajectory: an instance of the trajectory class 
         """
         self.trajectories.append(trajectory)
+
+    def remove_trajectory(self, trajectory):
+        """
+        Method that removes a trajectory from the trajectory list 
+        Args:
+        - trajectory: an instance of the trajectory class 
+        """
+        self.trajectories.remove(trajectory)
 
     def is_valid(self):
         """
