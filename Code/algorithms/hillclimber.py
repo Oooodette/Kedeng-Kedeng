@@ -14,34 +14,49 @@ class Hillclimber():
         - replace: replace existing trajectory with new trajectory while score is improving
     """
     
-    def __init__(self, network, attempts):
-        self.network = network
+    def __init__(self, random, attempts):
+        self.random = random
         self.attempts = attempts
+        
+        #extract network from random algorithm object
+        self.network = random.network
 
     def improving(self, previous_score):
-        
-        if self.network.network.get_score() > previous_score:
-            return True
-        else:
-            return False
+        return self.network.get_score() > previous_score
+
         
     def add(self):
 
-        previous_score = 0 
-        # while score is improving, add more trajectories
+        previous_score = self.network.get_score() 
         add_count = 0
+
+
         while add_count < self.attempts:
-            print(f'attempt {add_count}: score = {previous_score}')
-            new_trajectory = self.network.create_trajectory(self.network.network.stations)
-            self.network.network.add_trajectory(new_trajectory)
-            previous_score = self.network.network.get_score()
             
+            new_trajectory = self.random.create_trajectory(self.network.stations)
+
+            self.network.add_trajectory(new_trajectory)
+            
+            print(f'score before adding: {previous_score}') 
+            print(f'score after adding: {self.network.get_score()}')
+
             if not self.improving(previous_score):
-                print('hey')
-                self.network.network.remove_trajectory(new_trajectory)
+                # self.network.remove_trajectory(new_trajectory)
+                self.network.trajectories.pop()
+
+                print(f'score after removing: {self.network.get_score()}')
                 add_count += 1
             else: 
-                add_count = 0 
+                print('hey its better now')
+                add_count = 0
+
+            previous_score = self.network.get_score()
+
+        return self.network
+        
+        
+                
+            
                 
                 
         
