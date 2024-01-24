@@ -54,8 +54,7 @@ def plot_netherlands(datafile,ax):
     droplakes = [5,12]
     mapdf = mapdf.drop(dropnames, axis=1)
     mapdf = mapdf.drop(droplakes, axis=0)
-    # partial_df = mapdf.loc[(mapdf['NAME_1'] == 'Noord-Holland') | (mapdf['NAME_1'] == 'NA')]
-    pprint.pprint(mapdf)
+
     # plot country
     country_plot = mapdf.plot(ax=ax, facecolor = 'lightgrey', edgecolor = 'black') 
     
