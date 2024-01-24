@@ -16,18 +16,23 @@ class Evolution_algo():
         pick1 = float("inf")
         pick2 = float("inf")
 
+        ## Max trajectory time moet ook nog kloppen
         while pick1 + pick2 > self.network.max_trajectories:
-            pick1 = random.randint(1, self.network.max_trajectories)
-            pick2 = random.randint(1, self.network.max_trajectories)
+            pick1 = random.randint(1, len(parent1.network.trajectories))
+            pick2 = random.randint(1, len(parent2.network.trajectories))
         
         return pick1, pick2 
     
     def pick_random_trajectories(self, trajectories_list, pick_amount):
         trajectories = []
+        trajectories_copy = copy.copy(trajectories_list)
 
         for i in range(pick_amount):
-            trajectory = random.choice(trajectories_list)
+            trajectory = random.choice(trajectories_copy)
+            trajectories_copy.remove(trajectory)
             trajectories.append(trajectory)
+            
+            pick_amount -= 1
         
         return trajectories 
     
@@ -77,7 +82,7 @@ class Evolution_algo():
         
         return best_network1 
     
-    
+
     
         
 
