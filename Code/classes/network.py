@@ -153,6 +153,7 @@ class Network():
         """
         Method that returns the score of the network
         """
+        self.calculate_score()
         return self.quality_network
 
         
