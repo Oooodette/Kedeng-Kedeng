@@ -147,10 +147,14 @@ class Random_algo():
                 break
             
         # create new trajectory instance
-        new_trajectory = Trajectory('x', trajectory_stations, time) 
+        new_trajectory = Trajectory('x', trajectory_stations, time)
             
         # add used connections to route attribute of trajectory
-        new_trajectory.route = set(trajectory_connections)
+        new_trajectory.route = trajectory_connections
+        # update used connections
+        for connection in new_trajectory.route:
+            
+            self.network.used[connection] = True
         
         
         return new_trajectory
