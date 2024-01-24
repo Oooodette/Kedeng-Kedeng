@@ -37,6 +37,7 @@ class Hillclimber():
     def replace(self):
         replace_count = 0
         previous_score = 0 
+
         while replace_count < self.attempts:
             #TODO: save trajectory before removing in case it doesn't improve score 
             self.network.remove_trajectory()
@@ -45,10 +46,17 @@ class Hillclimber():
             self.network.add_trajectory
             if not self.improving(previous_score):
 
+    def change_network(self, method = 'add'):
+        
+        self.network.add_trajectory
 
 
     def run(self):
-
+        count = 0
+        #TODO: calculate score
+        while count < self.attempts:
+            self.change_network()
+            count = 
         self.add()
         self.replace()
 
