@@ -39,7 +39,38 @@ class Network():
         self.max_trajectory_time = max_trajectory_time
         self.trajectories = []
         self.quality_network = None
-        self.used = self.connections_used() 
+        self.used = self.connections_used()
+        self.available_connections = self.create_available_connections()
+    
+    def create_available_connections(self): 
+        """Creates a list of all connections that have the current station as one of their stations
+
+        Args: 
+        - current_station(str): name of current station
+        - connection_list(list): list of instances of connection class available for this network
+
+        Returns: 
+        - all_connections(list): list of instances of connection class that have current station as one of their stations.
+        """
+        station_list = self.stations
+        connection_list = self.connections
+        available_connections = {}
+        for station in station_list:
+            all_connections = [] 
+            # loop through your list of connections and look for a connection that has the current station as station 1 or 2
+            for connection in connection_list:
+
+                if connection.station1 == station.name or connection.station2 == station.name:
+
+                    # create list of all stations that have current station as station 1
+                    all_connections.append(connection)
+            
+            # add the list of available connections to the dictionary of stations
+            available_connections[station.name] = all_connections
+            
+                    #TODO: add which station was picked?
+       
+        return available_connections
 
     def load_connections(self, connections_df):
         """

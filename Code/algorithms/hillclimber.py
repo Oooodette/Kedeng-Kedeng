@@ -1,11 +1,12 @@
 from ..algorithms.random_algo import Random_algo
+from ..classes.network import Network
 
 
 class Hillclimber():
     """
     Class Hillclimber: algorithm that keeps randomly changing a small part of a network until score doesn't improve anymore;
         Attributes:
-        - network: an instance of the Network class that was created beforehand.
+        - random: an instance of the random_algo class that was created beforehand.
         - attempts: amount of times hillclimber tries to improve the score until stopping.
 
         Methods:
@@ -14,58 +15,57 @@ class Hillclimber():
         - replace: replace existing trajectory with new trajectory while score is improving
     """
     
-    def __init__(self, random, attempts):
-        self.random = random
+    def __init__(self, network: Network, attempts):
+        self.network = network
         self.attempts = attempts
-        
-        #extract network from random algorithm object
-        self.network = random.network
-
+    
     def improving(self, previous_score):
         return self.network.get_score() > previous_score
 
         
     def add(self):
-
+        """
+        Adds random trajectory to a network and checks whether score improves. If score does not improve, it removes the trajectory and
+        tries another one, for self.attempts amount of times
+        Returns:
+        - self.network(instance of network class): adjusted network with added trajectories
+        """
         previous_score = self.network.get_score() 
         add_count = 0
-
-
-        while add_count < self.attempts:
+ 
+        # check if we are still under the attempt limit and under the maximum amount of trajectories
+        while add_count < self.attempts and len(self.network.trajectories) < self.network.max_trajectories:
             
-            new_trajectory = self.random.create_trajectory(self.network.stations)
-
+            # create new trajectory and add it to network
+            new_trajectory = Random_algo.create_trajectory(self.network)
+            
             self.network.add_trajectory(new_trajectory)
             
-            print(f'score before adding: {previous_score}') 
-            print(f'score after adding: {self.network.get_score()}')
+            # update used connections to enable score calculations
+            changed_list = [] 
+            for connection in new_trajectory.route:
 
+                # save the changes you made so you can undo them when score doesn't improve
+                if not self.network.used[connection]:
+                    changed_list.append(connection)
+                    self.network.used[connection] = True
+
+            # if score doesn't improve, remove trajectory and try again
             if not self.improving(previous_score):
-                # self.network.remove_trajectory(new_trajectory)
                 self.network.trajectories.pop()
 
-                print(f'score after removing: {self.network.get_score()}')
+                # change used connections back to false
+                for connection in changed_list:
+                    self.network.used[connection] = False
                 add_count += 1
+
             else: 
-                print('hey its better now')
                 add_count = 0
 
             previous_score = self.network.get_score()
-
+        
         return self.network
         
-        
-                
-            
-                
-                
-        
-            # #TODO: create greedy trajectory 
-            # self.network.add_trajectory
-            # if not self.improving(previous_score):
-            #     #TODO: remove trajectory
-            #     add_count += 1
-
     # def replace(self):
     #     replace_count = 0
     #     previous_score = 0 
@@ -77,6 +77,18 @@ class Hillclimber():
     #         #TODO: create greedy trajectory
     #         self.network.add_trajectory
     #         if not self.improving(previous_score):
+            
+            
+                
+                
+        
+            # #TODO: create greedy trajectory 
+            # self.network.add_trajectory
+            # if not self.improving(previous_score):
+            #     #TODO: remove trajectory
+            #     add_count += 1
+
+
 
     # def change_network(self, method = 'add'):
         
