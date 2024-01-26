@@ -5,6 +5,7 @@ import random
 import copy 
 
 from ..classes.network import Network
+from itertools import combinations
 
 class Evolution_algo():
 
@@ -99,6 +100,14 @@ class Evolution_algo():
                 pick = (len(parent.trajectories) // 2) + 1
         
         return int(pick)
+    
+    def create_possible_childs(self, all_trajectories, parent):
+        self.possible_networks = []
+        for r in range(2, len(all_trajectories)+1):
+            for combi in combination(all_trajectories):
+                possible_network = list(combi)
+                self.possible_networks.append(possible_network)
+            
     
     def create_offspring(self, parent1: Network, parent2: Network):
     

@@ -149,7 +149,7 @@ class Random_algo():
 
             # update used connections
             for connection in new_trajectory.route:
-                self.network.used[connection] = True
+                self.network.used[connection] += 1
             
             # change used connections based on new trajectory
             new_trajectory.name = counter

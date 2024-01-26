@@ -127,7 +127,7 @@ class Network():
         """
         used = {}
         for connection in self.connections:
-            used[connection] = False 
+            used[connection] = 0
         return used
  
 
@@ -164,10 +164,11 @@ class Network():
         Method that calculates the score of the network of trajectories 
         """
         # calculate score for this network
-        fraction = sum(self.used.values()) / len(self.connections)
+        used_connections = [connection for connection, value in self.used.items() if value != 0]
+        fraction = (len(used_connections)) / len(self.connections)
         total_time = sum([trajectory.time for trajectory in self.trajectories])
         self.quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time) 
-        return self.quality_network
+        return fraction*10000, (len(self.trajectories) * 100 + total_time)
     
     def save_network(self):
         """
