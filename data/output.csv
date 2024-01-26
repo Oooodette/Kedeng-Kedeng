@@ -1,10 +1,2 @@
 train,stations
-1,"['Zwolle', 'Almelo', 'Deventer', 'Apeldoorn', 'Amersfoort', 'Utrecht Centraal']"
-2,"['Venlo', 'Helmond', 'Eindhoven', 's-Hertogenbosch', 'Tilburg', 'Eindhoven', 's-Hertogenbosch']"
-3,"['Lelystad Centrum', 'Almere Centrum', 'Amsterdam Centraal', 'Amsterdam Amstel', 'Almere Centrum', 'Lelystad Centrum']"
-4,"['Hilversum', 'Utrecht Centraal', 's-Hertogenbosch']"
-5,"['Zutphen', 'Dieren', 'Arnhem Centraal', 'Ede-Wageningen', 'Utrecht Centraal', 'Gouda', 'Den Haag HS']"
-6,"['Leiden Centraal', 'Schiphol Airport', 'Amsterdam Zuid', 'Amsterdam Sloterdijk', 'Haarlem', 'Heemstede-Aerdenhout', 'Leiden Centraal', 'Den Haag HS']"
-7,"['Castricum', 'Beverwijk', 'Haarlem', 'Heemstede-Aerdenhout', 'Leiden Centraal', 'Den Haag Laan v NOI', 'Delft', 'Den Haag HS', 'Leiden Centraal', 'Den Haag Laan v NOI', 'Delft', 'Schiedam Centrum']"
-8,"['Amsterdam Amstel', 'Utrecht Centraal', 'Amersfoort', 'Apeldoorn', 'Zutphen', 'Deventer', 'Apeldoorn', 'Zutphen']"
-score,2711.6629213483147
+score,

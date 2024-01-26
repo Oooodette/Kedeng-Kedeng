@@ -23,25 +23,27 @@ class Network():
         - #change_trajectory#
         - get_score - retrieves the score of the network
     """
-    def __init__(self, connections_file=None, stations_file=None, max_trajectories=None, max_trajectory_time=None):
+    def __init__(self, connections, stations, max_trajectories, max_trajectory_time):
         """
         Method that initializes attributes of the network object
         Args:
         - connections_file: the file containing the train connections
         - stations file: the file containing the train stations
         """
-        if connections_file != None:
-            self.connections_df = pd.read_csv(connections_file)
-            self.connections = self.load_connections(self.connections_df)
-            self.stations_df = pd.read_csv(stations_file)
-            self.stations = self.load_stations(self.stations_df)
+        if type(connections) == list:
+            self.connections = connections
+            self.stations = stations
+        else:
+            self.connections = self.load_connections(connections)
+            self.stations = self.load_stations(stations)
+            
         self.max_trajectories = max_trajectories
         self.max_trajectory_time = max_trajectory_time
         self.trajectories = []
         self.quality_network = None
-        self.used = self.connections_used()
+        self.used = self.connections_used() 
         self.available_connections = self.create_available_connections()
-    
+
     def create_available_connections(self): 
         """Creates a list of all connections that have the current station as one of their stations
 
@@ -71,7 +73,7 @@ class Network():
                     #TODO: add which station was picked?
        
         return available_connections
-
+    
     def load_connections(self, connections_df):
         """
         Method to create a list of connection instances 
