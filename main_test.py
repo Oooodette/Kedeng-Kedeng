@@ -42,7 +42,7 @@ if __name__ == "__main__":
 
     #explicitly save the network that fulfills the criteria
     network.save_network()
-
+    print(test_network.used)
     #visualize
     vis.plot_all(stations_df, connections_df, 'data\gadm41_NLD_1.json', test_network.used, test_network.trajectories, test_network.stations)
     

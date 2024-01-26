@@ -3,7 +3,6 @@ from typing import List
 from ..algorithms import random_algo
 import random 
 import copy 
-
 from ..classes.network import Network
 from itertools import combinations
 
@@ -46,7 +45,7 @@ class Evolution_algo():
     def save_parents_scores(self, group):
         group_scores = {}
         for player in group:
-            group_scores[player] = player.calculate_score()
+            group_scores[player] = player.get_score()
 
         return group_scores 
     
@@ -63,7 +62,7 @@ class Evolution_algo():
                 if self.win_chances[i] <= random_float <= self.win_chances[i+1]:
                     survivor = sorted_networks[i+1]
                     break
-        
+        print(survivor.get_score())
         return survivor 
     
     def get_survivors(self):
@@ -101,14 +100,6 @@ class Evolution_algo():
         
         return int(pick)
     
-    def create_possible_childs(self, all_trajectories, parent):
-        self.possible_networks = []
-        for r in range(2, len(all_trajectories)+1):
-            for combi in combination(all_trajectories):
-                possible_network = list(combi)
-                self.possible_networks.append(possible_network)
-            
-    
     def create_offspring(self, parent1: Network, parent2: Network):
     
         pick1 = self.determine_half_trajectories(parent1)
@@ -117,14 +108,21 @@ class Evolution_algo():
         parent1_trajectories = random.sample(parent1.trajectories, pick1)
         parent2_trajectories = random.sample(parent2.trajectories, pick2)
 
-        combination_network = parent1_trajectories + parent2_trajectories
+        all_trajectories = parent1_trajectories + parent2_trajectories
 
         final_network = Network(parent1.connections, parent1.stations, parent1.max_trajectories, parent1.max_trajectory_time)
-        final_network.trajectories = combination_network
-
+        final_network.trajectories = all_trajectories
+        
+        for trajectory in final_network.trajectories:
+            for connection in trajectory.route:
+                print(count)
+                final_network.used[connection] += 1
+                count += 1
+                
         return final_network 
 
     def create_generation(self):
+        
         new_parents = []
 
         for i in range(self.size_generation):
@@ -140,10 +138,11 @@ class Evolution_algo():
             self.get_survivors()
             self.create_generation()
 
+
     def save_network_scores(self):
         self.network_scores = {}
         for network in self.parents: 
-            self.network_scores[network] = network.calculate_score()
+            self.network_scores[network] = network.get_score()
     
     def last_man_standing(self):
         self.create_win_chances()
