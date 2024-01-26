@@ -124,9 +124,9 @@ class Greedy_algo():
             score = 0
 
             #check if potential is used, if not, set to True, check if time with this potential would not exceed max time 
-            if used[potential] == False and potential_time <= self.network.max_trajectory_time:
+            if used[potential] == 0 and potential_time <= self.network.max_trajectory_time:
                     score += 4
-                    used[potential] = True
+                    used[potential] += 1
         
             #retrieve the potentials of the potential, i.e. the first_gen_potentials
             first_gen_station = self.determine_new_station(current_station, potential)
@@ -137,10 +137,10 @@ class Greedy_algo():
                 potential_time += first_gen_potential.time
 
                 #check if potential is used, if not, set to True, check if time with this potential would not exceed max time 
-                if used[first_gen_potential] == False and potential_time < self.network.max_trajectory_time:
+                if used[first_gen_potential] == 0 and potential_time < self.network.max_trajectory_time:
                     score += 3
                     potential_time += potential_time
-                    used[first_gen_potential] = True
+                    used[first_gen_potential] += 1
 
 
                 """
@@ -153,9 +153,9 @@ class Greedy_algo():
                     potential_time += second_gen_potential.time
 
                     #check if potential is used, if not, set to True, check if time with this potential would not exceed max time 
-                    if used[second_gen_potential] == False and potential_time <= self.network.max_trajectory_time:
+                    if used[second_gen_potential] == 0 and potential_time <= self.network.max_trajectory_time:
                         score += 2
-                        used[second_gen_potential] == True
+                        used[second_gen_potential] += 1
                 
                     #retrieve potentials of potentials of potentials of potentials, i.e. third_gen_potentials
                     thrird_gen_station = self.determine_new_station(second_gen_station, second_gen_potential)
@@ -166,27 +166,27 @@ class Greedy_algo():
                         potential_time += third_gen_potential.time
 
                         #check if potential is used, if not, set to True, check if time with this potential would not exceed max time 
-                        if used[third_gen_potential] == False and potential_time <= self.network.max_trajectory_time:
+                        if used[third_gen_potential] == 0 and potential_time <= self.network.max_trajectory_time:
                             score += 1
-                            used[third_gen_potential] = True
+                            used[third_gen_potential] += 1
                         
                         #reset third_gen_potential attributes after checking 
                         used[third_gen_potential] = False
                         potential_time -= third_gen_potential.time
                     
                     #reset second_gen_potential attributes after checking branch
-                    used[second_gen_potential] == False
+                    used[second_gen_potential] -= 1
                     potential_time -= second_gen_potential.time
                     """
 
 
 
                 #reset first_gen_potential attributes after checking branch
-                used[first_gen_potential] == False
+                used[first_gen_potential] -= 1
                 potential_time -= first_gen_potential.time
 
             #reset potential attributes after checking branch
-            used[potential] == False
+            used[potential] -= 1
             potential_time -= potential.time
         
             #adding the score of the potential to the list
@@ -266,7 +266,7 @@ class Greedy_algo():
                 trajectory.stations.append(current_station)
                 trajectory.route.append(start_connection)
                 trajectory.time += start_connection.time
-                self.network.used[start_connection] = True
+                self.network.used[start_connection] += 1
 
             else:
                 trajectory.stations.remove(start_station)                
@@ -287,7 +287,7 @@ class Greedy_algo():
                 trajectory.stations.append(new_station)
                 trajectory.route.append(new_connection)
                 trajectory.time += new_connection.time
-                self.network.used[new_connection] = True
+                self.network.used[new_connection] += 1
 
             else:
                 break
@@ -328,7 +328,7 @@ class Greedy_algo():
 
                 #reset the connections to unused when trajectory is removed
                 for connection in trajectory.route:
-                    self.network.used[connection] = False
+                    self.network.used[connection] -= 1
 
             else:
                 trajectory_count += 1
