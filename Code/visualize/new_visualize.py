@@ -103,7 +103,7 @@ def connection_list_maker(used_connections):
     Returns:
     - connection_set(set): set containing all used connections for this network.
     """
-    connection_list = [connection for connection, is_used in used_connections.items() if is_used]
+    connection_list = [connection for connection, value in used_connections.items() if value != 0]
 
     return connection_list
 
