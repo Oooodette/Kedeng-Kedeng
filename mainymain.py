@@ -25,7 +25,7 @@ if __name__ == "__main__":
     random_algo = Random_algo(network)
     test_network = random_algo.create_network()
     vis.plot_all(test_network.stations_df, test_network.connections_df, 'data\gadm41_NLD_1.json', test_network.used, test_network.trajectories, test_network.stations) 
-    hillclimber = Hillclimber(test_network, 10)
+    hillclimber = Hillclimber(test_network, 10000)
     newie = hillclimber.run() 
 
   

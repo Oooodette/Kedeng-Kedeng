@@ -161,8 +161,11 @@ class Network():
         """
         Method that calculates the score of the network of trajectories 
         """
-        # calculate score for this network
+        
+        # all connections that are used in a list
         used_connections = [connection for connection, value in self.used.items() if value != 0]
+
+        # calculate score for this network
         fraction = (len(used_connections)) / len(self.connections)
         total_time = sum([trajectory.time for trajectory in self.trajectories])
         self.quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time) 
