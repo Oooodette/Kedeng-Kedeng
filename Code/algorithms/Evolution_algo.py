@@ -1,235 +1,139 @@
+from ..algorithms import random_algo
 from ..classes import Trajectory
 import pandas as pd
 import random 
 import pprint as pp 
 import copy 
 
-class Evo_algo():
-
-    def __init__(self, network):
-        self.network = network
-        self.station_list = self.network.stations 
-        self.available_connections = {} 
-        self.create_network() 
-
-    def create_available_connections(self, station_list, connection_list): 
-        """Creates a list of all connections that have the current station as one of their stations
-        Args: 
-        - current_station(str): name of current station
-        - connection_list(list): list of instances of connection class available for this network
-
-        Returns: 
-        - all_connections(list): list of instances of connection class that have current station as one of their stations.
-        """
-        
-        available_connections = {}
-        for station in station_list:
-            all_connections = [] 
-            # loop through your list of connections and look for a connection that has the current station as station 1 or 2
-            for connection in connection_list:
-
-                if connection.station1 == station.name or connection.station2 == station.name:
-
-                    # create list of all stations that have current station as station 1
-                    all_connections.append(connection)
-            
-            # add the list of available connections to the dictionary of stations
-            available_connections[station.name] = all_connections
-            
-                    #TODO: add which station was picked?
-       
-        return available_connections
-
-    def pick_valid_connection(self, all_connections, previous_connection, time):
-        """"
-        Pick a new connection to add to the trajectory that does not pass the time limit or is the same connection as the previous one (i.e.
-        makes the train go back)
-
-        Args: 
-        - all_connections(list): list of instances of connection class that have current station as one of their stations.
-        - previous_connection(instance of connection class): connection that brought us to current station.
-        - time(int): total time of current trajectory (=sequence of connections) 
-
-        Returns:
-        - chosen_connection(instance of connection class): valid connection to add to trajectory. If no valid connection is found, 
-          None is returned.
-        """
-        chosen = False
-
-        # if no valid connection exists, return None
-        chosen_connection = None
-        connection_copy = copy.copy(all_connections)
-
-        # keep picking a new connection until either a valid connection is found, or all connections have been tried
-        best_score = 0
-        while not chosen and len(connection_copy) > 0: 
-            pick = random.randint(0, len(connection_copy)-1)
-            new_connection = connection_copy[pick]
-            connection_copy.remove(connection_copy[pick])
+class Evolution_algo():
+    def __init__(self, network, number_of_iterations):
+        self.size_generation = 96
+        self.number_of_iterations = number_of_iterations
+        self.parents = []
+        for i in range(self.size_generation):
+            parent = random_algo.Random_algo(network)
+            self.parents.append(parent)
+         
+        self.network_scores = self.save_network_scores()
     
-            # check to see if the connection is correct
-            if time + new_connection.time < 120 and new_connection != previous_connection:
-                chosen = True
-                chosen_connection = new_connection
-        
-        return chosen_connection 
+    def create_groups(self):
+        group_size = 8 
+        parents_copy = copy.copy(self.parents)
+        self.groups = []
+
+        for i in range(12):
+            group = random.sample(parents_copy, group_size)
+            self.groups.append(group)
+            for parent in group:
+                parents_copy.remove(parent)
+
+    def create_win_chances(self):
+        p = 0.8
+        self.win_chances = []
+
+        for x in range(8):
+            answer = p * (1 - (1 - p)**x)
+            self.win_chances.append(answer)
     
-    def determine_station(self, current_station, new_connection):
-        """
-        Determine what next station will be, depending on whether previous station was station1 or station2.
-
-        Args: 
-        - current_station(str): name of current station
-        - new_connection(instance of connection class): connection that was picked as the next connection
-
-        Returns: 
-        - current_station: name of new current station
-        """
-        # pick correct station to move further with (depending on whether previous station was station1 or station2 for this connection)
-        if current_station == new_connection.station1:
-            new_station = new_connection.station2
-        else: 
-            new_station = new_connection.station1
-        
-        return new_station
-
-    def pick_random_station(self, station_list):
-        """"
-        Picks a starting station for a trajectory
-
-        Args:
-        - station_list(list of station objects)
-
-        Returns:
-        - randomly picked station from stations_list
-        """
-        position = random.randint(0, len(station_list)-1)
-        current_station = station_list[position].name
-
-        return current_station
-
-
-    def create_trajectory(self, station_list, start_station = None):
-        """
-        Creates a new trajectory (i.e. a sequence of connections)
-
-        Args:
-        - station_list(list of station objects)
-
-        Returns:
-        - new_trajectory(trajectory object)
-        """
-        # initialize variables
-        if start_station == None:
-            current_station = self.pick_random_station(station_list)
-        else:
-            current_station = start_station
-
-        previous_connection = None
-        time = 0
-        trajectory_time = random.randint(0, self.network.max_trajectory_time)
-        trajectory_stations = [current_station]
-        trajectory_connections = []
-
-        # only add more connections if total time is below 120
-        while time < trajectory_time:
-            new_connection = self.pick_valid_connection(self.available_connections[current_station], previous_connection, time) 
-           
-            # if a valid connection is found, change the current station to the next station of this connection
-            if new_connection != None:
-                
-                current_station = self.determine_station(current_station, new_connection)
-                time += new_connection.time 
-
-                # add station and connection to trajectory	
-                trajectory_stations.append(current_station)
-                trajectory_connections.append(new_connection) 
-
-                # update in used connections dictionary and update previous connection
-                previous_connection = new_connection 
+    def save_parents_scores(self, group):
+        group_scores = {}
+        for player in group:
+            group_scores[player] = player.get_score()
             
-            # if no valid connection is found, break the loop
-            else:
-                break
-            
-        # create new trajectory instance
-        new_trajectory = Trajectory('x', trajectory_stations, time) 
-            
-        # add used connections to route attribute of trajectory
-        new_trajectory.route = trajectory_connections
-        
-        
-        return new_trajectory
-
-    def create_network(self): 
-        """
-        Creates a network; consists of trajectories
-
-        Returns:
-        - network(network object) - attribute of algorithm object
-        """
-        
-        self.available_connections = self.create_available_connections(self.station_list, self.network.connections)
-        self.network.connections_used()
-
-        nr_trajectories = 7 #random.randint(0, self.network.max_trajectories)
-        # new_trajectory = self.create_trajectory(self.station_list, self.connection_list)
-        counter = 1
-        # check if all connections are used and keep making trajectories 
-        while len(self.network.trajectories) < nr_trajectories:
-            new_trajectory = self.create_trajectory(self.station_list) 
-            self.network.add_trajectory(new_trajectory)
-
-            # update used connections
-            for connection in new_trajectory.route:
-                
-                self.network.used[connection] = True
-            
-
-            # change used connections based on new trajectory
-            new_trajectory.name = counter
-            counter += 1
-        
-        self.network.calculate_score()
-        return self.network
+        return group_scores 
     
-    def deletion(self):
-        self.pick_random_traject = random.randint(1, len(self.network.trajectories))
-        random_traject = self.network.trajectories[self.pick_random_traject]
-        traject = copy.copy(random_traject)
-        pick_connections_amount = random.randint(1, len(traject.route)-1)
+    def survival_of_the_fittest(self, group_scores):
+        sorted_networks = sorted(group_scores, key=lambda x: group_scores[x], reverse=True)
         
-        for i in range(1, pick_connections_amount):
-            connection = traject.route.pop()
-            station = traject.stations.pop()
-            traject.time -= connection.time
+        random_float = round(random.uniform(0, 1), 10)
 
-        return traject
-
-    def survival_of_the_fittest(self, N):
-        best_score = 0
-        traject = self.deletion()
-        trajectories_children = []
-        last_station = traject.stations[-1]
-        trajectroute = traject.route.pop()
-
-        for i in range(N):
-            trajectory = self.create_trajectory(self.station_list, last_station)
-            trajectories_children.append(trajectory)
-
-        for child in trajectories_children:
-            traject.route.append(child)
-            self.network.trajectories.remove[self.network.trajectories[self.pick_random_traject]]
-            self.network.trajectories.append[traject.route]
-
-            score = self.network.get_score()
-            if score > best_score:
-                best_traject = child 
-
-        self.network.trajectories.remove[self.network.trajectories[self.pick_random_traject]]
-        traject.route.append(best_traject)
-        self.network.trajectories.append[traject.route]
+        if random_float < self.win_chances[0]:
+            survivor = sorted_networks[0]
+        elif self.win_chances[0] < random_float < self.win_chances[1]:
+            survivor = sorted_networks[1]
+        elif self.win_chances[1] < random_float < self.win_chances[2]:
+            survivor = sorted_networks[2]
+        elif self.win_chances[2] < random_float < self.win_chances[3]:
+            survivor = sorted_networks[3]
+        elif self.win_chances[3] < random_float < self.win_chances[4]:
+            survivor = sorted_networks[4]
+        elif self.win_chances[4] < random_float < self.win_chances[5]:
+            survivor = sorted_networks[5]
+        elif self.win_chances[5] < random_float < self.win_chances[6]:
+            survivor = sorted_networks[6]
+        elif self.win_chances[6] < random_float < self.win_chances[7]:
+            survivor = sorted_networks[7]
         
+        return survivor 
+    
+    def get_survivors(self):
+        self.survivors = []
+        for network_group in self.groups:
+            group_scores = self.save_parents_scores(network_group)
+            survivor = self.survival_of_the_fittest(group_scores)
+            self.survivors.append(survivor)
+
+    def choice_parents(self): 
+        ## Steeds twee parents kiezen uit de survivors en deze gebruiken om nieuwe generaties te maken, vervolgens 
+        ## deze generaties weer gebruiken om nieuwe generaties te maken als self.parents
+
+    def two_random_numbers(self):
+        pick1 = float("inf")
+        pick2 = float("inf")
+
+        ## TODO: Max trajectory time moet ook nog kloppen
+        while pick1 + pick2 > self.network.max_trajectories:
+            pick1 = random.randint(1, len(self.parent1.network.trajectories))
+            pick2 = random.randint(1, len(self.parent2.network.trajectories))
+        
+        return pick1, pick2 
+    
+    def pick_random_trajectories(self, trajectories_list, pick_amount):
+        trajectories = []
+        trajectories_copy = copy.copy(trajectories_list)
+
+        for i in range(pick_amount):
+            trajectory = random.sample(trajectories_copy)
+            trajectories.append(trajectory)
+            for traject in trajectory:
+                trajectories_copy.remove(traject)
+            
+        return trajectories 
+    
+    def create_generation(self, parent1, parent2):
+        generation_network = []
+
+        for i in range(self.size_generation):
+            pick1, pick2 = self.two_random_numbers() 
+            
+            parent1_trajectories = self.pick_random_trajectories(self.parent1.network.trajectories, pick1)
+            parent2_trajectories = self.pick_random_trajectories(self.parent2.network.trajectories, pick2)
+
+            combination_network = parent1_trajectories + parent2_trajectories 
+            generation_network.append(combination_network)
+
+        return generation_network
+    
+    def create_evolution(self):
+        ## TODO: kloppend maken 
+        for i in range(self.number_of_iterations):
+            best_network1, best_network2 = self.survival_of_the_fittest()
+            self.create_generation(best_network1, best_network2)
+        
+        return best_network1 
+    
+
+    
+        
+
+
+
+
+        
+
+
+
+
 
 
         

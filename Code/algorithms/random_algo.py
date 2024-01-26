@@ -1,4 +1,4 @@
-from ..classes import Trajectory
+from ..classes import Trajectory, Network
 import pandas as pd
 import random 
 import pprint as pp 
@@ -6,41 +6,13 @@ import copy
 
 class Random_algo():
 
-    def __init__(self, network):
+    def __init__(self, network: Network):
         self.network = network
         self.station_list = self.network.stations 
         self.available_connections = {} 
 
-    def create_available_connections(self, station_list, connection_list): 
-        """Creates a list of all connections that have the current station as one of their stations
-
-        Args: 
-        - current_station(str): name of current station
-        - connection_list(list): list of instances of connection class available for this network
-
-        Returns: 
-        - all_connections(list): list of instances of connection class that have current station as one of their stations.
-        """
-        
-        available_connections = {}
-        for station in station_list:
-            all_connections = [] 
-            # loop through your list of connections and look for a connection that has the current station as station 1 or 2
-            for connection in connection_list:
-
-                if connection.station1 == station.name or connection.station2 == station.name:
-
-                    # create list of all stations that have current station as station 1
-                    all_connections.append(connection)
-            
-            # add the list of available connections to the dictionary of stations
-            available_connections[station.name] = all_connections
-            
-                    #TODO: add which station was picked?
-       
-        return available_connections
-
-    def pick_valid_connection(self, all_connections, previous_connection, time):
+    @staticmethod
+    def pick_valid_connection(all_connections, previous_connection, time):
         """"
         Pick a new connection to add to the trajectory that does not pass the time limit or is the same connection as the previous one (i.e.
         makes the train go back)
@@ -73,7 +45,8 @@ class Random_algo():
         
         return chosen_connection 
 
-    def determine_station(self, current_station, new_connection):
+    @staticmethod
+    def determine_station(current_station, new_connection):
         """
         Determine what next station will be, depending on whether previous station was station1 or station2.
 
@@ -91,8 +64,9 @@ class Random_algo():
             new_station = new_connection.station1
         
         return new_station
-
-    def pick_random_station(self, station_list):
+    
+    @staticmethod
+    def pick_station(station_list):
         """"
         Picks a starting station for a trajectory
 
@@ -106,8 +80,9 @@ class Random_algo():
         current_station = station_list[position].name
 
         return current_station
-
-    def create_trajectory(self, station_list):
+    
+    @staticmethod
+    def create_trajectory(network: Network):
         """
         Creates a new trajectory (i.e. a sequence of connections)
 
@@ -117,22 +92,23 @@ class Random_algo():
         Returns:
         - new_trajectory(trajectory object)
         """
+        station_list = network.stations
         # initialize variables
-        current_station = self.pick_random_station(station_list)
+        current_station = Random_algo.pick_station(station_list)
         previous_connection = None
         time = 0
-        trajectory_time = random.randint(0, self.network.max_trajectory_time)
+        trajectory_time = random.randint(0, network.max_trajectory_time)
         trajectory_stations = [current_station]
         trajectory_connections = []
 
         # only add more connections if total time is below 120
         while time < trajectory_time:
-            new_connection = self.pick_valid_connection(self.available_connections[current_station], previous_connection, time) 
+            new_connection = Random_algo.pick_valid_connection(network.available_connections[current_station], previous_connection, time) 
            
             # if a valid connection is found, change the current station to the next station of this connection
             if new_connection != None:
                 
-                current_station = self.determine_station(current_station, new_connection)
+                current_station = Random_algo.determine_station(current_station, new_connection)
                 time += new_connection.time 
 
                 # add station and connection to trajectory	
@@ -147,12 +123,11 @@ class Random_algo():
                 break
             
         # create new trajectory instance
-        new_trajectory = Trajectory('x', trajectory_stations, time) 
+        new_trajectory = Trajectory('x', trajectory_stations, time)
             
         # add used connections to route attribute of trajectory
-        new_trajectory.route = set(trajectory_connections)
-        
-        
+        new_trajectory.route = trajectory_connections
+
         return new_trajectory
 
     def create_network(self): 
@@ -162,26 +137,20 @@ class Random_algo():
         Returns:
         - network(network object) - attribute of algorithm object
         """
-        
-        self.available_connections = self.create_available_connections(self.station_list, self.network.connections)
-        self.network.connections_used()
-
-        nr_trajectories = 20 #random.randint(0, self.network.max_trajectories)
+        nr_trajectories = random.randint(0, self.network.max_trajectories)
         # new_trajectory = self.create_trajectory(self.station_list, self.connection_list)
         counter = 1
         
         # check if all connections are used and keep making trajectories 
         while len(self.network.trajectories) < nr_trajectories:
             
-            new_trajectory = self.create_trajectory(self.station_list) 
+            new_trajectory = Random_algo.create_trajectory(self.network) 
             self.network.add_trajectory(new_trajectory)
 
             # update used connections
             for connection in new_trajectory.route:
-                
                 self.network.used[connection] = True
             
-
             # change used connections based on new trajectory
             new_trajectory.name = counter
             counter += 1

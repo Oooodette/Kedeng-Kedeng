@@ -18,7 +18,8 @@ if __name__ == "__main__":
 
     #looping until criteria are met
     # while score < minimal_score:
-    network = Network('data\ConnectiesNationaal.csv', 'data\StationsNationaal.csv', max_trajectories_nl, max_trajectory_time_nl)
+    # network = Network('data\ConnectiesNationaal.csv', 'data\StationsNationaal.csv', max_trajectories_nl, max_trajectory_time_nl)
+    network = Network()
     random_algo = Random_algo(network)
 
     # Create network from our data
