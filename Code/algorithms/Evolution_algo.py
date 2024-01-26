@@ -1,24 +1,28 @@
+from typing import List
+
 from ..algorithms import random_algo
-from ..classes import Trajectory
-import pandas as pd
 import random 
-import pprint as pp 
 import copy 
+from ..classes.network import Network
+from itertools import combinations
 
 class Evolution_algo():
+
+    parents: List[Network]
+
     def __init__(self, network, number_of_iterations):
         self.size_generation = 96
         self.number_of_iterations = number_of_iterations
         self.parents = []
         for i in range(self.size_generation):
-            parent = random_algo.Random_algo(network)
+            network_copy = copy.deepcopy(network)
+            random_algorithm = random_algo.Random_algo(network_copy)
+            parent = random_algorithm.create_network()
             self.parents.append(parent)
-         
-        self.network_scores = self.save_network_scores()
-    
+             
     def create_groups(self):
-        group_size = 8 
-        parents_copy = copy.copy(self.parents)
+        group_size = 8
+        parents_copy = copy.deepcopy(self.parents)
         self.groups = []
 
         for i in range(12):
@@ -29,98 +33,131 @@ class Evolution_algo():
 
     def create_win_chances(self):
         p = 0.8
+        number = 0
+
         self.win_chances = []
 
         for x in range(8):
-            answer = p * (1 - (1 - p)**x)
-            self.win_chances.append(answer)
-    
+            answer = p * ((1 - p)**x)
+            number += answer 
+            self.win_chances.append(number)
+          
     def save_parents_scores(self, group):
         group_scores = {}
         for player in group:
             group_scores[player] = player.get_score()
-            
+
         return group_scores 
     
     def survival_of_the_fittest(self, group_scores):
         sorted_networks = sorted(group_scores, key=lambda x: group_scores[x], reverse=True)
-        
         random_float = round(random.uniform(0, 1), 10)
 
-        if random_float < self.win_chances[0]:
+        survivor = None 
+        if random_float <= self.win_chances[0]:
             survivor = sorted_networks[0]
-        elif self.win_chances[0] < random_float < self.win_chances[1]:
-            survivor = sorted_networks[1]
-        elif self.win_chances[1] < random_float < self.win_chances[2]:
-            survivor = sorted_networks[2]
-        elif self.win_chances[2] < random_float < self.win_chances[3]:
-            survivor = sorted_networks[3]
-        elif self.win_chances[3] < random_float < self.win_chances[4]:
-            survivor = sorted_networks[4]
-        elif self.win_chances[4] < random_float < self.win_chances[5]:
-            survivor = sorted_networks[5]
-        elif self.win_chances[5] < random_float < self.win_chances[6]:
-            survivor = sorted_networks[6]
-        elif self.win_chances[6] < random_float < self.win_chances[7]:
-            survivor = sorted_networks[7]
         
+        else:
+            for i in range(len(self.win_chances)-1):
+                if self.win_chances[i] <= random_float <= self.win_chances[i+1]:
+                    survivor = sorted_networks[i+1]
+                    break
+        print(survivor.get_score())
         return survivor 
     
     def get_survivors(self):
         self.survivors = []
+
         for network_group in self.groups:
-            group_scores = self.save_parents_scores(network_group)
+            
+            group_scores = self.save_parents_scores(network_group)  
             survivor = self.survival_of_the_fittest(group_scores)
             self.survivors.append(survivor)
 
     def choice_parents(self): 
-        ## Steeds twee parents kiezen uit de survivors en deze gebruiken om nieuwe generaties te maken, vervolgens 
-        ## deze generaties weer gebruiken om nieuwe generaties te maken als self.parents
+        copy_survivors = copy.deepcopy(self.survivors)
+        pick1 = random.randint(0, len(copy_survivors)-1)
+        parent1 = copy_survivors[pick1]
+        copy_survivors.remove(parent1)
 
-    def two_random_numbers(self):
-        pick1 = float("inf")
-        pick2 = float("inf")
+        pick2 = random.randint(0, len(copy_survivors)-1)
+        parent2 = copy_survivors[pick2]
 
-        ## TODO: Max trajectory time moet ook nog kloppen
-        while pick1 + pick2 > self.network.max_trajectories:
-            pick1 = random.randint(1, len(self.parent1.network.trajectories))
-            pick2 = random.randint(1, len(self.parent2.network.trajectories))
+        copy_survivors.remove(parent2)
+
+        return parent1, parent2 
+    
+    def determine_half_trajectories(self, parent):
+        vifty_chance = random.randint(1, 2)
+        if len(parent.trajectories) % 2 == 0:
+            pick = len(parent.trajectories) / 2 
         
-        return pick1, pick2 
+        else:
+            if vifty_chance == 1:
+                pick = len(parent.trajectories) // 2
+            else:
+                pick = (len(parent.trajectories) // 2) + 1
+        
+        return int(pick)
     
-    def pick_random_trajectories(self, trajectories_list, pick_amount):
-        trajectories = []
-        trajectories_copy = copy.copy(trajectories_list)
+    def create_offspring(self, parent1: Network, parent2: Network):
+    
+        pick1 = self.determine_half_trajectories(parent1)
+        pick2 = self.determine_half_trajectories(parent2)
 
-        for i in range(pick_amount):
-            trajectory = random.sample(trajectories_copy)
-            trajectories.append(trajectory)
-            for traject in trajectory:
-                trajectories_copy.remove(traject)
-            
-        return trajectories 
-    
-    def create_generation(self, parent1, parent2):
-        generation_network = []
+        parent1_trajectories = random.sample(parent1.trajectories, pick1)
+        parent2_trajectories = random.sample(parent2.trajectories, pick2)
+
+        all_trajectories = parent1_trajectories + parent2_trajectories
+
+        final_network = Network(parent1.connections, parent1.stations, parent1.max_trajectories, parent1.max_trajectory_time)
+        final_network.trajectories = all_trajectories
+        
+        for trajectory in final_network.trajectories:
+            for connection in trajectory.route:
+                print(count)
+                final_network.used[connection] += 1
+                count += 1
+                
+        return final_network 
+
+    def create_generation(self):
+        
+        new_parents = []
 
         for i in range(self.size_generation):
-            pick1, pick2 = self.two_random_numbers() 
-            
-            parent1_trajectories = self.pick_random_trajectories(self.parent1.network.trajectories, pick1)
-            parent2_trajectories = self.pick_random_trajectories(self.parent2.network.trajectories, pick2)
-
-            combination_network = parent1_trajectories + parent2_trajectories 
-            generation_network.append(combination_network)
-
-        return generation_network
-    
-    def create_evolution(self):
-        ## TODO: kloppend maken 
-        for i in range(self.number_of_iterations):
-            best_network1, best_network2 = self.survival_of_the_fittest()
-            self.create_generation(best_network1, best_network2)
+            parent1, parent2 = self.choice_parents()
+            offspring = self.create_offspring(parent1, parent2)
+            new_parents.append(offspring)
         
-        return best_network1 
+        self.parents = new_parents
+
+    def create_evolution(self):
+        for i in range(self.number_of_iterations):
+            self.create_groups()
+            self.get_survivors()
+            self.create_generation()
+
+
+    def save_network_scores(self):
+        self.network_scores = {}
+        for network in self.parents: 
+            self.network_scores[network] = network.get_score()
+    
+    def last_man_standing(self):
+        self.create_win_chances()
+        self.create_evolution()
+        self.save_network_scores()
+
+        sorted_networks = sorted(self.network_scores, key=lambda x: self.network_scores[x], reverse=True)
+        self.best_network = sorted_networks[0]
+
+        return self.best_network 
+
+
+        
+
+
     
 
     
