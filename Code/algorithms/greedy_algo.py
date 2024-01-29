@@ -1,4 +1,4 @@
-from ..classes import Trajectory
+from ..classes import Station, Connection, Trajectory, Network
 import pandas as pd
 import random 
 import pprint as pp 
@@ -55,7 +55,8 @@ class Greedy_algo():
                    
         return available_connections_dict
 
-    def pick_start_station(self):
+    @staticmethod
+    def pick_start_station(network, availables_copy, previous_start):
         """
         Picking start station either random or based on heuristic
         heuristic = pick start station with lowest number of connections
@@ -64,30 +65,33 @@ class Greedy_algo():
         Returns:
         - start_station(station object)
         """
+
+        #TODO: use other heuristic: use stations with uneven number of connections as startstation
         Heuristic = False
 
         #with heuristic: pick start station of which the number of connection is lowest
         if Heuristic:
-            l = list(self.availables_copy.values())
+            l = list(availables_copy.values())
 
             lowest_len_connections = min(len(connections) for connections in l)
 
-            for key, value in self.availables_copy.items():
+            for key, value in availables_copy.items():
                 if len(value) == lowest_len_connections:
                     start_station = key
 
             #define attribute to reset if trajectory is rejected
-            self.previous_start = (start_station, self.availables_copy[start_station])
+            previous_start = (start_station, availables_copy[start_station])
 
-            del self.availables_copy[start_station]            
+            del availables_copy[start_station]            
 
         #without heuristic: random starting station
         else:
-            start_station = self.network.stations[random.randint(0, len(self.network.stations) - 1)].name
+            start_station = network.stations[random.randint(0, len(network.stations) - 1)].name
 
-        return start_station
+        return start_station, previous_start
 
-    def determine_new_station(self, current_station, new_connection):
+    @staticmethod
+    def determine_new_station(current_station, new_connection):
        
         if current_station == new_connection.station1:
             new_station = new_connection.station2
@@ -97,7 +101,8 @@ class Greedy_algo():
 
         return new_station
 
-    def look_forward(self, trajectory):
+    @staticmethod
+    def look_forward(network, trajectory, available_connections):
         """
         Look forward from the current station, gives score to a connection in the future if connection is undriven
         Args: 
@@ -108,76 +113,74 @@ class Greedy_algo():
 
         #retrieve the current station and its potential connections, init score list
         current_station = trajectory.stations[-1]
-        potential_connections = self.available_connections[current_station]
+        potential_connections = available_connections[current_station]
         scores_list = []
 
         #copy the used_dict, keep track of potential use of connections
-        used = copy.copy(self.network.used)
+        used = copy.copy(network.used)
 
         #loop over all potential connections of the current station
         for potential in potential_connections:
             potential_time = trajectory.time + potential.time
 
-            """if potential_time < self.network.max_trajectory_time:"""
-
             #keep track of the time the potential connections would add to the network, init score of one potential
             score = 0
 
             #check if potential is used, if not, set to True, check if time with this potential would not exceed max time 
-            if used[potential] == 0 and potential_time <= self.network.max_trajectory_time:
+            if used[potential] == 0 and potential_time <= network.max_trajectory_time:
                     score += 4
                     used[potential] += 1
         
             #retrieve the potentials of the potential, i.e. the first_gen_potentials
-            first_gen_station = self.determine_new_station(current_station, potential)
-            first_gen_potentials = self.available_connections[first_gen_station]
+            first_gen_station = Greedy_algo.determine_new_station(current_station, potential)
+            first_gen_potentials = available_connections[first_gen_station]
 
             #loop over the first_gen_potentials
             for first_gen_potential in first_gen_potentials:
                 potential_time += first_gen_potential.time
 
                 #check if potential is used, if not, set to True, check if time with this potential would not exceed max time 
-                if used[first_gen_potential] == 0 and potential_time < self.network.max_trajectory_time:
+                if used[first_gen_potential] == 0 and potential_time < network.max_trajectory_time:
                     score += 3
                     potential_time += potential_time
                     used[first_gen_potential] += 1
 
 
                 """
-                #retrieve potentials of potentials of potentials i.e. second_gen_potentials
-                second_gen_station = self.determine_new_station(first_gen_station, first_gen_potential)
-                second_gen_potentials = self.available_connections[second_gen_station]
+                # #retrieve potentials of potentials of potentials i.e. second_gen_potentials
+                # second_gen_station = Greedy_algo.determine_new_station(first_gen_station, first_gen_potential)
+                # second_gen_potentials = available_connections[second_gen_station]
 
-                #loop over the second_gen_potentials
-                for second_gen_potential in second_gen_potentials:
-                    potential_time += second_gen_potential.time
+                # #loop over the second_gen_potentials
+                # for second_gen_potential in second_gen_potentials:
+                #     potential_time += second_gen_potential.time
 
-                    #check if potential is used, if not, set to True, check if time with this potential would not exceed max time 
-                    if used[second_gen_potential] == 0 and potential_time <= self.network.max_trajectory_time:
-                        score += 2
-                        used[second_gen_potential] += 1
+                #     #check if potential is used, if not, set to True, check if time with this potential would not exceed max time 
+                #     if used[second_gen_potential] == 0 and potential_time <= network.max_trajectory_time:
+                #         score += 2
+                #         used[second_gen_potential] += 1
                 
-                    #retrieve potentials of potentials of potentials of potentials, i.e. third_gen_potentials
-                    thrird_gen_station = self.determine_new_station(second_gen_station, second_gen_potential)
-                    third_gen_potentials = self.available_connections[thrird_gen_station]
+                #     #retrieve potentials of potentials of potentials of potentials, i.e. third_gen_potentials
+                #     thrird_gen_station = Greedy_algo.determine_new_station(second_gen_station, second_gen_potential)
+                #     third_gen_potentials = available_connections[thrird_gen_station]
 
-                    #loop over third_gen_potentials
-                    for third_gen_potential in third_gen_potentials:
-                        potential_time += third_gen_potential.time
+                #     #loop over third_gen_potentials
+                #     for third_gen_potential in third_gen_potentials:
+                #         potential_time += third_gen_potential.time
 
-                        #check if potential is used, if not, set to True, check if time with this potential would not exceed max time 
-                        if used[third_gen_potential] == 0 and potential_time <= self.network.max_trajectory_time:
-                            score += 1
-                            used[third_gen_potential] += 1
+                #         #check if potential is used, if not, set to True, check if time with this potential would not exceed max time 
+                #         if used[third_gen_potential] == 0 and potential_time <= network.max_trajectory_time:
+                #             score += 1
+                #             used[third_gen_potential] += 1
                         
-                        #reset third_gen_potential attributes after checking 
-                        used[third_gen_potential] = False
-                        potential_time -= third_gen_potential.time
+                #         #reset third_gen_potential attributes after checking 
+                #         used[third_gen_potential] = False
+                #         potential_time -= third_gen_potential.time
                     
-                    #reset second_gen_potential attributes after checking branch
-                    used[second_gen_potential] -= 1
-                    potential_time -= second_gen_potential.time
-                    """
+                #     #reset second_gen_potential attributes after checking branch
+                #     used[second_gen_potential] -= 1
+                #     potential_time -= second_gen_potential.time
+                """  
 
 
 
@@ -197,13 +200,14 @@ class Greedy_algo():
         index_max = max(range(len(scores_list)), key=scores_list.__getitem__)
         potential_connection = potential_connections[index_max]
 
-        #TODO: check if connection with highest score does not make time in trajectory exceed max time
-        if (trajectory.time + potential_connection.time) < self.network.max_trajectory_time:
+        #check if connection with highest score does not make time in trajectory exceed max time
+        if (trajectory.time + potential_connection.time) < network.max_trajectory_time:
             return potential_connection
         else:
             return None
         
-    def pick_connection(self, available_connections, trajectory):
+    @staticmethod
+    def pick_connection(network, trajectory, available_connections):
         """
         Pick connection based on criteria;
         - time of trajectory does not exceed max
@@ -227,12 +231,13 @@ class Greedy_algo():
             available_connections_copy.remove(potential_connection)
 
             #check criteria
-            if (trajectory.time + potential_connection.time) < self.network.max_trajectory_time and potential_connection != trajectory.route[-1]:
+            if (trajectory.time + potential_connection.time) < network.max_trajectory_time and potential_connection != trajectory.route[-1]:
 
                 chosen = True
                 return potential_connection
-
-    def create_trajectory(self, trajectory_count):
+            
+    @staticmethod
+    def create_trajectory(network, trajectory_count, available_connections, availables_copy, previous_start):
         """
         Create a trajectory by sequencing connections
         Args:
@@ -246,53 +251,52 @@ class Greedy_algo():
         trajectory.route = [None]
 
         #add trajectory to the network
-        self.network.add_trajectory(trajectory)
+        network.add_trajectory(trajectory)
 
         #pick starting station and connection
         while len(trajectory.stations) == 0:
 
-            start_station = self.pick_start_station()
-
+            start_station, previous_start = Greedy_algo.pick_start_station(network, availables_copy, previous_start)
             trajectory.stations.append(start_station)
             
-            # start_available_connections = self.available_connections[start_station]
-            # start_connection = self.pick_connection(start_available_connections, trajectory)
+            # start_available_connections = available_connections[start_station]
+            # start_connection = Greedy_algo.pick_connection(network, trajectory, start_available_connections)
             
-            start_connection = self.look_forward(trajectory)
+            start_connection = Greedy_algo.look_forward(network, trajectory, available_connections)
 
             #update trajectory if startstation and connection are not None, else remove start station
             if start_connection != None:
-                current_station = self.determine_new_station(start_station, start_connection)
+                current_station = Greedy_algo.determine_new_station(start_station, start_connection)
                 trajectory.stations.append(current_station)
                 trajectory.route.append(start_connection)
                 trajectory.time += start_connection.time
-                self.network.used[start_connection] += 1
+                network.used[start_connection] += 1
 
             else:
                 trajectory.stations.remove(start_station)                
 
         #add new connection by looping while trajectory time does not exceed max time       
-        while trajectory.time < self.network.max_trajectory_time:
+        while trajectory.time < network.max_trajectory_time:
 
             current_station = trajectory.stations[-1]
 
-            # current_available_connections = self.available_connections[current_station]
-            # new_connection = self.pick_connection(current_available_connections, trajectory)
+            # current_available_connections = available_connections[current_station]
+            # new_connection = Greedy_algo.pick_connection(network, trajectory, current_available_connections)
             
-            new_connection = self.look_forward(trajectory)
+            new_connection = Greedy_algo.look_forward(network, trajectory, available_connections)
 
             #update trajectory if startstation and connection are not None, else remove start station
             if new_connection != None:
-                new_station = self.determine_new_station(current_station, new_connection)
+                new_station = Greedy_algo.determine_new_station(current_station, new_connection)
                 trajectory.stations.append(new_station)
                 trajectory.route.append(new_connection)
                 trajectory.time += new_connection.time
-                self.network.used[new_connection] += 1
+                network.used[new_connection] += 1
 
             else:
                 break
     
-        return trajectory
+        return trajectory, previous_start
 
     def create_network(self):
         """
@@ -308,19 +312,25 @@ class Greedy_algo():
 
         #define how many times to keep trying to add a trajectory 
         current_iteration = 0
-        max_iterations = 10
+        max_iterations = 3
         traj_count = 0
+        previous_start = None
+        available_connections = self.network.available_connections
+        availables_copy = copy.copy(available_connections)
+
                 
         #loop while criteria for a new trajectory are fulfilled (iterations, max trajectories)
         while current_iteration < max_iterations and len(self.network.trajectories) < self.network.max_trajectories:
            
             #take score before, create and add a trajectory and take score after
-            score_before = self.network.calculate_score()
-            trajectory = self.create_trajectory(trajectory_count)
-            score_after = self.network.calculate_score()
+            score_before = self.network.get_score()
+            trajectory, previous_start = Greedy_algo.create_trajectory(self.network, trajectory_count, available_connections, availables_copy, previous_start)
+            trajectory.route.remove(None)
+            score_after = self.network.get_score()
 
             #remove trajectory if score did not increase
             if score_before >= score_after:
+
                 current_iteration += 1
 
                 self.network.trajectories.remove(trajectory)

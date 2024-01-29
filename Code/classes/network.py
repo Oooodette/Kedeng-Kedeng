@@ -3,6 +3,7 @@ from .connection import Connection
 from .trajectory import Trajectory
 import pandas as pd
 import random
+
 class Network():
     """
     Class Network: create Network object;

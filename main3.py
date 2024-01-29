@@ -1,9 +1,12 @@
 from code.classes import Station, Connection, Trajectory, Network
 from code.algorithms.random_algo import Random_algo
 from code.algorithms.greedy_algo import Greedy_algo
-# from code.visualize import visualize as vis
 from code.visualize import new_visualize as vis
 import copy
+import pandas as pd
+import random
+
+# random.seed(2)
 
 #defining parameters for different datasets
 max_trajectories_holland = 7
@@ -18,11 +21,13 @@ if __name__ == "__main__":
     iterations = 0
     score = 0
 
-    #looping until criteria are met
-    # while score < minimal_score:
-    network = Network('data\ConnectiesNationaal.csv', 'data\StationsNationaal.csv', max_trajectories_nl, max_trajectory_time_nl)
+    connections_df = pd.read_csv('data\ConnectiesNationaal.csv')
+    stations_df = pd.read_csv('data\StationsNationaal.csv')
+
+    network = Network(connections_df, stations_df, max_trajectories_nl, max_trajectory_time_nl)
+    
     #network = Network()
-    for i in range(10000):
+    for i in range(1000):
         greedy = Greedy_algo(network)
 
         # Create network from our data
@@ -38,24 +43,20 @@ if __name__ == "__main__":
         iterations += 1
 
     nr_traj = len(final_network.trajectories)
-    fraction = sum(final_network.used.values()) / len(final_network.used)
+    used_connections = [connection for connection, value in final_network.used.items() if value != 0]
+    fraction = (len(used_connections)) / len(final_network.connections)
 
     #printing #iterations, number of trajectories and score of the network
     print(f'number of iterations: {iterations}')
     print(f'number of trajectories in network: {nr_traj}')
     print(f'score of the network {score}')
     print(f'fraction of driven connections: {fraction}')
+    print(f'times connections are used: {final_network.used.values()})')
 
     #explicitly save the network that fulfills the criteria
     final_network.save_network()
 
     #visualize
-    vis.plot_all(final_network.stations_df, final_network.connections_df, 'data\gadm41_NLD_1.json', final_network.used, final_network.trajectories, final_network.stations)
-    
-    # vis.visualize_stations_connections(test_network.stations_df, test_network.connections_df)
-    # vis.visualize_network(test_network.stations_df, test_network.connections_df, 'data\output.csv')
-
-    # vis.plot_netherlands()
-    # vis.plot_connections()
+    # vis.plot_all(final_network.stations, final_network.connections, 'data\gadm41_NLD_1.json', final_network.used, final_network.trajectories, final_network.stations)
     
 
