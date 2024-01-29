@@ -1,5 +1,5 @@
 from ..algorithms.random_algo import Random_algo
-from ..classes.network import Network
+from ..classes.network import Network, Trajectory
 import matplotlib.pyplot as plt
 import random
 
@@ -42,44 +42,70 @@ class Hillclimber():
     
     def add(self, new_trajectory):
         """
-        Adds random trajectory to a network and checks whether score improves. If score does not improve, it removes the trajectory and
-        tries another one, for self.attempts amount of times
+        Adds random trajectory to a network instance.
+        Args: 
+        - new_trajectory(instance of Trajectory class): trajectory needs to be added
         Returns:
-        - self.network(instance of network class): adjusted network with added trajectories
+        - new_trajectory(instance of Trajectory class): trajectory that was added.
         """
   
         self.network.add_trajectory(new_trajectory) 
 
         return new_trajectory
     
-    def remove(self, trajectory, undo = False):
+    def remove(self, trajectory: Trajectory , undo = False):
+        """
+        Removes trajectory from trajectory list of network instance. 
+        Args:
+         trajectory(instancee of Trajectory class): trajectory to be removed if not random (see below)
+         undo(bool): represents whether the action was an initial action, or the consequence of an addition that gave no score improvement.
+                    default = False, meaning it is an initial action. In that case, a random trajectory from the list is picked to be removed.
+        Returns: 
+        - trajectory(instance of Trajectory class): trajectory that was removed)
+        """
+        # check whether this action was because of an earlier addition
         if not undo:
             pick = random.randint(0,len(self.network.trajectories)-1)
             trajectory = self.network.trajectories[pick]
 
-        self.network.trajectories.remove(trajectory)
+        self.network.remove_trajectory(trajectory)
 
         return trajectory
         
 
-    def replace(self, trajectory):
+    def replace(self, add_trajectory, remove_trajectory):
 
-        trajectory1, changed_list1 = self.remove()
-        trajectory2, changed_list2 = self.add(trajectory)
+        trajectory1 = self.remove(remove_trajectory)
+        trajectory2 = self.add(add_trajectory)
 
-        return trajectory1, trajectory2, changed_list1, changed_list2
+        return trajectory1, trajectory2
 
     
     def pick_action(self):
-        
+        """
+        Randomly select either add, remove or replace as next action to adapt network.
+        Returns: 
+        - action(str): name of action that is going to be performed.
+        """
+    
         actionlist = ['add', 'remove', 'replace']
         number = random.randint(0,1)
 
         return actionlist[number]
     
     def act(self, action, trajectory):
+        """
+        Add, remove or replace trajectories from a network instance. 
+        Args: 
+        - action(str): name of action that needs to be done
+        - trajectory: trajectory that the change needs to be applied to
+        Returns: 
+        - trajectory(instance of Trajectory class): trajectory that was changed.
+        - change(bool): variable to indicate whether anything was changed.
+        """
         change = False
 
+        # determine which action needs to be taken and if number of trajectories will stay between limits
         if action == 'add' and len(self.network.trajectories) < self.network.max_trajectories:
             self.add(trajectory)
             change = True
@@ -108,22 +134,25 @@ class Hillclimber():
         else:
             trajectory = self.replace()
         
-        return trajectory
+        return trajectory 
 
     def change_used_connections(self, action, connection_list):
-
+        """
+        Updates the used dictionary in network with the connections from the adapted trajectories list. 
+        Args: 
+        - action(str): name of action that was taken
+        - connection_list(list): list of connections that was changed 
+        """
         for connection in connection_list:
             if action == 'add':
                 self.network.used[connection] += 1
             
             if action == 'remove':
                 self.network.used[connection] -= 1
-    
-        return 
+
         
     def run(self):
-        print('old_score', self.network.quality_network)
-        print('trajectories', len(self.network.trajectories))
+        print('old_score', self.network.get_score())
         tries = 0 
         previous_score = self.network.get_score()
         
@@ -131,18 +160,13 @@ class Hillclimber():
             new_trajectory = Random_algo.create_trajectory(self.network)  
             action = self.pick_action()
             trajectory, change = self.act(action, new_trajectory)
-            # save changes so you can use them in used dictionary, to calculate correct score.
-            # self.change_used_connections(action, trajectory.route)
-            print(f'score after {action}:{self.network.get_score()}')
-            
-            if not self.improving(previous_score):
-                print('score not improved')
+ 
+            if not self.improving(previous_score): 
                 if change:
                     self.undo(action, trajectory)
-                    print(f'score after opposite action: {self.network.get_score()}')
                     tries += 1
 
             previous_score = self.network.get_score()
-        
+        print('new_score', self.network.get_score())
         return self.network
 
