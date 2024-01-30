@@ -25,7 +25,7 @@ if __name__ == "__main__":
     #looping until criteria are met
     # while score < minimal_score:
     network = Network(connections_df, stations_df, max_trajectories_nl, max_trajectory_time_nl)
-    evo_algo = Evolution_algo(network, 10)
+    evo_algo = Evolution_algo(network, 1)
 
     # Create network from our data
     test_network = evo_algo.last_man_standing()
@@ -42,7 +42,6 @@ if __name__ == "__main__":
 
     #explicitly save the network that fulfills the criteria
     network.save_network()
-    print(test_network.used)
     #visualize
     vis.plot_all(stations_df, connections_df, 'data\gadm41_NLD_1.json', test_network.used, test_network.trajectories, test_network.stations)
     
