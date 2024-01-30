@@ -79,7 +79,10 @@ class Hillclimber():
         add_traj = {}
 
         for x in range(10):
-            trajectory = Random_algo.create_trajectory(self.network) 
+            used_copy = self.network.used.copy()
+            # print('before', sum(self.network.used.values()))
+            trajectory = Greedy_algo.create_trajectory(self.network, random.randint, used_copy) 
+            # print('after', sum(self.network.used.values()))
             used_connections_traj = [connection for connection in  trajectory.route if self.network.used[connection] == 0]
             used_connections_netw = [connection for connection, value in self.network.used.items() if value != 0] 
             all_connections = used_connections_traj + used_connections_netw 
@@ -176,6 +179,7 @@ class Hillclimber():
             action = self.pick_action()
             add_traj, remove_traj, change = self.act(action)
             # print(f'after{action}: {self.network.get_score()}')    
+            
             if not self.improving(previous_score): 
                 
                 if change:
@@ -186,9 +190,10 @@ class Hillclimber():
             previous_score = self.network.get_score()
             
             score_list.append(previous_score)
-        # print('new_score', self.network.get_score())
-        # plt.plot(score_list)
-        # plt.show()
+        print('new_score', self.network.get_score())
+        print(len)
+        plt.plot(score_list)
+        plt.show()
 
         return self.network
 
