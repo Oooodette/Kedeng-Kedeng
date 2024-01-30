@@ -7,29 +7,76 @@ from ..classes.network import Network
 from itertools import combinations
 
 class Evolution_algo():
+    """
+    Class evolution algo that creates a Network using an evolution algorithm 
 
+    Attributes:
+    - size_generation (integer of the generation size)
+    - group_size (integer of the group size)
+    - number_of_iterations (float of the amount of iterations)
+    - parents (list of networks)
+    - connections (list of connections)
+    - stations (list of stations)
+
+    Methods:
+    - create_groups - split list of networks in groups 
+    - create_win_chances - creates a list of chances a network wins 
+    - save_parents_scores - saves the scores of the parent networks 
+    - survival_of_the_fittest - chooses the survivors based on the win chances 
+    - get_survivors - adds all the survivors to a list 
+    - choice_parent - chooses the parents that will reproduce 
+    - make_possible_networks - creates all possible networks from the parents and saves the best 
+    - create_offspring - creates offspring using the make_possible_networks method 
+    - create_generation - creates a generation from the offsprings 
+    - create_evolution - creates an evolution by making more generations 
+    - save_network_scores - saves the scores of the networks derived from the evolution 
+    - last_man_standing - picks the final best network 
+    """
     parents: List[Network]
 
+    
     def __init__(self, network, number_of_iterations):
-        self.size_generation = 96
+        """
+        Method that initializes the attributes network and number_of_iterations 
+        and creates a first generation of parents by using the random algorithm 
+
+        Args:
+        - network (instance): network of the Network class 
+        - number_of_iterations (integer): determines the amount of iterations 
+        """
+        self.size_generation = 24
+        self.group_size = 2
         self.number_of_iterations = number_of_iterations
         self.parents = []
+
+        # Make first generation of parents 
         for i in range(self.size_generation):
             network_copy = copy.deepcopy(network)
+
+            # Create a network using the random algorithm 
             random_algorithm = random_algo.Random_algo(network_copy)
             parent = random_algorithm.create_network()
             self.parents.append(parent)
-             
+
+        self.connections = network.connections 
+        self.stations = network.stations 
+
     def create_groups(self):
-        group_size = 8
-        parents_copy = copy.deepcopy(self.parents)
+        """
+        Method that divides the networks in groups 
+
+        Args:
+        -
+        """
         self.groups = []
 
         for i in range(12):
-            group = random.sample(parents_copy, group_size)
+            group = random.sample(self.parents, self.group_size)
             self.groups.append(group)
-            for parent in group:
-                parents_copy.remove(parent)
+
+            # Remove the chosen networks from the list to avoid duplicate networks 
+            for network in group:
+                self.parents.remove(network)
 
     def create_win_chances(self):
         p = 0.8
@@ -37,7 +84,7 @@ class Evolution_algo():
 
         self.win_chances = []
 
-        for x in range(8):
+        for x in range(self.group_size):
             answer = p * ((1 - p)**x)
             number += answer 
             self.win_chances.append(number)
@@ -62,7 +109,6 @@ class Evolution_algo():
                 if self.win_chances[i] <= random_float <= self.win_chances[i+1]:
                     survivor = sorted_networks[i+1]
                     break
-        print(survivor.get_score())
         return survivor 
     
     def get_survivors(self):
@@ -75,49 +121,54 @@ class Evolution_algo():
             self.survivors.append(survivor)
 
     def choice_parents(self): 
-        copy_survivors = copy.deepcopy(self.survivors)
-        pick1 = random.randint(0, len(copy_survivors)-1)
-        parent1 = copy_survivors[pick1]
-        copy_survivors.remove(parent1)
+        parents = random.sample(self.survivors, 2)
 
-        pick2 = random.randint(0, len(copy_survivors)-1)
-        parent2 = copy_survivors[pick2]
-
-        copy_survivors.remove(parent2)
+        parent1 = parents[0]
+        parent2 = parents[1]
 
         return parent1, parent2 
-    
-    def determine_half_trajectories(self, parent):
-        vifty_chance = random.randint(1, 2)
-        if len(parent.trajectories) % 2 == 0:
-            pick = len(parent.trajectories) / 2 
+  
+    def make_possible_networks(self, all_trajectories, max_trajectories, max_trajectory_time):
+        highestScore = float("-inf")
+        bestNetwork = None
+        new_network = Network(self.connections, self.stations, max_trajectories, max_trajectory_time)
         
+        if len(all_trajectories) > max_trajectories:
+            max_amount = max_trajectories 
         else:
-            if vifty_chance == 1:
-                pick = len(parent.trajectories) // 2
-            else:
-                pick = (len(parent.trajectories) // 2) + 1
-        
-        return int(pick)
-    
+            max_amount = len(all_trajectories)
+
+        for r in range(1, max_amount):
+            print("We zijn nu bij aantal trajecten:", r)
+            count = 0
+            combination = (list(combi) for combi in combinations(all_trajectories, r))
+            for comba in combination:
+                new_network.trajectories = comba
+                new_network.used = new_network.connections_used()
+
+                for traject in new_network.trajectories:
+                    for connection in traject.route:
+
+                        if connection in new_network.used:
+                            new_network.used[connection] += 1
+                        else:
+                            new_network.used[connection] = 1
+                
+                current_score = new_network.get_score()
+
+                if current_score > highestScore: 
+                    print(highestScore)
+                    highestScore = current_score 
+                    bestNetwork = new_network 
+              
+        return bestNetwork
+                                
+
     def create_offspring(self, parent1: Network, parent2: Network):
     
-        pick1 = self.determine_half_trajectories(parent1)
-        pick2 = self.determine_half_trajectories(parent2)
-
-        parent1_trajectories = random.sample(parent1.trajectories, pick1)
-        parent2_trajectories = random.sample(parent2.trajectories, pick2)
-
-        all_trajectories = parent1_trajectories + parent2_trajectories
-
-        final_network = Network(parent1.connections, parent1.stations, parent1.max_trajectories, parent1.max_trajectory_time)
-        final_network.trajectories = all_trajectories
-        
-        for trajectory in final_network.trajectories:
-            for connection in trajectory.route:
-                print(count)
-                final_network.used[connection] += 1
-                count += 1
+        all_trajectories = parent1.trajectories + parent2.trajectories
+    
+        final_network = self.make_possible_networks(all_trajectories, parent1.max_trajectories, parent1.max_trajectory_time)
                 
         return final_network 
 
@@ -133,7 +184,10 @@ class Evolution_algo():
         self.parents = new_parents
 
     def create_evolution(self):
+        count = 0
         for i in range(self.number_of_iterations):
+            count += 1
+            print("iteratie:", count)
             self.create_groups()
             self.get_survivors()
             self.create_generation()

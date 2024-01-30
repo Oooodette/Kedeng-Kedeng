@@ -11,3 +11,9 @@ class Connection():
         self.time = time
         self.station1 = station1
         self.station2 = station2
+
+    def __hash__(self):
+        return hash(str(self))
+    
+    def __repr__(self):
+        return str(self.station1) + str(self.station2)
