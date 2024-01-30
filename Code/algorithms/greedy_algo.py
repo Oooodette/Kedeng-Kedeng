@@ -176,6 +176,8 @@ class Greedy_algo():
         #increase the used count of the connection
         used[new_connection] += 1
 
+        return used
+
     @staticmethod
     def create_trajectory(network: Network, trajectory_count, used):
         """
@@ -198,7 +200,7 @@ class Greedy_algo():
 
         #update trajectory if first connection is not None, else remove start station
         if start_connection != None:
-            Greedy_algo.update_trajectory(network, trajectory, start_station, start_connection, used)
+            used = Greedy_algo.update_trajectory(network, trajectory, start_station, start_connection, used)
 
         else:
             trajectory.stations.remove(start_station)                
@@ -211,7 +213,7 @@ class Greedy_algo():
 
             #update trajectory attributes if startstation and connection are not None
             if new_connection != None:
-                Greedy_algo.update_trajectory(network, trajectory, current_station, new_connection, used)
+                used = Greedy_algo.update_trajectory(network, trajectory, current_station, new_connection, used)
             else:
                 break
     
