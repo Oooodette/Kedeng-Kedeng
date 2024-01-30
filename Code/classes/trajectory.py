@@ -15,3 +15,9 @@ class Trajectory():
         self.time = time
         self.route = route
         self.color = None
+
+    def __hash__(self):
+        return hash(str(self))
+    
+    def __repr__(self):
+        return str(self.stations) 

@@ -24,7 +24,7 @@ if __name__ == "__main__":
 
     #looping until criteria are met
     # while score < minimal_score:
-    network = Network(connections_df, stations_df, max_trajectories_nl, max_trajectory_time_nl)
+    # network = Network(connections_df, stations_df, max_trajectories_nl, max_trajectory_time_nl)
 
     #looping until criteria are met
     # while score < minimal_score:
@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
     test_network = random_algo.create_network()
 
-    hillclimber = Hillclimber(test_network, 100)
+    hillclimber = Hillclimber(test_network, 10)
 
     newie = hillclimber.run() 
 
