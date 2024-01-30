@@ -1,5 +1,5 @@
 from ..algorithms.random_algo import Random_algo
-from ..algorithms.greedy_algo import greedy_algo
+from ..algorithms.greedy_algo import Greedy_algo
 from ..classes.network import Network, Trajectory
 import matplotlib.pyplot as plt
 import random
@@ -44,8 +44,10 @@ class Hillclimber():
         Args:
         - trajectory(instance of Trajectory class): trajectory to be removed.
         """
+
         self.network.remove_trajectory(trajectory) 
-        self.change_used_connections('remove', trajectory.route)
+        # self.change_used_connections('remove', trajectory.route)
+
 
     def add_and_update(self, trajectory):
         """
@@ -54,7 +56,7 @@ class Hillclimber():
         - trajectory(instance of Trajectory class): trajectory to be added.
         """
         self.network.add_trajectory(trajectory)
-        self.change_used_connections('add', trajectory.route)
+        # self.change_used_connections('add', trajectory.route)
 
     def replace(self, add_traj, remove_traj):
         self.remove_and_update(remove_traj)
@@ -68,7 +70,7 @@ class Hillclimber():
         """
     
         actionlist = ['add', 'remove', 'replace']
-        number = random.randint(0,1)
+        number = random.randint(0,2)
 
         return actionlist[number]
     
@@ -112,7 +114,9 @@ class Hillclimber():
         """
         change = False
         # create random trajectory to add
-        add_traj = self.pick_best_trajectory(True)
+
+        add_traj =Greedy_algo.create_trajectory(self.network, 'x')
+        #self.pick_best_trajectory(True)
         
 
         # select random trajectory to be removed
@@ -155,8 +159,9 @@ class Hillclimber():
         """
         for connection in connection_list:
             if action == 'add':
+                
                 self.network.used[connection] += 1
-            
+                
             if action == 'remove':
                 self.network.used[connection] -= 1
 
@@ -165,21 +170,19 @@ class Hillclimber():
 
         tries = 0 
         previous_score = self.network.get_score()
-        while tries < self.attempts: 
+        while tries < self.attempts:
+            print('initial', self.network.get_score())    
             action = self.pick_action()
             add_traj, remove_traj, change = self.act(action)
-            print(action)
+            print(f'after{action}: {self.network.get_score()}')    
             if not self.improving(previous_score): 
                 
                 if change:
-                    print('worse', self.network.get_score())
+
                     self.undo(action, add_traj, remove_traj)
-            else:
-                print('improved!', self.network.get_score())
-            #     tries = 0
-            tries += 1
-            print(tries)
-            print('new_score', self.network.get_score())    
+                    print('after undo', self.network.get_score())
+                    tries +=1 
+           
             
             previous_score = self.network.get_score()
         print('new_score', self.network.get_score())
