@@ -21,13 +21,13 @@ if __name__ == "__main__":
     minimal_score = 8000
     iterations = 0
     score = 0
+    scores = []
 
     connections_df = pd.read_csv('data\ConnectiesNationaal.csv')
     stations_df = pd.read_csv('data\StationsNationaal.csv')
 
     network = Network(connections_df, stations_df, max_trajectories_nl, max_trajectory_time_nl)
     
-    #network = Network()
     for i in range(1000):
         greedy = Greedy_algo(network)
 
@@ -39,6 +39,7 @@ if __name__ == "__main__":
             final_network = test_network
             score = new_score
             print('new high')
+        scores.append(new_score)
 
         print(i, new_score)
 
@@ -52,7 +53,7 @@ if __name__ == "__main__":
     print(f'number of iterations: {iterations}')
     print(f'number of trajectories in network: {nr_traj}')
     print(f'score of the network: {score}')
-    # print(f'average score is: {sum(scores) / len(scores)}')
+    print(f'average score is: {sum(scores) / len(scores)}')
     print(f'fraction of driven connections: {fraction}')
 
     print(f'times connections are used: {times_used_list})')

@@ -170,7 +170,7 @@ class Greedy_algo():
         trajectory.time += new_connection.time
 
         #increase the used count of the connection
-        network.used[new_connection] += 1
+        # network.used[new_connection] += 1
 
     @staticmethod
     def create_trajectory(network: Network, trajectory_count):
@@ -185,7 +185,6 @@ class Greedy_algo():
         #create an 'empty' instance of a trajectory and add to network
         trajectory = Trajectory(trajectory_count, [], [], 0)
 
-        count = 0
         #init trajectory; pick starting station, add to trajectory, pick start connection
         start_station = Greedy_algo.pick_start_station(network)
         trajectory.stations.append(start_station)
@@ -235,14 +234,18 @@ class Greedy_algo():
             #take score before, create and add a trajectory and take score after
             score_before = self.network.get_score()
             trajectory = Greedy_algo.create_trajectory(self.network, trajectory_count)
-            self.network.add_trajectory(trajectory)
+            self.network.trajectories.append(trajectory)
             score_after = self.network.get_score()
 
             #remove trajectory if score did not increase, increase iteration
             if score_before >= score_after:
                 current_iteration += 1
-                self.network.remove_trajectory(trajectory)
-                
+                self.network.trajectories.remove(trajectory)
+
+                #reset the connections to be used one time less when trajectory is removed
+                for connection in trajectory.route:
+                    self.network.used[connection] -= 1
+
             else:
                 trajectory_count += 1
 
@@ -286,4 +289,8 @@ CODE FROM LOOK_FORWARD
                 #    potential_time -= second_gen_potential.time
 
 #####################################################################################################################################################
+"""
+"""
+average score is: 6354.455022471981
+average score is: 6752.964842696683
 """
