@@ -27,7 +27,7 @@ if __name__ == "__main__":
     network = Network(connections_df, stations_df, max_trajectories_nl, max_trajectory_time_nl)
     
     #network = Network()
-    for i in range(1000):
+    for i in range(100):
         greedy = Greedy_algo(network)
 
         # Create network from our data
@@ -35,7 +35,7 @@ if __name__ == "__main__":
         new_score = test_network.get_score()
 
         if new_score > score:
-            final_network = (test_network)
+            final_network = test_network
             score = new_score
             print('new high')
 
@@ -51,12 +51,16 @@ if __name__ == "__main__":
     print(f'number of trajectories in network: {nr_traj}')
     print(f'score of the network {score}')
     print(f'fraction of driven connections: {fraction}')
-    print(f'times connections are used: {final_network.used.values()})')
+
+    used_list = list(final_network.used.values())
+    print(f'times connections are used: {list(final_network.used.values())})')
+    print(f'max used connection: {max(used_list)}')
+    print(f'this is connection: {final_network.connections[used_list.index(max(used_list))].station1, final_network.connections[used_list.index(max(used_list))].station2}')
 
     #explicitly save the network that fulfills the criteria
     final_network.save_network()
 
     #visualize
-    # vis.plot_all(final_network.stations, final_network.connections, 'data\gadm41_NLD_1.json', final_network.used, final_network.trajectories, final_network.stations)
+    vis.plot_all(stations_df, connections_df, 'data\gadm41_NLD_1.json', final_network.used, final_network.trajectories, final_network.stations)
     
 
