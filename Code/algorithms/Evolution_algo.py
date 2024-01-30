@@ -6,6 +6,7 @@ from ..classes.network import Network
 
 import random 
 import copy 
+import math
 from itertools import combinations, islice
 
 class Evolution_algo():
@@ -28,6 +29,7 @@ class Evolution_algo():
     - get_survivors - adds all the survivors to a list 
     - choice_parent - chooses the parents that will reproduce
     - update_used_dictionary - updates the used dictionary of a given network  
+    - amount_of_possible_combinations - calculates the possible amount of combinations
     - make_possible_networks - creates all possible networks from the parents and saves the best 
     - create_offspring - creates offspring using the make_possible_networks method 
     - create_generation - creates a generation from the offsprings 
@@ -36,8 +38,8 @@ class Evolution_algo():
     - last_man_standing - picks the final best network 
     """
     parents: List[Network]
+    parent: Network 
 
-    
     def __init__(self, network, number_of_iterations):
         """
         Method that initializes the attributes network and number_of_iterations. 
@@ -146,7 +148,7 @@ class Evolution_algo():
                 if self.win_chances[i] <= random_float <= self.win_chances[i+1]:
                     survivor = sorted_networks[i+1]
                     break
-
+        print(survivor.get_score())
         return survivor 
     
     def get_survivors(self):
@@ -160,7 +162,7 @@ class Evolution_algo():
             group_scores = self.save_parents_scores(network_group)  
             survivor = self.survival_of_the_fittest(group_scores)
             self.survivors.append(survivor)
-
+        
     def choice_parents(self): 
         """
         Method that chooses two random parents from the list of survivors. 
@@ -187,6 +189,16 @@ class Evolution_algo():
 
         return network.used 
     
+    def amount_of_possible_combinations(self, n, r):
+        """
+        Method that calculates the possible amount of combinations.
+
+        Args:
+        - n(int): the length of the combinated trajectories from the parents 
+        - r(int): the amount of trajectories the combination consists of 
+        """
+        return math.factorial(n) // (math.factorial(r) * math.factorial(n - r))
+       
     def make_possible_networks(self, all_trajectories, max_trajectories, max_trajectory_time):
         """
         Method that makes possible combinations of trajectories of different lengths. 
@@ -214,13 +226,16 @@ class Evolution_algo():
         else:
             max_amount = len(all_trajectories)
 
+        # Determine the smallest possible amount of combinations consisting of one traject
+        smallest_combination_size = self.amount_of_possible_combinations(len(all_trajectories), 1)
+
         for r in range(1, max_amount):
             # Shuffle the trajectories so it won't make the same combination each iteration 
             random.shuffle(all_trajectories)
 
-            # Create a list of combinations for each length 
-            # Generates 27 possible combinations for each length because this is the minimum for length 1
-            combination = (list(combi) for combi in islice(combinations(all_trajectories, r), 27))
+            # Create a list of combinations for each length
+            # Generate amount of combinations of the smallest combination size 
+            combination = (list(combi) for combi in islice(combinations(all_trajectories, r), smallest_combination_size))
 
             for comb in combination:
                 best_network.trajectories = comb
