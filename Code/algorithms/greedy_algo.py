@@ -112,7 +112,7 @@ class Greedy_algo():
         # for key, value in network.used.items():
         #     used[key] = value
 
-        # used = copy.copy(network.used)
+        used = copy.copy(used)
 
         #loop over all potential connections of the current station
         for potential in potential_connections:
@@ -177,7 +177,7 @@ class Greedy_algo():
         used[new_connection] += 1
 
     @staticmethod
-    def create_trajectory(network: Network, trajectory_count):
+    def create_trajectory(network: Network, trajectory_count, used):
         """
         Create a trajectory by sequencing connections
         Args:
@@ -189,7 +189,7 @@ class Greedy_algo():
         #create an 'empty' instance of a trajectory and add to network
         trajectory = Trajectory(trajectory_count, [], [], 0)
 
-        used = copy.copy(network.used)
+        # used = copy.copy(used)
 
         #init trajectory; pick starting station, add to trajectory, pick start connection
         start_station = Greedy_algo.pick_start_station(network)
@@ -233,14 +233,16 @@ class Greedy_algo():
         current_iteration = 0
         max_iterations = 10
         traj_count = 0
+
+        used = copy.copy(self.network.used)
                 
         #loop while criteria for a new trajectory are fulfilled (iterations, max trajectories)
         while current_iteration < max_iterations and len(self.network.trajectories) < self.network.max_trajectories:
            
             #take score before, create and add a trajectory and take score after
             score_before = self.network.get_score()
-            
-            trajectory = Greedy_algo.create_trajectory(self.network, trajectory_count)
+
+            trajectory = Greedy_algo.create_trajectory(self.network, trajectory_count, used)
             for connection in trajectory.route:
                 self.network.used[connection] += 1
 
