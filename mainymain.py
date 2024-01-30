@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
     test_network = random_algo.create_network()
 
-    hillclimber = Hillclimber(test_network, 10)
+    hillclimber = Hillclimber(test_network, 2000)
 
     newie = hillclimber.run() 
 

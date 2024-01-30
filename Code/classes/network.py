@@ -138,8 +138,6 @@ class Network():
         - trajectory: an instance of the trajectory class 
         """
         self.trajectories.append(trajectory)
-        for connection in trajectory.route:
-            self.used[connection] += 1
 
     def remove_trajectory(self, trajectory):
         """
@@ -148,8 +146,6 @@ class Network():
         - trajectory: an instance of the trajectory class 
         """
         self.trajectories.remove(trajectory)
-        for connection in trajectory.route:
-            self.used[connection] -= 1
 
     def is_valid(self):
         """
