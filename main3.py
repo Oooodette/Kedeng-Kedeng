@@ -24,7 +24,6 @@ if __name__ == "__main__":
 
     connections_df = pd.read_csv('data\ConnectiesNationaal.csv')
     stations_df = pd.read_csv('data\StationsNationaal.csv')
-    # scores = []
 
     network = Network(connections_df, stations_df, max_trajectories_nl, max_trajectory_time_nl)
     
@@ -42,7 +41,6 @@ if __name__ == "__main__":
             print('new high')
 
         print(i, new_score)
-        # scores.append(new_score)
 
     nr_traj = len(final_network.trajectories)
     used_connections = [connection for connection, value in final_network.used.items() if value != 0]
@@ -60,9 +58,6 @@ if __name__ == "__main__":
     print(f'times connections are used: {times_used_list})')
     print(f'most times one connectionis used: {max(times_used_list)}')
     print(f'this is connection: {final_network.connections[times_used_list.index(max(times_used_list))].station1, final_network.connections[times_used_list.index(max(times_used_list))].station2}')
-
-    # plt.hist(scores, bins=1000)
-    # plt.show
 
     #explicitly save the network that fulfills the criteria
     final_network.save_network()
