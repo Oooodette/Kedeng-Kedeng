@@ -35,28 +35,28 @@ if __name__ == "__main__":
     # test_network = random_algo.create_network()
     # vis.plot_all(stations_df, connections_df, 'data\gadm41_NLD_1.json', test_network.used, test_network.trajectories, test_network.stations) 
     
-    hillclimber_list = []
-    count = 0
-    for x in range(1000):
-        print(count)
-        network = Network(connections_df, stations_df, max_trajectories_nl, max_trajectory_time_nl)
-        random_algo = Random_algo(network)
-    
-        test_network = random_algo.create_network()
-    
-        hillclimber = Hillclimber(test_network, 1000)
+    # hillclimber_list = []
+    # count = 0
+    # for x in range(1000):
+    #     print(count)
+    network = Network(connections_df, stations_df, max_trajectories_nl, max_trajectory_time_nl)
+    random_algo = Random_algo(network)
 
-        newie = hillclimber.run() 
+    test_network = random_algo.create_network()
 
-        score = newie.get_score()
+    hillclimber = Hillclimber(test_network, 100)
+
+    newie = hillclimber.run() 
+
+    score = newie.get_score()
      
-        hillclimber_list.append(score)
+        # hillclimber_list.append(score)
     
-        count += 1
+    #     count += 1
 
-    print(hillclimber_list)
-    plt.hist(hillclimber_list, bins = 1000)
-    plt.show()
+    # print(hillclimber_list)
+    # plt.hist(hillclimber_list, bins = 1000)
+    # plt.show()
 
   
     # hillclimber_solution = hillclimber.run()
@@ -79,7 +79,7 @@ if __name__ == "__main__":
     
     #visualize
     
-    # vis.plot_all(stations_df, connections_df, 'data\gadm41_NLD_1.json', newie.used, newie.trajectories, newie.stations)
+    vis.plot_all(stations_df, connections_df, 'data\gadm41_NLD_1.json', newie.used, newie.trajectories, newie.stations)
     # # vis.visualize_stations_connections(test_network.stations_df, test_network.connections_df)
     # # vis.visualize_network(test_network.stations_df, test_network.connections_df, 'data\output.csv')
 

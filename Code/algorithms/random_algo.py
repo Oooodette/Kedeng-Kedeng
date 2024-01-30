@@ -115,7 +115,7 @@ class Random_algo():
                 trajectory_stations.append(current_station)
                 trajectory_connections.append(new_connection) 
 
-                # update in used connections dictionary and update previous connection
+                # update previous connection
                 previous_connection = new_connection 
             
             # if no valid connection is found, break the loop
