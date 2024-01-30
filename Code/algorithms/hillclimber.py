@@ -1,4 +1,5 @@
 from ..algorithms.random_algo import Random_algo
+from ..algorithms.greedy_algo import greedy_algo
 from ..classes.network import Network, Trajectory
 import matplotlib.pyplot as plt
 import random
@@ -17,9 +18,9 @@ class Hillclimber():
         - replace: replace existing trajectory with new trajectory while score is improving
     """
     
-    def __init__(self, network: Network, attempts):
+    def __init__(self, network: Network, attempts) -> None:
         self.network = network
-        self.attempts = attempts
+        self.attempts = attempts 
     
     def improving(self, previous_score):
         return self.network.get_score() > previous_score
@@ -71,6 +72,34 @@ class Hillclimber():
 
         return actionlist[number]
     
+    def pick_best_trajectory(self, heuristic):
+        add_traj = {}
+
+        for x in range(10):
+            trajectory = Random_algo.create_trajectory(self.network) 
+            used_connections_traj = [connection for connection in  trajectory.route if self.network.used[connection] == 0]
+            used_connections_netw = [connection for connection, value in self.network.used.items() if value != 0] 
+            all_connections = used_connections_traj + used_connections_netw 
+            new_fraction = len(all_connections) / len(self.network.connections) 
+            possible_score= new_fraction * 10000 - (100 + trajectory.time)
+            
+            
+            if heuristic: 
+                available_connections_start = self.network.available_connections[trajectory.stations[0]] 
+                available_connections_end = self.network.available_connections[trajectory.stations[-1]]
+                open_connections_start = [connection for connection in available_connections_start if self.network.used[connection] == 0]
+                open_connections_end = [connection for connection in available_connections_end if self.network.used[connection] == 0] 
+                if len(open_connections_start) % 2 != 0 or len(open_connections_end) % 2 != 0:
+                    possible_score += 1000
+
+            add_traj[trajectory] = possible_score
+
+        best_trajectory =  max(add_traj, key=add_traj.get) 
+
+        return best_trajectory
+
+        
+
     def act(self, action):
         """
         Add, remove or replace trajectories from a network instance. 
@@ -83,7 +112,8 @@ class Hillclimber():
         """
         change = False
         # create random trajectory to add
-        add_traj = Random_algo.create_trajectory(self.network) 
+        add_traj = self.pick_best_trajectory(True)
+        
 
         # select random trajectory to be removed
         if len(self.network.trajectories) > 0: 
@@ -131,25 +161,28 @@ class Hillclimber():
                 self.network.used[connection] -= 1
 
     def run(self):
-        # print('old_score', self.network.get_score())
+        print('old_score', self.network.get_score())
 
         tries = 0 
         previous_score = self.network.get_score()
         while tries < self.attempts: 
             action = self.pick_action()
             add_traj, remove_traj, change = self.act(action)
-
+            print(action)
             if not self.improving(previous_score): 
+                
                 if change:
+                    print('worse', self.network.get_score())
                     self.undo(action, add_traj, remove_traj)
-            
+            else:
+                print('improved!', self.network.get_score())
+            #     tries = 0
             tries += 1
+            print(tries)
+            print('new_score', self.network.get_score())    
             
             previous_score = self.network.get_score()
-            
-           
-            
-            # print('new_score', self.network.get_score())
+        print('new_score', self.network.get_score())
 
         return self.network
 

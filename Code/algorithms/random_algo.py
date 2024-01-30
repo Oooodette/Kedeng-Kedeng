@@ -115,7 +115,7 @@ class Random_algo():
                 trajectory_stations.append(current_station)
                 trajectory_connections.append(new_connection) 
 
-                # update in used connections dictionary and update previous connection
+                # update previous connection
                 previous_connection = new_connection 
             
             # if no valid connection is found, break the loop
@@ -137,7 +137,7 @@ class Random_algo():
         Returns:
         - network(network object) - attribute of algorithm object
         """
-        nr_trajectories = 1 #random.randint(0, self.network.max_trajectories)
+        nr_trajectories = random.randint(0, self.network.max_trajectories)
         # new_trajectory = self.create_trajectory(self.station_list, self.connection_list)
         counter = 1
         
