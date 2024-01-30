@@ -21,3 +21,6 @@ class Trajectory():
     
     def __repr__(self):
         return str(self.stations) 
+    
+    def __eq__(self, other):
+        return self.__class__ == other.__class__ and self.route == other.route

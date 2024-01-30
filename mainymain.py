@@ -41,11 +41,11 @@ if __name__ == "__main__":
     # for x in range(1000):
     #     print(count)
     network = Network(connections_df, stations_df, max_trajectories_nl, max_trajectory_time_nl)
-    greedy_algo = Greedy_algo(network)
+    random_algo = Random_algo(network)
 
-    test_network = greedy_algo.create_network()
+    test_network = random_algo.create_network()
     vis.plot_all(stations_df, connections_df, 'data\gadm41_NLD_1.json', test_network.used, test_network.trajectories, test_network.stations) 
-    hillclimber = Hillclimber(test_network, 200)
+    hillclimber = Hillclimber(test_network, 1000)
 
     newie = hillclimber.run() 
 
