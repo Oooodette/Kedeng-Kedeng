@@ -29,7 +29,7 @@ if __name__ == "__main__":
     network = Network(connections_df, stations_df, max_trajectories_nl, max_trajectory_time_nl)
     
     #network = Network()
-    for i in range(100000):
+    for i in range(1000):
         greedy = Greedy_algo(network)
 
         # Create network from our data
@@ -54,7 +54,7 @@ if __name__ == "__main__":
     print(f'number of iterations: {iterations}')
     print(f'number of trajectories in network: {nr_traj}')
     print(f'score of the network: {score}')
-    print(f'average score is: {sum(scores) / len(scores)}')
+    # print(f'average score is: {sum(scores) / len(scores)}')
     print(f'fraction of driven connections: {fraction}')
 
     print(f'times connections are used: {times_used_list})')

@@ -243,9 +243,9 @@ class Greedy_algo():
                 current_iteration += 1
                 self.network.remove_trajectory(trajectory)
 
-                # #reset the connections to unused when trajectory is removed
-                # for connection in trajectory.route:
-                #     self.network.used[connection] -= 1
+                #reset the connections to unused when trajectory is removed
+                for connection in trajectory.route:
+                    self.network.used[connection] -= 1
 
             else:
                 trajectory_count += 1
