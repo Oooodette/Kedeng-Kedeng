@@ -200,8 +200,7 @@ class Greedy_algo():
         """
         
         #create an 'empty' instance of a trajectory and add to network
-        trajectory = Trajectory(trajectory_count, [], 0)
-        trajectory.route = [None]
+        trajectory = Trajectory(trajectory_count, [], [], 0)
 
         #retrieve avialable connections
         available_connections = network.available_connections
@@ -271,12 +270,6 @@ class Greedy_algo():
             #take score before, create and add a trajectory and take score after
             score_before = self.network.get_score()
             trajectory = Greedy_algo.create_trajectory(self.network, trajectory_count)
-            
-            
-            #############################
-            trajectory.route.remove(None)
-            ##############################
-            
             score_after = self.network.get_score()
 
             #remove trajectory if score did not increase, increase iteration

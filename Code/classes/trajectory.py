@@ -9,9 +9,9 @@ class Trajectory():
     - route (list): list of the connections of the trajectory 
     - color (str): starts of as None, but is assigned a color during visualize
     """
-    def __init__(self, name, stations, time):
+    def __init__(self, name, stations, route, time):
         self.name = name
         self.stations = stations
         self.time = time
-        self.route = []
+        self.route = route
         self.color = None
