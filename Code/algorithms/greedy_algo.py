@@ -107,11 +107,6 @@ class Greedy_algo():
         potential_connections = network.available_connections[current_station]
         scores_list = []
 
-        #copy the used_dict, keep track of potential use of connections
-        # used = {}
-        # for key, value in network.used.items():
-        #     used[key] = value
-
         used = copy.copy(used)
 
         #loop over all potential connections of the current station
@@ -233,7 +228,7 @@ class Greedy_algo():
 
         #define how many times to keep trying to add a trajectory 
         current_iteration = 0
-        max_iterations = 10
+        max_iterations = 3
         traj_count = 0
 
         used = copy.copy(self.network.used)
@@ -265,47 +260,3 @@ class Greedy_algo():
                 trajectory_count += 1
 
         return self.network
-
-
-
-
-"""
-#####################################################################################################################################################
-CODE FROM LOOK_FORWARD
-
-# #loop over the second_gen_potentials
-                # for second_gen_potential in second_gen_potentials:
-                #     potential_time += second_gen_potential.time
-
-                #     #check if potential is used, if not, increase with one, check if time with this potential would not exceed max time 
-                #     if used[second_gen_potential] == 0 and potential_time <= network.max_trajectory_time:
-                #         score += 3
-                #         used[second_gen_potential] += 1
-                
-                #     #retrieve potentials of potentials of potentials of potentials, i.e. third_gen_potentials
-                #     thrird_gen_station = Greedy_algo.determine_new_station(second_gen_station, second_gen_potential)
-                #     third_gen_potentials = network.available_connections[thrird_gen_station]
-
-                #     #loop over third_gen_potentials
-                #     for third_gen_potential in third_gen_potentials:
-                #         potential_time += third_gen_potential.time
-
-                #         #check if potential is used, if not, increase with one, check if time with this potential would not exceed max time 
-                #         if used[third_gen_potential] == 0 and potential_time <= network.max_trajectory_time:
-                #             score += 1
-                #             used[third_gen_potential] += 1
-                        
-                #         #reset third_gen_potential attributes after checking 
-                #         used[third_gen_potential] = -= 1
-                #         potential_time -= third_gen_potential.time
-                    
-                #    #reset second_gen_potential attributes after checking branch
-                #    used[second_gen_potential] -= 1
-                #    potential_time -= second_gen_potential.time
-
-#####################################################################################################################################################
-"""
-"""
-average score is: 6354.455022471981
-average score is: 6752.964842696683
-"""
