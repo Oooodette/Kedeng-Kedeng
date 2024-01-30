@@ -48,11 +48,10 @@ class Evolution_algo():
         self.group_size = 2
         self.number_of_iterations = number_of_iterations
         self.parents = []
-
+         
         # Make first generation of parents 
         for i in range(self.size_generation):
             network_copy = copy.deepcopy(network)
-
             # Create a network using the random algorithm 
             random_algorithm = random_algo.Random_algo(network_copy)
             parent = random_algorithm.create_network()
@@ -66,7 +65,6 @@ class Evolution_algo():
         Method that divides the networks in groups 
 
         Args:
-        -
         """
         self.groups = []
 
@@ -119,13 +117,14 @@ class Evolution_algo():
             group_scores = self.save_parents_scores(network_group)  
             survivor = self.survival_of_the_fittest(group_scores)
             self.survivors.append(survivor)
+        print(self.survivors)
 
     def choice_parents(self): 
         parents = random.sample(self.survivors, 2)
 
         parent1 = parents[0]
         parent2 = parents[1]
-
+        
         return parent1, parent2 
   
     def make_possible_networks(self, all_trajectories, max_trajectories, max_trajectory_time):
@@ -139,6 +138,7 @@ class Evolution_algo():
             max_amount = len(all_trajectories)
 
         for r in range(1, max_amount):
+            print("Maximaal amount:", max_amount)
             print("We zijn nu bij aantal trajecten:", r)
             count = 0
             combination = (list(combi) for combi in combinations(all_trajectories, r))
@@ -148,7 +148,7 @@ class Evolution_algo():
 
                 for traject in new_network.trajectories:
                     for connection in traject.route:
-
+                        
                         if connection in new_network.used:
                             new_network.used[connection] += 1
                         else:
@@ -157,10 +157,10 @@ class Evolution_algo():
                 current_score = new_network.get_score()
 
                 if current_score > highestScore: 
-                    print(highestScore)
+                    #print(highestScore)
                     highestScore = current_score 
                     bestNetwork = new_network 
-              
+        print("FINAL SCORE:", bestNetwork.get_score())
         return bestNetwork
                                 
 
@@ -180,7 +180,8 @@ class Evolution_algo():
             parent1, parent2 = self.choice_parents()
             offspring = self.create_offspring(parent1, parent2)
             new_parents.append(offspring)
-        
+            print("lengte offsprings:", len(new_parents))
+
         self.parents = new_parents
 
     def create_evolution(self):
