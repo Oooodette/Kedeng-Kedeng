@@ -5,6 +5,7 @@ from code.visualize import new_visualize as vis
 import copy
 import pandas as pd
 import random
+import matplotlib.pyplot as plt
 
 # random.seed(2)
 
@@ -23,11 +24,12 @@ if __name__ == "__main__":
 
     connections_df = pd.read_csv('data\ConnectiesNationaal.csv')
     stations_df = pd.read_csv('data\StationsNationaal.csv')
+    # scores = []
 
     network = Network(connections_df, stations_df, max_trajectories_nl, max_trajectory_time_nl)
     
     #network = Network()
-    for i in range(1000):
+    for i in range(100000):
         greedy = Greedy_algo(network)
 
         # Create network from our data
@@ -40,22 +42,27 @@ if __name__ == "__main__":
             print('new high')
 
         print(i, new_score)
-        iterations += 1
+        # scores.append(new_score)
 
     nr_traj = len(final_network.trajectories)
     used_connections = [connection for connection, value in final_network.used.items() if value != 0]
     fraction = (len(used_connections)) / len(final_network.connections)
+    times_used_list = list(final_network.used.values())
+
 
     #printing #iterations, number of trajectories and score of the network
     print(f'number of iterations: {iterations}')
     print(f'number of trajectories in network: {nr_traj}')
-    print(f'score of the network {score}')
+    print(f'score of the network: {score}')
+    print(f'average score is: {sum(scores) / len(scores)}')
     print(f'fraction of driven connections: {fraction}')
 
-    used_list = list(final_network.used.values())
-    print(f'times connections are used: {list(final_network.used.values())})')
-    print(f'max used connection: {max(used_list)}')
-    print(f'this is connection: {final_network.connections[used_list.index(max(used_list))].station1, final_network.connections[used_list.index(max(used_list))].station2}')
+    print(f'times connections are used: {times_used_list})')
+    print(f'most times one connectionis used: {max(times_used_list)}')
+    print(f'this is connection: {final_network.connections[times_used_list.index(max(times_used_list))].station1, final_network.connections[times_used_list.index(max(times_used_list))].station2}')
+
+    # plt.hist(scores, bins=1000)
+    # plt.show
 
     #explicitly save the network that fulfills the criteria
     final_network.save_network()

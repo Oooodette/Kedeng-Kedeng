@@ -1,4 +1,5 @@
-from ..classes import Station, Connection, Trajectory, Network
+from ..classes.network import Network, Trajectory
+
 import pandas as pd
 import random 
 import pprint as pp 
@@ -7,13 +8,10 @@ import copy
 class Greedy_algo():
     """
     Greedy algorithm class;
-    Attrs:
+    Attributes:
     - self.network(network object)
-    - self.available_connections(dict)
-    - self.available_connections_copy(dict)
 
     Methods:
-    - create_available_connections() - creates dict; key=station, value=list of connection object
     - pick_start_station() - picking a starting station for a trajectory (random or heuristic)
     - determine_new_station() - returns the connected station from using a connection
     - look_forward() - looks four connections ahead to and scores undriven connections with 1
@@ -21,44 +19,19 @@ class Greedy_algo():
     - create_trajectory() - creates a trajectory based on either look_forward or pick_connection
     - create_network() - creates a network consisting of multiple trajectories
     """
-    def __init__(self, network):
+
+    def __init__(self, network: Network):
         """
         initializing the algorithm by adding a network
         """
         self.network = copy.deepcopy(network)
-        self.available_connections = self.create_available_connections(self.network.stations, self.network.connections)
-
-    def create_available_connections(self, station_list, connection_list): 
-        """
-        Creates a dict of available connections for each station
-        Args:
-        - station list(list)
-        - connection_list(list)
-        Returns:
-        - available_connections_dict(dict; key=name of the station, value=list of connection objects)
-        """
-
-        #initialize dict and loop over all stations, create a list for each station
-        available_connections_dict = {}
-        for station in station_list:
-            station_connections = [] 
-
-            #loop over all connections, check if station is in the connection
-            for connection in connection_list:
-                if station.name == connection.station1 or station.name == connection.station2:
-                    station_connections.append(connection)
-            
-            #add connections to the dict
-            available_connections_dict[station.name] = station_connections
-                   
-        return available_connections_dict
 
     @staticmethod
-    def pick_start_station(network):
+    def pick_start_station(network: Network):
         """
         Picking start station randomly
         Args:
-        - trajectory(trajectory object)
+        - network(network object)
         Returns:
         - start_station(station object)
         """
@@ -86,24 +59,41 @@ class Greedy_algo():
         return new_station
    
     @staticmethod
-    def one_forward_look(network, trajectory, current_station, potential, available_connections, used, score):
+    def one_forward_look(network: Network, trajectory, current_station, potential, used, potential_time, score, score_increase):
+        """
+        looks one connection in the 'future' from current_station, evaluates all options
+        Args:
+        - network(network object)
+        - trajectory(trajectory object)
+        - current_station(station object)
+        - potential(connection object)
+        - used(dict)
+        - potential_time(int)
+        - score(int)
+        - score_increase(int)
+        Returns:
+        - x_gen_station(station object)
+        - x_gen_potentials(list of connection objects)
+        - used(dict)
+        - potential_time(int)
+        - score(int)
+        """
 
-        potential_time = trajectory.time + potential.time
+        potential_time += potential.time
 
         #check if potential is used, if not, set to True, check if time with this potential would not exceed max time 
         if used[potential] == 0 and potential_time <= network.max_trajectory_time:
-                score += 4
+                score += score_increase
                 used[potential] += 1
     
         #retrieve the potentials of the potential, i.e. the first_gen_potentials
         x_gen_station = Greedy_algo.determine_new_station(current_station, potential)
-        x_gen_potentials = available_connections[x_gen_station]
+        x_gen_potentials = network.available_connections[x_gen_station]
 
         return x_gen_station, x_gen_potentials, used, potential_time, score
 
-
     @staticmethod
-    def look_forward(network, trajectory, available_connections):
+    def look_forward(network: Network, trajectory):
         """
         Look forward from the current station, gives score to a connection in the future if connection is undriven
         Args: 
@@ -114,7 +104,7 @@ class Greedy_algo():
 
         #retrieve the current station and its potential connections, init score list
         current_station = trajectory.stations[-1]
-        potential_connections = available_connections[current_station]
+        potential_connections = network.available_connections[current_station]
         scores_list = []
 
         #copy the used_dict, keep track of potential use of connections
@@ -122,65 +112,20 @@ class Greedy_algo():
 
         #loop over all potential connections of the current station
         for potential in potential_connections:
+            score_increase = 4
             
-            #keep track of the time the potential connections would add to the network, init score of one potential
+            # init score of one potential, retrieve trajectory time
             score = 0
+            potential_time = trajectory.time
 
             #look forward and return variables necessary to look forward further
-            first_gen_station, first_gen_potentials, used, potential_time, score = Greedy_algo.one_forward_look(network, trajectory, current_station, potential, available_connections, used, score)
+            first_gen_station, first_gen_potentials, used, potential_time, score = Greedy_algo.one_forward_look(network, trajectory, current_station, potential, used, potential_time, score, score_increase)
         
-
             #loop over the first_gen_potentials
             for first_gen_potential in first_gen_potentials:
+                score_increase = 1
 
-                # second_gen_station, second_gen_potentials, used, potential_time, score = Greedy_algo.one_forward_look(network, trajectory, current_station, potential, available_connections, used, score)
-
-
-                potential_time += first_gen_potential.time
-
-                #check if potential is used, if not, set to True, check if time with this potential would not exceed max time 
-                if used[first_gen_potential] == 0 and potential_time < network.max_trajectory_time:
-                    score += 3
-                    potential_time += potential_time
-                    used[first_gen_potential] += 1
-
-
-                """
-                # #retrieve potentials of potentials of potentials i.e. second_gen_potentials
-                # second_gen_station = Greedy_algo.determine_new_station(first_gen_station, first_gen_potential)
-                # second_gen_potentials = available_connections[second_gen_station]
-
-                # #loop over the second_gen_potentials
-                # for second_gen_potential in second_gen_potentials:
-                #     potential_time += second_gen_potential.time
-
-                #     #check if potential is used, if not, set to True, check if time with this potential would not exceed max time 
-                #     if used[second_gen_potential] == 0 and potential_time <= network.max_trajectory_time:
-                #         score += 2
-                #         used[second_gen_potential] += 1
-                
-                #     #retrieve potentials of potentials of potentials of potentials, i.e. third_gen_potentials
-                #     thrird_gen_station = Greedy_algo.determine_new_station(second_gen_station, second_gen_potential)
-                #     third_gen_potentials = available_connections[thrird_gen_station]
-
-                #     #loop over third_gen_potentials
-                #     for third_gen_potential in third_gen_potentials:
-                #         potential_time += third_gen_potential.time
-
-                #         #check if potential is used, if not, set to True, check if time with this potential would not exceed max time 
-                #         if used[third_gen_potential] == 0 and potential_time <= network.max_trajectory_time:
-                #             score += 1
-                #             used[third_gen_potential] += 1
-                        
-                #         #reset third_gen_potential attributes after checking 
-                #         used[third_gen_potential] = False
-                #         potential_time -= third_gen_potential.time
-                    
-                #     #reset second_gen_potential attributes after checking branch
-                #     used[second_gen_potential] -= 1
-                #     potential_time -= second_gen_potential.time
-                """  
-
+                second_gen_station, second_gen_potentials, used, potential_time, score = Greedy_algo.one_forward_look(network, trajectory, first_gen_station, first_gen_potential, used, potential_time, score, score_increase)
 
                 #reset first_gen_potential attributes after checking branch
                 used[first_gen_potential] -= 1
@@ -204,7 +149,7 @@ class Greedy_algo():
             return None
     
     @staticmethod
-    def update_trajectory(network, trajectory, current_station, new_connection):
+    def update_trajectory(network: Network, trajectory, current_station, new_connection):
         """
         Updates attributes of a trajectory based on current_station and a new connection
         Args:
@@ -228,7 +173,7 @@ class Greedy_algo():
         network.used[new_connection] += 1
 
     @staticmethod
-    def create_trajectory(network, trajectory_count):
+    def create_trajectory(network: Network, trajectory_count):
         """
         Create a trajectory by sequencing connections
         Args:
@@ -239,16 +184,12 @@ class Greedy_algo():
         
         #create an 'empty' instance of a trajectory and add to network
         trajectory = Trajectory(trajectory_count, [], [], 0)
-        network.add_trajectory(trajectory)
-
-        #retrieve available connections
-        available_connections = network.available_connections
 
         count = 0
         #init trajectory; pick starting station, add to trajectory, pick start connection
         start_station = Greedy_algo.pick_start_station(network)
         trajectory.stations.append(start_station)
-        start_connection = Greedy_algo.look_forward(network, trajectory, available_connections)
+        start_connection = Greedy_algo.look_forward(network, trajectory)
 
         #update trajectory if first connection is not None, else remove start station
         if start_connection != None:
@@ -261,7 +202,7 @@ class Greedy_algo():
         while trajectory.time < network.max_trajectory_time:
 
             current_station = trajectory.stations[-1]
-            new_connection = Greedy_algo.look_forward(network, trajectory, available_connections)
+            new_connection = Greedy_algo.look_forward(network, trajectory)
 
             #update trajectory attributes if startstation and connection are not None
             if new_connection != None:
@@ -287,7 +228,6 @@ class Greedy_algo():
         current_iteration = 0
         max_iterations = 10
         traj_count = 0
-        available_connections = self.network.available_connections
                 
         #loop while criteria for a new trajectory are fulfilled (iterations, max trajectories)
         while current_iteration < max_iterations and len(self.network.trajectories) < self.network.max_trajectories:
@@ -295,19 +235,59 @@ class Greedy_algo():
             #take score before, create and add a trajectory and take score after
             score_before = self.network.get_score()
             trajectory = Greedy_algo.create_trajectory(self.network, trajectory_count)
+            self.network.add_trajectory(trajectory)
             score_after = self.network.get_score()
 
             #remove trajectory if score did not increase, increase iteration
             if score_before >= score_after:
                 current_iteration += 1
-                self.network.trajectories.remove(trajectory)
+                self.network.remove_trajectory(trajectory)
 
-                #reset the connections to unused when trajectory is removed
-                for connection in trajectory.route:
-                    self.network.used[connection] -= 1
+                # #reset the connections to unused when trajectory is removed
+                # for connection in trajectory.route:
+                #     self.network.used[connection] -= 1
 
             else:
                 trajectory_count += 1
 
         return self.network
 
+
+
+
+"""
+#####################################################################################################################################################
+CODE FROM LOOK_FORWARD
+
+# #loop over the second_gen_potentials
+                # for second_gen_potential in second_gen_potentials:
+                #     potential_time += second_gen_potential.time
+
+                #     #check if potential is used, if not, increase with one, check if time with this potential would not exceed max time 
+                #     if used[second_gen_potential] == 0 and potential_time <= network.max_trajectory_time:
+                #         score += 3
+                #         used[second_gen_potential] += 1
+                
+                #     #retrieve potentials of potentials of potentials of potentials, i.e. third_gen_potentials
+                #     thrird_gen_station = Greedy_algo.determine_new_station(second_gen_station, second_gen_potential)
+                #     third_gen_potentials = network.available_connections[thrird_gen_station]
+
+                #     #loop over third_gen_potentials
+                #     for third_gen_potential in third_gen_potentials:
+                #         potential_time += third_gen_potential.time
+
+                #         #check if potential is used, if not, increase with one, check if time with this potential would not exceed max time 
+                #         if used[third_gen_potential] == 0 and potential_time <= network.max_trajectory_time:
+                #             score += 1
+                #             used[third_gen_potential] += 1
+                        
+                #         #reset third_gen_potential attributes after checking 
+                #         used[third_gen_potential] = -= 1
+                #         potential_time -= third_gen_potential.time
+                    
+                #    #reset second_gen_potential attributes after checking branch
+                #    used[second_gen_potential] -= 1
+                #    potential_time -= second_gen_potential.time
+
+#####################################################################################################################################################
+"""
