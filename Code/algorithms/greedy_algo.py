@@ -170,7 +170,7 @@ class Greedy_algo():
         trajectory.time += new_connection.time
 
         #increase the used count of the connection
-        # network.used[new_connection] += 1
+        network.used[new_connection] += 1
 
     @staticmethod
     def create_trajectory(network: Network, trajectory_count):
