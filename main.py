@@ -7,7 +7,7 @@ from code.visualize import new_visualize as vis
 import argparse
 import pandas as pd
 
-def main(output, area, start_network, algorithm):
+def main(output, vis_output, area, start_network, algorithm):
     
     #defining parameters for different datasets
     if area == 'holland': 
@@ -38,13 +38,14 @@ def main(output, area, start_network, algorithm):
         network = greedy_algo.create_network()
 
     if algorithm == 'hillclimber':
+        trajectory_maker = input("use random or greedy for making new trajectories?" )
         print('Optimizing with hillclimber')
-        hillclimber = Hillclimber(network, 1000, algorithm)
+        hillclimber = Hillclimber(network, 1000, trajectory_maker)
         network = hillclimber.run()
 
     elif algorithm == 'evolution': 
         print('optimizing with evolutionary algorithm')
-        evolution = Evolution_algo(network, 10)
+        evolution = Evolution_algo(network, 10, start_network)
         network = evolution.last_man_standing() 
 
     # get score of network and print result
@@ -54,7 +55,7 @@ def main(output, area, start_network, algorithm):
     network.save(output)
 
     #visualize
-    vis.plot_all(stations_df, connections_df, 'data\gadm41_NLD_1.json', network.used, network.trajectories, network.stations)
+    vis.plot_all(stations_df, connections_df, 'data\gadm41_NLD_1.json', network.used, network.trajectories, network.stations, vis_output)
 
 if __name__ == "__main__":
 
@@ -62,28 +63,32 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = "find a great network")
 
     # Adding arguments
-    parser.add_argument("output",nargs='?', help = "output file (csv)")
-    parser.add_argument("-a", "--area",  nargs='?', type=str,  help="area to make network in (holland or nederland)")
-    parser.add_argument("-sn", "--start_network", nargs='?',  type=str, help="algorithm to use for start network (random, greedy or hillclimber)")
-    parser.add_argument("-algo", "--algorithm", nargs='?',  type = str, help = "algorithm to use for optimization (hillclimber or evolution)")
+    parser.add_argument("-o", "--output", nargs='?', default = 'output.csv', type=str , help = "output file (csv). default = %(default)s")
+    parser.add_argument("-vo", "--visualize_output", nargs='?',default = 'visualize.png', type=str,  help = "filename for the visualization of the network. default = %(default)s")
+    parser.add_argument("-a", "--area",  nargs='?', default = 'nederland', type=str,  help="area to make network in (holland or nederland). default = %(default)s")
+    parser.add_argument("-sn", "--start_network", nargs='?', default = 'greedy', type=str, help="algorithm to use for start network (random, greedy or hillclimber). default = %(default)s")
+    parser.add_argument("-algo", "--algorithm", nargs='?', default = 'greedy',  type = str, help = "algorithm to use for optimization (hillclimber, greedy or evolution). default = %(default)s")
     # Read arguments from command line
     args = parser.parse_args()
 
     # Ask questions interactively
     if args.output is None:
         args.output = input("Enter output file (csv): ")
+    
+    if args.visualize_output is None:
+        args.visualize_output = input("Enter filename for your visualization (png): ")
 
     if args.area is None:
         args.area = input("Enter area to make network in (holland or nederland): ")
 
     if args.start_network is None:
-        args.start_network = input("Enter algorithm to use for start network (random or greedy): ")
+        args.start_network = input("Enter algorithm to use as start network (random, greedy or hillclimber): ")
 
     if args.algorithm is None:
-        args.algorithm = input("Enter algorithm to use for optimization (hillclimber or evolution   ): ")
+        args.algorithm = input("Enter algorithm to use for optimization (greedy, hillclimber or evolution): ")
 
     # Run main with provide arguments
-    main(args.output, args.area, args.start_network, args.algorithm)
+    main(args.output, args.visualize_output, args.area, args.start_network, args.algorithm)
 
     
 

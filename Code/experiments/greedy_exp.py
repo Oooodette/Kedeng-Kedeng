@@ -1,7 +1,7 @@
-from code.classes import Station, Connection, Trajectory, Network
-from code.algorithms.random_algo import Random_algo
-from code.algorithms.greedy_algo import Greedy_algo
-from code.visualize import new_visualize as vis
+from ..classes import Station, Connection, Trajectory, Network
+from ..algorithms.random_algo import Random_algo
+from ..algorithms.greedy_algo import Greedy_algo
+from ..visualize import new_visualize as vis
 import pandas as pd
 import matplotlib.pyplot as plt
 

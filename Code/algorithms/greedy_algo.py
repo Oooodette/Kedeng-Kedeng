@@ -44,7 +44,7 @@ class Greedy_algo():
         return start_station
    
     @staticmethod
-    def one_forward_look(network: Network, trajectory, current_station, potential, used, potential_time, score_potential, score_increase) -> tuple(Station, Connection, dict, int, int):
+    def one_forward_look(network: Network, trajectory, current_station, potential, used, potential_time, score_potential, score_increase) -> tuple[Station, Connection, dict, int, int]:
         """
         Looks one connection in the 'future' from current_station, evaluates all options;
 
@@ -80,7 +80,7 @@ class Greedy_algo():
         return x_gen_station, x_gen_potentials, used, potential_time, score_potential
 
     @staticmethod
-    def reset_forward_look(used, potential_time, potential) -> tuple(dict, int):
+    def reset_forward_look(used, potential_time, potential) -> tuple[dict, int]:
         """
         Resetting the variables of the potentials
 

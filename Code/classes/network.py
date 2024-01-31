@@ -199,7 +199,7 @@ class Network():
         # number every trajectory for output
         for index, trajectory in enumerate(self.trajectories):
             trajectory.name = index + 1
-
+        self.calculate_score()
         # generate output as dataframe
         data = {'train': [trajectory.name for trajectory in self.trajectories] + ['score'],
                 'stations': [trajectory.stations for trajectory in self.trajectories] + [self.quality_network]}

@@ -144,10 +144,11 @@ def plot_connections(used_connections, trajectories, stations, ax):
         train_counter += 1
     return ax
 
-def plot_all(stations_df, connections_df, datafile, used_connections, trajectories, stations):
-    fig, ax = plt.subplots(figsize = (8, 20))
+def plot_all(stations_df, connections_df, datafile, used_connections, trajectories, stations, vis_output):
+    fig, ax = plt.subplots()
     
     plot_netherlands(datafile,ax)
     ax = plot_connections(used_connections, trajectories, stations, ax)
     ax = visualize_stations_connections(stations_df, connections_df, ax)
+    plt.savefig(vis_output, dpi=500)
     plt.show()
