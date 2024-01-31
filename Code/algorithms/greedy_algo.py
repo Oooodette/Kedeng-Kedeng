@@ -12,7 +12,7 @@ class Greedy_algo():
     - network (network object)
 
     Methods:
-    - pick_start_station() - picking a starting station for a trajectory (random or heuristic)
+    - pick_start_station() - picking a starting station for a trajectory (random)
     - determine_new_station() - returns the connected station from using a connection
     - one_forward_look() - part of look_forward(); looks one connection ahead
     - look_forward() - looks two connections ahead, using one_look_forward(), and scores undriven connections respectively with 4 and 1
