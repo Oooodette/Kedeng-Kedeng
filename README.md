@@ -77,8 +77,8 @@ conda install --file requirements.txt
 
 
 ### Authors:
-Odette Bonnema
-Mette van Splunteren
-Bas Treur
+ - Odette Bonnema
+ - Mette van Splunteren
+ - Bas Treur
 
 
