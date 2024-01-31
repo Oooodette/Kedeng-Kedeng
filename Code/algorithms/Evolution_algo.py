@@ -327,7 +327,7 @@ class Evolution_algo():
         count = 0
         for i in range(self.number_of_iterations):
             count += 1
-            print("iteratie:", count)
+            print("Generatie:", count)
 
             # Create new groups and survivors to use in the create_generation function
             self.create_groups()
@@ -374,7 +374,7 @@ class Evolution_algo():
         Returns:
         - self.best_network (Network instance): The network with the highest score 
         """
-        
+
         # Create a list with networks descending sorted on scores 
         sorted_networks = sorted(self.network_scores, key=lambda x: self.network_scores[x], reverse=True)
         self.best_network = sorted_networks[0]
