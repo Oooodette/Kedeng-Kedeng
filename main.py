@@ -2,7 +2,7 @@ from code.classes import Station, Connection, Trajectory, Network
 from code.algorithms.random_algo import Random_algo
 from code.algorithms.greedy_algo import Greedy_algo
 from code.algorithms.hillclimber import Hillclimber
-from code.algorithms.Evolution_algo import Evolution_algo
+from code.algorithms.evolution_algo import Evolution_algo
 from code.visualize import new_visualize as vis
 import code.experiments.greedy_exp as greedy_exp
 import code.experiments.evolution_exp as evol_exp
@@ -76,14 +76,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     if args.experiment:
-        experiment = input("which experiment do you want to run?")
+        experiment = input("which experiment do you want to run? enter: random, hillclimber, greedy or evolution: ")
         if experiment == 'random':
             random_exp.run_experiment()
         elif experiment == 'greedy':
             greedy_exp.run_experiment()
         elif experiment == 'evolution':
             evol_exp.run_experiment()
-        else:
+        elif: experiment == 'hillclimber':
             hill_exp.run_experiment()
             
         exit()
