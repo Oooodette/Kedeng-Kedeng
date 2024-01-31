@@ -12,14 +12,19 @@ max_trajectory_time_holland = 120
 max_trajectories_nl = 20
 max_trajectory_time_nl = 180
 
-if __name__ == "__main__":
-
+def run_experiment():
+    """
+    Function that runs an experiment for the evolution algorithm.
+    Could either give plot with the score of the best network of every generation
+    or a histogram showing the final network of ten generations running the algorithm 
+    a number of iterations amount of time
+    """
     # difine criteria
     generations_list = []
     iterations = []
 
     amount_of_generations = 10
-    amount_of_iterations = 100 
+    amount_of_iterations = 10 
 
     # decide if you want to plot the score of every generation 
     # or if you want to plot the score of the last generation after 
