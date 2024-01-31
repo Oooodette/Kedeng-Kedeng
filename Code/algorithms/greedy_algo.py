@@ -108,6 +108,7 @@ class Greedy_algo():
         potential_connections = network.available_connections[current_station]
         scores_list = []
 
+        
         used = copy.copy(used)
 
         #loop over all potential connections of the current station
