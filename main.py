@@ -5,8 +5,9 @@ from code.algorithms.hillclimber import Hillclimber
 from code.algorithms.Evolution_algo import Evolution_algo
 from code.visualize import new_visualize as vis
 import code.experiments.greedy_exp as greedy_exp
-# import code.experiments.evolution_exp as evol_exp
+import code.experiments.evolution_exp as evol_exp
 import code.experiments.random_exp as random_exp
+import code.experiments.hillclimber_exp as hill_exp
 import argparse
 import pandas as pd
 
@@ -83,7 +84,8 @@ if __name__ == "__main__":
         elif experiment == 'evolution':
             evol_exp.run_experiment()
         else:
-            pass
+            hill_exp.run_experiment()
+            
         exit()
     # Ask questions interactively
     if args.output is None:
