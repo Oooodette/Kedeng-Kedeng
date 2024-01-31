@@ -35,15 +35,16 @@ class Random_algo():
 
         # keep picking a new connection until either a valid connection is found, or all connections have been tried
         while not chosen and len(connection_copy) > 0: 
+            
             pick = random.randint(0, len(connection_copy)-1)
             new_connection = connection_copy[pick]
             connection_copy.remove(connection_copy[pick])
 
             # check to see if the connection is correct
             if time + new_connection.time < network.max_trajectory_time and new_connection != previous_connection:
-                print('hey')
                 chosen = True
                 chosen_connection = new_connection
+                
         
         return chosen_connection 
 

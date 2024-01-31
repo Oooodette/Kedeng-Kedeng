@@ -173,17 +173,21 @@ class Network():
         self.quality_network = fraction * 10000 - (len(self.trajectories) * 100 + total_time) 
         return fraction*10000, (len(self.trajectories) * 100 + total_time)
     
-    def save_network(self):
+    def save(self, output_file):
         """
         Method that saves the network to a csv file 
         """
+        # number every trajectory for output
+        for index, trajectory in enumerate(self.trajectories):
+            trajectory.name = index + 1
+
         # generate output as dataframe
         data = {'train': [trajectory.name for trajectory in self.trajectories] + ['score'],
                 'stations': [trajectory.stations for trajectory in self.trajectories] + [self.quality_network]}
         output_df = pd.DataFrame(data) # output geven zoals in voorbeeld
 
         #create csv-file from output
-        output_df.to_csv('data\output.csv', index=False)
+        output_df.to_csv(output_file, index=False)
     
 
     def get_score(self):
