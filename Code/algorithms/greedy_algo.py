@@ -147,6 +147,7 @@ class Greedy_algo():
             scores_list.append(score_potential)    
 
         #retrieving the potential with max score, picking connection
+    
         index_max = max(range(len(scores_list)), key=scores_list.__getitem__)
         potential_connection = potential_connections[index_max]
 
@@ -241,7 +242,6 @@ class Greedy_algo():
         # define how many times to keep trying to add a trajectory when the previous did not increase the score
         current_iteration = 0
         max_iterations = 3
-        traj_count = 0
 
         used = copy.copy(self.network.used)
                 
@@ -264,6 +264,7 @@ class Greedy_algo():
 
             # remove trajectory if score did not increase, increase iteration
             if score_before >= score_after:
+
                 current_iteration += 1
                 self.network.trajectories.remove(trajectory)
 
@@ -274,5 +275,7 @@ class Greedy_algo():
             else:
                 # change name of next trajectory
                 trajectory_count += 1
+                current_iteration = 0
+
 
         return self.network
