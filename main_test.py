@@ -17,8 +17,8 @@ if __name__ == "__main__":
 
     #difine criteria
     minimal_score = 8000
-    iterations = 5
-    score = -1000
+    iterations = 200
+    score = 2000
     iteration_list = []
 
     connections_df = pd.read_csv('data\ConnectiesNationaal.csv')
@@ -39,7 +39,7 @@ if __name__ == "__main__":
         iteration_list.append(i)
 
     plt.plot(iteration_list, score_list)
-    plt.xlabel('iterations')
+    plt.xlabel('generations')
     plt.ylabel('score network')
 
     #printing #iterations, number of trajectories and score of the network
