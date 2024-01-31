@@ -1,5 +1,8 @@
-from code.classes import Station, Connection, Trajectory, Network
-from code.algorithms.Evolution_algo import Evolution_algo
+from ..algorithms.random_algo import Random_algo
+from ..algorithms.greedy_algo import Greedy_algo
+from ..algorithms.evolution_algo import Evolution_algo
+
+from ..classes.network import Network, Trajectory
 # from code.visualize import visualize as vis
 from code.visualize import new_visualize as vis
 
@@ -24,7 +27,7 @@ def run_experiment():
     iterations = []
 
     amount_of_generations = 10
-    amount_of_iterations = 10 
+    amount_of_iterations = 2 
 
     # decide if you want to plot the score of every generation 
     # or if you want to plot the score of the last generation after 
@@ -53,6 +56,7 @@ def run_experiment():
     else: 
         test_network_scores = []
         for i in range(1, amount_of_iterations+1):
+            print("iteration:", i)
             evo_algo = Evolution_algo(network, amount_of_generations, "random")
             test_network = evo_algo.last_man_standing()
             test_network_scores.append(test_network.get_score)
