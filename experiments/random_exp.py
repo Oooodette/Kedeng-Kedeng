@@ -11,33 +11,33 @@ max_trajectories_holland = 7
 max_trajectory_time_holland = 120
 max_trajectories_nl = 20
 max_trajectory_time_nl = 180
-score = 0
 
-#initializing scores list to plot 
+#initialize score and lists to append to 
+score = -100000
 scores = []
 nrs_trajectories = []
 fractions = []
 
-
-#reading in data
+#read in data
 connections_df = pd.read_csv('data\ConnectiesNationaal.csv')
 stations_df = pd.read_csv('data\StationsNationaal.csv')
 
-#create empty network
 network = Network(connections_df, stations_df, max_trajectories_nl, max_trajectory_time_nl)
-final_network = None
 
 #create 10000 networks
 for i in range(10000):
     random_network = Random_algo(network)
     test_network = random_network.create_network()
 
-    nrs_trajectories.append(len(test_network.trajectories))
+    new_score = test_network.get_score()
+
+    # retrieve nr of trajectories, fraction
     used_connections = [connection for connection, value in test_network.used.items() if value != 0]
     fraction = (len(used_connections)) / len(test_network.connections)
     
-    new_score = test_network.get_score()
+    #append score, nr of trajectories, fraction of connections driven
     scores.append(new_score)
+    nrs_trajectories.append(len(test_network.trajectories))
     fractions.append(fraction)
 
     if new_score > score:
@@ -48,11 +48,16 @@ for i in range(10000):
 used_connections = [connection for connection, value in final_network.used.items() if value != 0]
 fraction = (len(used_connections)) / len(final_network.connections)
 
+#printing relevant outputs
 print(f'Best network has score {final_network.get_score()}')
 print(f'Best network has {len(final_network.trajectories)} trajectories')
 print(f'Best network has fraction {fraction}')
 
-print(f'Average score is ')
+print(f'Average score is {sum(scores) / len(scores)}')
+print(f'Average number of trajectories is {sum(nrs_trajectories) / len(nrs_trajectories)}')
+print(f'Average fraction is {sum(fraction) / len(fraction)}')
+
+#creating histogram
 plt.hist(scores, bins=1000)
 plt.xlim(0, 10000)
 plt.show()
