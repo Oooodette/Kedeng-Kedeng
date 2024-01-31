@@ -131,6 +131,12 @@ python main.py -h
 ```
 NOTE: If hillclimber is chosen, an initial question is asked in the terminal. Enter either of the two presented options and the program will run.
 
+If you want to run our experiments instead of one run, enter:
+
+```
+python main.py -exp
+```
+It will ask which experiment you want to run, enter: evolution, greedy, hillclimber or random.
 
 ### Authors:
  - Odette Bonnema

@@ -7,7 +7,9 @@ import  pandas as pd
 import matplotlib.pyplot as plt
 
 def run_experiment():
-    """run experiment using the random algorithm"""
+    """
+    Runs our experiment for 10000 iterations. Saves histogram
+    """
 
     #defining parameters for different datasets
     max_trajectories_holland = 7
@@ -27,7 +29,7 @@ def run_experiment():
     best_network= None
     previous_score = 0
 
-    for x in range(10):
+    for x in range(2):
         print(f' current run: {count}')
         random_algo = Random_algo(network)
         test_network = random_algo.create_network()
@@ -44,6 +46,7 @@ def run_experiment():
         
 
     plt.hist(hillclimber_list, bins = 1000)
+    plt.savefig('data/hill_histogram.png')
     plt.show()
 
     vis.plot_all(stations_df, connections_df, 'data\gadm41_NLD_1.json', best_network.used, best_network.trajectories, best_network.stations, 'data/experiment_results')
