@@ -48,17 +48,24 @@ if __name__ == "__main__":
         random_algo = Random_algo(network)
         test_network = random_algo.create_network()
         # vis.plot_all(stations_df, connections_df, 'data\gadm41_NLD_1.json', test_network.used, test_network.trajectories, test_network.stations) 
-        hillclimber = Hillclimber(test_network, 1000)
+        hillclimber = Hillclimber(test_network, 400, 80)
         newie = hillclimber.run() 
+    
+        plt.plot(hillclimber.scorelist)
+        plt.xlabel('iterations')
+        plt.ylabel('score')
+        
         score = newie.get_score()
         if score > previous_score: 
             best_network = newie
         hillclimber_list.append(score)
-    
+
         count += 1
         count_list.append(count)
         previous_score = score
         
+    plt.savefig('data/hillclimberplateau')
+    plt.show()   
     # dictionary of lists
     # dict = {'count': count_list, 'score': hillclimber_list}
     # df = pd.DataFrame(dict)
@@ -71,6 +78,7 @@ if __name__ == "__main__":
     plt.show()
 
     vis.plot_all(stations_df, connections_df, 'data\gadm41_NLD_1.json', best_network.used, best_network.trajectories, best_network.stations)
+    
     # hillclimber_solution = hillclimber.run()
     # # Create network from our data
     

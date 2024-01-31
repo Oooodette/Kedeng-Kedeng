@@ -30,7 +30,7 @@ if __name__ == "__main__":
     scores = []
 
     start = time.time()
-    for i in range(10000):
+    for i in range(500):
         greedy = Greedy_algo(network)
 
         # Create network from our data
