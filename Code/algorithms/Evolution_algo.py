@@ -58,11 +58,11 @@ class Evolution_algo():
         self.number_of_iterations = number_of_iterations
         self.parents = []
         
-        # Make first generation of parents 
+        # make first generation of parents 
         for i in range(self.size_generation):
             network_copy = copy.deepcopy(network)
 
-            # Create a network using the random algorithm 
+            # create a network using the random algorithm 
             hill_algorithm = random_algo.Random_algo(network_copy)
             parent = hill_algorithm.create_network()
 
@@ -71,8 +71,8 @@ class Evolution_algo():
         self.connections = network.connections 
         self.stations = network.stations 
 
-        # If set to true the score of each generation is appended to a list 
-        # If not, only the best score of the last generation is saved
+        # if set to true the score of each generation is appended to a list 
+        # if not, only the best score of the last generation is saved
         self.save_each_generation = save_each_generation 
         self.score_generations = []
 
@@ -87,7 +87,7 @@ class Evolution_algo():
             group = random.sample(self.parents, self.group_size)
             self.groups.append(group)
 
-            # Remove the chosen networks from the list to avoid duplicate networks 
+            # remove the chosen networks from the list to avoid duplicate networks 
             for network in group:
                 self.parents.remove(network)
 
@@ -104,34 +104,34 @@ class Evolution_algo():
 
         for x in range(self.group_size):
 
-            # Calculate the correct values 
+            # calculate the correct values 
             answer = p * ((1 - p)**x)
 
-            # Add the value to 'number' so we get a range of 0.800, 0.960, 0.992 etc
+            # add the value to 'number' so we get a range of 0.800, 0.960, 0.992 etc
             number += answer 
             self.win_chances.append(number)
 
-    def save_parents_scores(self, group: Network) -> dict:
+    def save_parents_scores(self, group_of_networks: Network) -> dict:
         """
         Method that saves the scores of the networks in the parents list. 
         This is necessary to pick the best network in further steps.
 
         Args:
-        - group (list of networks): group of networks that compete against each other in further steps 
+        - group (list of Network instances): group of networks that compete against each other in further steps 
         Returns:
         - group_scores (dict): dictionary with the scores of the networks in a group as key and the score as value
         """
 
-        group_scores = {}
-        for player in group:
+        network_scores = {}
+        for network in group_of_networks:
 
-            # Reset and update the used dictionary before calculating the score 
-            player.used = player.connections_used()
-            player.used = self.update_used_dictionary(player)
+            # reset and update the used dictionary before calculating the score 
+            network.used = network.connections_used()
+            network.used = self.update_used_dictionary(network)
 
-            group_scores[player] = player.get_score()
+            network_scores[network] = network.get_score()
 
-        return group_scores 
+        return network_scores 
     
     def survival_of_the_fittest(self, group_scores: dict) -> Network:
         """
@@ -144,18 +144,18 @@ class Evolution_algo():
         - survivor (Network instance): the network that wins the tournament 
         """
 
-        # Create a list with networks descending sorted on scores 
+        # create a list with networks descending sorted on scores 
         sorted_networks = sorted(group_scores, key=lambda x: group_scores[x], reverse=True)
         survivor = None 
 
-        # Pick a random float with ten decimals 
+        # pick a random float with ten decimals 
         random_float = round(random.uniform(0, 1), 10)
 
-        # With 80% chance the best network wins 
+        # with 80% chance the best network wins 
         if random_float <= self.win_chances[0]:
             survivor = sorted_networks[0]
         
-        # With smaller chances choose networks with lower values 
+        # with smaller chances choose networks with lower values 
         else:
             for i in range(len(self.win_chances)-1):
                 if self.win_chances[i] <= random_float <= self.win_chances[i+1]:
@@ -166,7 +166,7 @@ class Evolution_algo():
     
     def get_survivors(self):
         """
-        Method that picks a survivor(network) from each group and creates a list of survivors(networks).
+        Method that picks a survivor(Network instance) from each group and creates a list of survivors(networks).
         """
 
         self.survivors = []
@@ -194,9 +194,9 @@ class Evolution_algo():
         Method that updates the dictionary with used connections.
 
         Args:
-        - network (instance): the network for which the dictionary has to be updated 
+        - network (Network instance): the network for which the dictionary has to be updated 
         Returns:
-        - newtork.used (dict): the dictionary with the correct values 
+        - network.used (dictionary): the dictionary with the correct values 
         """
 
         for traject in network.trajectories:
@@ -227,11 +227,11 @@ class Evolution_algo():
         - max_length (int): maximum amount of trajectories in one combination  
         """
 
-        # If the length of all_trajectories is bigger than the maximum: set max_amount to the maximum 
+        # if the length of all_trajectories is bigger than the maximum: set max_amount to the maximum 
         if len(all_trajectories) > max_trajectories:
             max_length = max_trajectories 
         
-        # If smaller, set the max_amount to the length of all_trajectories
+        # if smaller, set the max_amount to the length of all_trajectories
         else:
             max_length = len(all_trajectories)
 
@@ -259,21 +259,21 @@ class Evolution_algo():
         
         max_length = self.determine_max_length(all_trajectories, max_trajectories)
 
-        # Determine the smallest possible amount of combinations consisting of one traject
+        # determine the smallest possible amount of combinations consisting of one traject
         smallest_combination_size = self.amount_of_possible_combinations(len(all_trajectories), 1)
 
         for r in range(1, max_length):
-            # Shuffle the trajectories so it won't make the same combination each iteration 
+            # shuffle the trajectories so it won't make the same combination each iteration 
             random.shuffle(all_trajectories)
 
-            # Create a list of combinations for each length
-            # Generate amount of combinations of the smallest combination size 
+            # create a list of combinations for each length
+            # generate amount of combinations of the smallest combination size 
             combination = (list(combi) for combi in islice(combinations(all_trajectories, r), smallest_combination_size))
 
             for comb in combination:
                 best_network.trajectories = comb
 
-                # Reset and update the used dictionary so the score can be calculated
+                # reset and update the used dictionary so the score can be calculated
                 best_network.used = best_network.connections_used()
                 best_network.used = self.update_used_dictionary(best_network)
 
@@ -327,14 +327,14 @@ class Evolution_algo():
         count = 0
         for i in range(self.number_of_iterations):
             count += 1
-            print("Generatie:", count)
+            print("Generation:", count)
 
-            # Create new groups and survivors to use in the create_generation function
+            # create new groups and survivors to use in the create_generation function
             self.create_groups()
             self.get_survivors()
             self.create_generation()
 
-            # If true, save the best score of each generation 
+            # if true, save the best score of each generation 
             if self.save_each_generation:
                 self.save_network_scores()
                 self.pick_best_network()
@@ -345,12 +345,7 @@ class Evolution_algo():
         Method that saves the scores of the parents in a dictionary to pick the best network.
         """
 
-        self.network_scores = {}
-        for network in self.parents: 
-            network.used = network.connections_used()
-            network.used = self.update_used_dictionary(network)
-
-            self.network_scores[network] = network.get_score()
+        self.network_scores = self.save_parents_scores(self.parents)
     
     def last_man_standing(self) -> Network:
         """
