@@ -2,13 +2,9 @@ from code.classes import Station, Connection, Trajectory, Network
 from code.algorithms.random_algo import Random_algo
 from code.algorithms.greedy_algo import Greedy_algo
 from code.visualize import new_visualize as vis
-import copy
 import pandas as pd
-import random
 import matplotlib.pyplot as plt
-import time
 
-# random.seed(2)
 
 #defining parameters for different datasets
 max_trajectories_holland = 7
@@ -30,7 +26,7 @@ if __name__ == "__main__":
     scores = []
 
     start = time.time()
-    for i in range(500):
+    for i in range(10000):
         greedy = Greedy_algo(network)
 
         # Create network from our data
@@ -70,6 +66,4 @@ if __name__ == "__main__":
     #visualize
     vis.plot_all(stations_df, connections_df, 'data\gadm41_NLD_1.json', final_network.used, final_network.trajectories, final_network.stations)
     
-    plt.hist(scores, bins=1000)
-    plt.xlim(4000, 7000)
-    plt.show()
+    

@@ -122,7 +122,7 @@ class Greedy_algo():
 
         #loop over all potential connections of the current station
         for potential in potential_connections:
-            score_increase = 4
+            score_increase = 1
             
             # init score of one potential, retrieve trajectory time
             score_potential = 0
