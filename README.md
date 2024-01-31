@@ -10,39 +10,39 @@ A connection has a certain time it takes to travel by train from station 1 to st
 A trajectory is a sequence of stations, with a certain time that is calculated by adding all times of the connections between all stations in the trajectory.
 A network is a combination of multiple trajectories that fulfill certain requirements. A network has a certain total time and most importantly, score.
 
-Score formula: K = p * 10000 - (N*100 + min)
+Score formula: K = p * 10000 - (T*100 + min)
 - p = fraction of connections that have been driven
 - T = number of trajectories in the network
 - min = total time of the network in minutes
   
- __Goal: maximize score__ 
+ __The goals is to maximize the score__ 
 
 #### Subcases
 There are two subcases with different constraints;
 1) North and South Holland
- - maximal trajectory time is 120 minutes
- - maximal number of trajectories is 7
+    - maximal trajectory time is 120 minutes
+    - maximal number of trajectories is 7
 
 2) Netherlands
- - maximal trajectory time is 180 minutes
- - maximal number of trajectories is 20
+    - maximal trajectory time is 180 minutes
+    - maximal number of trajectories is 20
 
 #### Classes 
 Classes in this project:
 - Station (attr: x_cor, y_cor, name)
 - Connection (attr: station1, station2, time)
 - Trajectory (attr: name, stations, time)
-- Network (attr: used, quality_network, stations, connections)
+- Network (attr: stations, connections, max_trajectories, max_trajectory_time, trajectories, quality_network, used, available_connections)
 
 #### Algorithms
 Specifications of certain algorithms;
 - random_alg: random algorithm that creates a network in a random way, until all connections have been used. For a trajectory the startstation and connections are randomly chosen. Trajectory length is set to the max. The network will get a random number of trajectories.
 
 - greedy_algo: greedy algorithm that creates a network in a greedy way. The way decisions are made in the following way;
- 1) startstation is chosen randomly
- 2) connections are chosen based on a score that is assigned by looking forward
- 3) trajectory length is maximized if possible
- 4) trajectories are added if they increase the score of the network, if not, they are removed from the network. If the algorithm does not find a score-increasing trajectory within three tries, the algorithm stops.
+    1) startstation is chosen randomly
+    2) connections are chosen based on a score that is assigned by looking forward
+    3) trajectory length is maximized if possible
+    4) trajectories are added if they increase the score of the network, if not, they are removed from the network. If the algorithm does not find a score-increasing trajectory within three tries, the algorithm stops.
 
 
  - hillclimber:
@@ -74,6 +74,7 @@ conda install --file requirements.txt
 ```
 
 ### Usage and examples
+
 
 
 ### Authors:
