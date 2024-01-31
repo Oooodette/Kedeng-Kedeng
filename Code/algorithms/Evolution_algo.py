@@ -2,6 +2,7 @@ from typing import List
 
 from ..algorithms import random_algo
 from ..algorithms import hillclimber
+from ..algorithms import greedy_algo
 from ..classes import Trajectory, Network
 
 import random 
@@ -42,7 +43,7 @@ class Evolution_algo():
     - pick_best_network() - picks the best network of a generation  
     """
 
-    def __init__(self, network: Network, number_of_iterations: int, save_each_generation: bool = False) -> None:
+    def __init__(self, network: Network, number_of_iterations: int, algorithm: str, save_each_generation: bool = False) -> None:
         """
         Method that initializes the attributes network and number_of_iterations. 
         Creates a first generation of parents by using the random algorithm. 
@@ -57,14 +58,24 @@ class Evolution_algo():
         self.group_size = 8
         self.number_of_iterations = number_of_iterations
         self.parents = []
-        
+        self.algorithm = algorithm 
+
         # make first generation of parents 
         for i in range(self.size_generation):
             network_copy = copy.deepcopy(network)
 
-            # create a network using the random algorithm 
-            hill_algorithm = random_algo.Random_algo(network_copy)
-            parent = hill_algorithm.create_network()
+            if self.algorithm == "random":
+                # create a network using the random algorithm 
+                rando_algorithm = random_algo.Random_algo(network_copy)
+                parent = rando_algorithm.create_network()
+            elif self.algorithm == "hillclimber":
+                # create a network using the hillclimber algorithm 
+                hill_algorithm = hillclimber.Hillclimber(network_copy)
+                parent = hill_algorithm.run()
+            elif self.algorithm == "greedy":
+                # create a network using the greedy algorithm 
+                greedy_algorithm = greedy_algo.Greedy_algo(network_copy)
+                parent = greedy_algorithm.create_network()
 
             self.parents.append(parent)
 

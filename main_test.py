@@ -17,9 +17,9 @@ if __name__ == "__main__":
 
     #difine criteria
     minimal_score = 8000
-    iterations = 200
+    amount_of_generations = 200
     score = 2000
-    iteration_list = []
+    generations_list = []
 
     connections_df = pd.read_csv('data\ConnectiesNationaal.csv')
     stations_df = pd.read_csv('data\StationsNationaal.csv')
@@ -27,7 +27,7 @@ if __name__ == "__main__":
     #looping until criteria are met
     # while score < minimal_score:
     network = Network(connections_df, stations_df, max_trajectories_nl, max_trajectory_time_nl)
-    evo_algo = Evolution_algo(network, iterations, True)
+    evo_algo = Evolution_algo(network, amount_of_generations, True)
 
     # Create network from our data
     test_network = evo_algo.last_man_standing()
@@ -35,10 +35,10 @@ if __name__ == "__main__":
     nr_traj = len(test_network.trajectories)
     
     score_list = evo_algo.score_generations
-    for i in range(1, iterations+1):
-        iteration_list.append(i)
+    for i in range(1, amount_of_generations+1):
+        generations_list.append(i)
 
-    plt.plot(iteration_list, score_list)
+    plt.plot(generations_list, score_list)
     plt.xlabel('generations')
     plt.ylabel('score network')
 
