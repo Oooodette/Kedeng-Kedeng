@@ -4,6 +4,7 @@ from code.algorithms.evolution_algo import Evolution_algo
 from code.visualize import new_visualize as vis
 
 import pandas as pd
+import matplotlib.pyplot as plt
 
 
 #defining parameters for different datasets
@@ -16,8 +17,9 @@ if __name__ == "__main__":
 
     #difine criteria
     minimal_score = 8000
-    iterations = 0
+    iterations = 5
     score = -1000
+    iteration_list = []
 
     connections_df = pd.read_csv('data\ConnectiesNationaal.csv')
     stations_df = pd.read_csv('data\StationsNationaal.csv')
@@ -25,14 +27,20 @@ if __name__ == "__main__":
     #looping until criteria are met
     # while score < minimal_score:
     network = Network(connections_df, stations_df, max_trajectories_nl, max_trajectory_time_nl)
-    evo_algo = Evolution_algo(network, 10)
+    evo_algo = Evolution_algo(network, iterations, True)
 
     # Create network from our data
     test_network = evo_algo.last_man_standing()
     score = test_network.get_score()
-
     nr_traj = len(test_network.trajectories)
+    
+    score_list = evo_algo.score_generations
+    for i in range(1, iterations+1):
+        iteration_list.append(i)
 
+    plt.plot(iteration_list, score_list)
+    plt.xlabel('iterations')
+    plt.ylabel('score network')
 
     #printing #iterations, number of trajectories and score of the network
     print(f'number of trajectories in network: {nr_traj}')

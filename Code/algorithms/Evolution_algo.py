@@ -2,7 +2,7 @@ from typing import List
 
 from ..algorithms import random_algo
 from ..algorithms import hillclimber
-from ..classes.network import Network
+from ..classes import Trajectory, Network
 
 import random 
 import copy 
@@ -20,35 +20,39 @@ class Evolution_algo():
     - parents (list of networks)
     - connections (list of connections)
     - stations (list of stations)
+    - save_each_generation (boolean)
+    - score_generations (list)
 
     Methods:
-    - create_groups - split list of networks in groups 
-    - create_win_chances - creates a list of chances a network wins 
-    - save_parents_scores - saves the scores of the parent networks 
-    - survival_of_the_fittest - chooses the survivors based on the win chances 
-    - get_survivors - adds all the survivors to a list 
-    - choice_parent - chooses the parents that will reproduce
-    - update_used_dictionary - updates the used dictionary of a given network  
-    - amount_of_possible_combinations - calculates the possible amount of combinations
-    - make_possible_networks - creates all possible networks from the parents and saves the best 
-    - create_offspring - creates offspring using the make_possible_networks method 
-    - create_generation - creates a generation from the offsprings 
-    - create_evolution - creates an evolution by making more generations 
-    - save_network_scores - saves the scores of the networks derived from the evolution 
-    - last_man_standing - picks the final best network 
+    - create_groups() - split list of networks in groups 
+    - create_win_chances() - creates a list of chances a network wins 
+    - save_parents_scores() - saves the scores of the parent networks 
+    - survival_of_the_fittest() - chooses the survivors based on the win chances 
+    - get_survivors() - adds all the survivors to a list 
+    - choice_parent() - chooses the parents that will reproduce
+    - update_used_dictionary() - updates the used dictionary of a given network  
+    - amount_of_possible_combinations() - calculates the possible amount of combinations
+    - determine_max_length() - determines the maximum length of trajectories in a combination
+    - make_possible_networks() - creates all possible networks from the parents and saves the best 
+    - create_offspring() - creates offspring using the make_possible_networks method 
+    - create_generation() - creates a generation from the offsprings 
+    - create_evolution() - creates an evolution by making more generations 
+    - save_network_scores() - saves the scores of the networks derived from the evolution 
+    - last_man_standing() - picks the final best network
+    - pick_best_network() - picks the best network of a generation  
     """
-    parents: List[Network]
-    parent: Network 
 
-    def __init__(self, network, number_of_iterations):
+    def __init__(self, network: Network, number_of_iterations: int, save_each_generation: bool = False) -> None:
         """
         Method that initializes the attributes network and number_of_iterations. 
         Creates a first generation of parents by using the random algorithm. 
 
         Args:
-        - network (instance): network of the Network class 
+        - network (network instance): network of the Network class 
         - number_of_iterations (integer): determines the amount of iterations 
+        - save_each_generation (boolean): boolean if for every generation the best network score has to be saved 
         """
+
         self.size_generation = 96
         self.group_size = 8
         self.number_of_iterations = number_of_iterations
@@ -67,10 +71,16 @@ class Evolution_algo():
         self.connections = network.connections 
         self.stations = network.stations 
 
+        # If set to true the score of each generation is appended to a list 
+        # If not, only the best score of the last generation is saved
+        self.save_each_generation = save_each_generation 
+        self.score_generations = []
+
     def create_groups(self):
         """
         Method that divides the network parents in groups.
         """
+
         self.groups = []
 
         for i in range(12):
@@ -86,6 +96,7 @@ class Evolution_algo():
         Method that creates a list of the chances a survivor wins.
         The best network wins with 80%, the second best with 16%, the third best with 8% etc. 
         """
+
         p = 0.8
         number = 0
 
@@ -100,16 +111,17 @@ class Evolution_algo():
             number += answer 
             self.win_chances.append(number)
 
-    def save_parents_scores(self, group):
+    def save_parents_scores(self, group: Network) -> dict:
         """
         Method that saves the scores of the networks in the parents list. 
         This is necessary to pick the best network in further steps.
 
         Args:
-        - group(list of networks): group of networks that compete against each other in further steps 
+        - group (list of networks): group of networks that compete against each other in further steps 
         Returns:
-        - group_scores: dictionary with the scores of the networks in a group as key and the score as value
+        - group_scores (dict): dictionary with the scores of the networks in a group as key and the score as value
         """
+
         group_scores = {}
         for player in group:
 
@@ -121,16 +133,17 @@ class Evolution_algo():
 
         return group_scores 
     
-    def survival_of_the_fittest(self, group_scores):
+    def survival_of_the_fittest(self, group_scores: dict) -> Network:
         """
         Method that picks one network from one group. 
         The win_chances list determines which one will survive. 
 
         Args:
-        - group_scores(dictionary): dictionary with the network scores of each network in a group
+        - group_scores (dictionary): dictionary with the network scores of each network in a group
         Returns:
-        - survivor: the network that wins the tournament 
+        - survivor (Network instance): the network that wins the tournament 
         """
+
         # Create a list with networks descending sorted on scores 
         sorted_networks = sorted(group_scores, key=lambda x: group_scores[x], reverse=True)
         survivor = None 
@@ -148,13 +161,14 @@ class Evolution_algo():
                 if self.win_chances[i] <= random_float <= self.win_chances[i+1]:
                     survivor = sorted_networks[i+1]
                     break
-        print(survivor.get_score())
+
         return survivor 
     
     def get_survivors(self):
         """
         Method that picks a survivor(network) from each group and creates a list of survivors(networks).
         """
+
         self.survivors = []
 
         for network_group in self.groups:
@@ -163,10 +177,11 @@ class Evolution_algo():
             survivor = self.survival_of_the_fittest(group_scores)
             self.survivors.append(survivor)
         
-    def choice_parents(self): 
+    def choice_parents(self) -> (Network, Network): 
         """
         Method that chooses two random parents from the list of survivors. 
         """
+
         parents = random.sample(self.survivors, 2)
 
         parent1 = parents[0]
@@ -174,62 +189,80 @@ class Evolution_algo():
         
         return parent1, parent2 
     
-    def update_used_dictionary(self, network):
+    def update_used_dictionary(self, network: Network) -> dict:
         """
         Method that updates the dictionary with used connections.
 
         Args:
-        - network(instance): the network for which the dictionary has to be updated 
+        - network (instance): the network for which the dictionary has to be updated 
         Returns:
-        - the dictionary with the correct values 
+        - newtork.used (dict): the dictionary with the correct values 
         """
+
         for traject in network.trajectories:
             for connection in traject.route:
                 network.used[connection] += 1
 
         return network.used 
     
-    def amount_of_possible_combinations(self, n, r):
+    def amount_of_possible_combinations(self, n: int, r: int) -> int:
         """
         Method that calculates the possible amount of combinations.
 
         Args:
-        - n(int): the length of the combinated trajectories from the parents 
-        - r(int): the amount of trajectories the combination consists of 
+        - n (int): the length of the combinated trajectories from the parents 
+        - r (int): the amount of trajectories the combination consists of 
         """
+
         return math.factorial(n) // (math.factorial(r) * math.factorial(n - r))
-       
-    def make_possible_networks(self, all_trajectories, max_trajectories, max_trajectory_time):
+    
+    def determine_max_length(self, all_trajectories: List[Trajectory], max_trajectories: int) -> int:
+        """
+        Method that determines the maximum amount of trajectories in one combination.  
+
+        Args:
+        - all_trajectories (list of trajectories): combination of parents trajectories 
+        - max_trajectories (int): the maximum amount of trajectories allowed
+        Returns: 
+        - max_length (int): maximum amount of trajectories in one combination  
+        """
+
+        # If the length of all_trajectories is bigger than the maximum: set max_amount to the maximum 
+        if len(all_trajectories) > max_trajectories:
+            max_length = max_trajectories 
+        
+        # If smaller, set the max_amount to the length of all_trajectories
+        else:
+            max_length = len(all_trajectories)
+
+        return max_length
+    
+    def make_possible_networks(self, all_trajectories: list[Trajectory], max_trajectories: int, max_trajectory_time: int) -> Network:
         """
         Method that makes possible combinations of trajectories of different lengths. 
-        Creates 27 amount of combinations for each length and saves the one that creates a network 
+        Creates given amount of combinations for each length and saves the one that creates a network 
         with the highest score. 
 
         Args:
-        - all_trajectories(list of trajectories): list of trajectories to make the combinations from 
-        - max_trajectories(int): maximum amount of trajectories in a network 
-        - max_trajectory_time(int): maximum amount of time a network is allowed to have 
+        - all_trajectories (list of trajectories): list of trajectories to make the combinations from 
+        - max_trajectories (int): maximum amount of trajectories in a network 
+        - max_trajectory_time (int): maximum amount of time a network is allowed to have 
 
         Returns:
-        - the network with the best combination of trajectories
+        - best_network (Network instance): the network with the best combination of trajectories
         """
+
         highest_score = float("-inf")
         best_trajectories = None
 
         best_network = Network(self.connections, self.stations, max_trajectories, max_trajectory_time)
         
-        # If the length of all_trajectories is bigger than the maximum: set max_amount to the maximum 
-        if len(all_trajectories) > max_trajectories:
-            max_amount = max_trajectories 
-        
-        # If smaller, set the max_amount to the length of all_trajectories
-        else:
-            max_amount = len(all_trajectories)
+        max_length = self.determine_max_length(all_trajectories, max_trajectories)
 
         # Determine the smallest possible amount of combinations consisting of one traject
         smallest_combination_size = self.amount_of_possible_combinations(len(all_trajectories), 1)
 
-        for r in range(1, max_amount):
+        for r in range(1, max_length):
             # Shuffle the trajectories so it won't make the same combination each iteration 
             random.shuffle(all_trajectories)
 
@@ -252,19 +285,19 @@ class Evolution_algo():
 
         best_network.trajectories = best_trajectories
 
-        return best_network
-                                
+        return best_network           
 
-    def create_offspring(self, parent1: Network, parent2: Network):
+    def create_offspring(self, parent1: Network, parent2: Network) -> Network:
         """
-        Method that combines the trajectories from the parents to create an offspring
+        Method that combines the trajectories from the parents to create an offspring.
 
         Args:
-        - parent1(network): one network from the survivors 
-        - parent2(network): another network from the survivors 
+        - parent1 (Network instance): one network from the survivors 
+        - parent2 (Network instance): another network from the survivors 
         Returns:
-        - offspring: the best network, so the network with the best combination of trajectories
+        - offspring (Network instance): the best network, so the network with the best combination of trajectories
         """
+
         all_trajectories = parent1.trajectories + parent2.trajectories
         offspring = self.make_possible_networks(all_trajectories, parent1.max_trajectories, parent1.max_trajectory_time)
                 
@@ -272,9 +305,10 @@ class Evolution_algo():
 
     def create_generation(self):
         """
-        Method that creates a new generation by creating a size_generation amount of offsprings 
-        Replaces self.parents with this generation for further evolution 
+        Method that creates a new generation by creating a size_generation amount of offsprings. 
+        Replaces self.parents with this generation for further evolution.
         """
+
         new_parents = []
 
         for i in range(self.size_generation):
@@ -286,21 +320,31 @@ class Evolution_algo():
 
     def create_evolution(self):
         """
-        Method that creates an evolution by creating multiple generations
+        Method that creates an evolution by creating multiple generations.
         """
+
+        self.score_generations = []
         count = 0
         for i in range(self.number_of_iterations):
             count += 1
-            print("iteratie:", count)
+            print("Generatie:", count)
+
             # Create new groups and survivors to use in the create_generation function
             self.create_groups()
             self.get_survivors()
             self.create_generation()
 
+            # If true, save the best score of each generation 
+            if self.save_each_generation:
+                self.save_network_scores()
+                self.pick_best_network()
+                self.score_generations.append(self.best_network.get_score())
+
     def save_network_scores(self):
         """
-        Method that saves the scores of the parents in a dictionary to pick the best network 
+        Method that saves the scores of the parents in a dictionary to pick the best network.
         """
+
         self.network_scores = {}
         for network in self.parents: 
             network.used = network.connections_used()
@@ -308,22 +352,40 @@ class Evolution_algo():
 
             self.network_scores[network] = network.get_score()
     
-    def last_man_standing(self):
+    def last_man_standing(self) -> Network:
         """
-        Method that picks the network with the highest score of the last generation of parents
+        Method that picks the network with the highest score of the last generation of parents.
 
         Returns:
-        - The network with the highest score 
+        - self.best_network (Network instance): The network with the highest score 
         """
+
         self.create_win_chances()
         self.create_evolution()
         self.save_network_scores()
+        self.pick_best_network()
+
+        return self.best_network
+    
+    def pick_best_network(self) -> Network:
+        """
+        Method that returns the network with the higest score of a generation.
+
+        Returns:
+        - self.best_network (Network instance): The network with the highest score 
+        """
 
         # Create a list with networks descending sorted on scores 
         sorted_networks = sorted(self.network_scores, key=lambda x: self.network_scores[x], reverse=True)
         self.best_network = sorted_networks[0]
 
+        self.best_network.used = self.best_network.connections_used()
+        self.best_network.used = self.update_used_dictionary(self.best_network)
         return self.best_network 
+    
+
+
+
 
 
         
