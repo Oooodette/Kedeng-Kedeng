@@ -4,6 +4,7 @@ from code.algorithms.greedy_algo import Greedy_algo
 from code.algorithms.hillclimber import Hillclimber
 from code.algorithms.Evolution_algo import Evolution_algo
 from code.visualize import new_visualize as vis
+from code.experiments.greedy_exp import test_function
 import argparse
 import pandas as pd
 
@@ -68,9 +69,13 @@ if __name__ == "__main__":
     parser.add_argument("-a", "--area",  nargs='?', default = 'nederland', type=str,  help="area to make network in (holland or nederland). default = %(default)s")
     parser.add_argument("-sn", "--start_network", nargs='?', default = 'random', type=str, help="algorithm to use for start network (random, greedy or hillclimber). default = %(default)s")
     parser.add_argument("-algo", "--algorithm", nargs='?', default = 'hillclimber',  type = str, help = "algorithm to use for optimization (hillclimber, greedy or evolution). default = %(default)s")
-    # Read arguments from command line
+    parser.add_argument("-exp", "--experiment", action='store_true')
     args = parser.parse_args()
-
+    # print(args)
+    if args.experiment:
+        experiment = input("which experiment do you want to run?")
+        test_function(5)
+        exit()
     # Ask questions interactively
     if args.output is None:
         args.output = input("Enter output file (csv): ")
