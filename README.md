@@ -48,7 +48,26 @@ Specifications of certain algorithms;
  - hillclimber:
 
 
- - evolution_algo:
+ - evolution_algo: evolution algorithm that creates a network using multiple generations of networks and an evolution 
+    1) start with 96 networks made with another algorithm, for example with the random algorithm
+    2) divide the networks in groups of 8 
+    3) from every group of 8, chose one network that will survive. 
+    4) the survivor is chosen as follows: (source: www.wikipedia.com)
+        - choose the best network from the tournament with probability 0.8
+        - choose the second best network with probability 0.8*(1-0.8)
+        - choose the third best network with probability 0.8*((1-0.8)^2)
+        - and so on
+    5) with this 12 survivors keep selecting two random network to create an offspring 
+    6) an offspring is created as follows: 
+        - add all the trajectories of the parents together 
+        - for every amount of trajectories in a network, make a given amount of possible combinations of the trajectories 
+        - change the trajectories of a network for every combination and calculate the score 
+        - save the network with the best score 
+    7) create 96 networks this way 
+    8) these 96 networks are the new generation 
+    9) repeat from step 2 with these 96 networks 
+    10) do this for a given amount of generations 
+    
 
 
 #### Data and file structure
