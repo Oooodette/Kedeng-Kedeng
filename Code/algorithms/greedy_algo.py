@@ -1,4 +1,5 @@
 from ..classes.network import Network, Trajectory
+from ..algorithms.random_algo import Random_algo
 
 import pandas as pd
 import random 
@@ -7,13 +8,13 @@ import copy
 
 class Greedy_algo():
     """
-    Greedy algorithm class.
+    Class greedy_algo, modifies/creates a network using a greedy algorithm.
+    
     Attributes:
     - network (network object)
 
     Methods:
     - pick_start_station() - picking a starting station for a trajectory (random)
-    - determine_new_station() - returns the connected station from using a connection
     - one_forward_look() - part of look_forward(); looks one connection ahead
     - look_forward() - looks two connections ahead, using one_look_forward(), and scores undriven connections respectively with 4 and 1
     - pick_connection() - picks a valid connection without looking forward
@@ -38,29 +39,9 @@ class Greedy_algo():
         Returns:
         - start_station(station object): station that is the start of a trajectory
         """
-
+        # pick random station and return
         start_station = network.stations[random.randint(0, len(network.stations) - 1)].name
         return start_station
-
-    @staticmethod
-    def determine_new_station(current_station, new_connection):
-        """
-        Determine new station based on current_station and new_connection.
-
-        Args:
-        - current_station (station object): station with which new_connection is connected
-        - new_connection (connection object): the connection that is added to the trajectory
-        Returns:
-        - new_station (station object): the station at which we arrive by using new_connection
-        """
-
-        if current_station == new_connection.station1:
-            new_station = new_connection.station2
-
-        elif current_station == new_connection.station2:
-            new_station = new_connection.station1
-
-        return new_station
    
     @staticmethod
     def one_forward_look(network: Network, trajectory, current_station, potential, used, potential_time, score_potential, score_increase):
@@ -84,16 +65,16 @@ class Greedy_algo():
         - score (int): new score of the potential we are checking
         """
 
-        #increase time of potential
+        # increase time of potential
         potential_time += potential.time
 
-        #check if potential is used, if not, increase usage with 1, check if time with this potential would not exceed max time 
+        # check if potential is used, if not, increase usage with 1, check if time with this potential would not exceed max time 
         if used[potential] == 0 and potential_time <= network.max_trajectory_time:
                 score_potential += score_increase
                 used[potential] += 1
     
-        #retrieve the potentials of the potential, i.e. the first_gen_potentials
-        x_gen_station = Greedy_algo.determine_new_station(current_station, potential)
+        # retrieve the potentials of the potential, i.e. the first_gen_potentials
+        x_gen_station = Random_algo.determine_station(current_station, potential)
         x_gen_potentials = network.available_connections[x_gen_station]
 
         return x_gen_station, x_gen_potentials, used, potential_time, score_potential
@@ -112,7 +93,7 @@ class Greedy_algo():
         - potential_time: (int): new time of the potential
         """
 
-        #reset usage and decrease time of potentials
+        # reset usage and decrease time of potentials
         used[potential] -= 1
         potential_time -= potential.time
 
@@ -190,15 +171,15 @@ class Greedy_algo():
         - used (dict): updated connection usage
         """
 
-        #determine and append the new station, visited by using the new connection
-        current_station = Greedy_algo.determine_new_station(current_station, new_connection)
+        # determine and append the new station, visited by using the new connection
+        current_station = Random_algo.determine_station(current_station, new_connection)
         trajectory.stations.append(current_station)
 
-        #append the trajectory, increase time of trajectory with time of connection
+        # append the trajectory, increase time of trajectory with time of connection
         trajectory.route.append(new_connection)
         trajectory.time += new_connection.time
 
-        #increase the used count of the connection
+        # increase the used count of the connection
         used[new_connection] += 1
 
         return used
@@ -216,28 +197,28 @@ class Greedy_algo():
         - trajectory (trajectory object): new trajectory that is created
         """
         
-        #create an 'empty' instance of a trajectory and add to network
+        # create an 'empty' instance of a trajectory and add to network
         trajectory = Trajectory(trajectory_count, [], [], 0)
 
-        #init trajectory; pick starting station, add to trajectory, pick start connection
+        # init trajectory; pick starting station, add to trajectory, pick start connection
         start_station = Greedy_algo.pick_start_station(network)
         trajectory.stations.append(start_station)
         start_connection = Greedy_algo.look_forward(network, trajectory, used)
 
-        #update trajectory if first connection is not None, else remove start station
+        # update trajectory if first connection is not None, else remove start station
         if start_connection != None:
             used = Greedy_algo.update_trajectory(network, trajectory, start_station, start_connection, used)
 
         else:
             trajectory.stations.remove(start_station)                
 
-        #add new connection by looping while trajectory time does not exceed max time       
+        # add new connection by looping while trajectory time does not exceed max time       
         while trajectory.time < network.max_trajectory_time:
 
             current_station = trajectory.stations[-1]
             new_connection = Greedy_algo.look_forward(network, trajectory, used)
 
-            #update trajectory attributes if startstation and connection are not None
+            # update trajectory attributes if startstation and connection are not None
             if new_connection != None:
                 used = Greedy_algo.update_trajectory(network, trajectory, current_station, new_connection, used)
             else:
@@ -254,44 +235,44 @@ class Greedy_algo():
         - self.network (network object): network that is created
         """
 
-        #define trajectory name
+        # define trajectory name
         trajectory_count = 1
 
-        #define how many times to keep trying to add a trajectory 
+        # define how many times to keep trying to add a trajectory 
         current_iteration = 0
         max_iterations = 100
         traj_count = 0
 
         used = copy.copy(self.network.used)
                 
-        #loop while criteria for a new trajectory are fulfilled (iterations, max trajectories)
+        # loop while criteria for a new trajectory are fulfilled (iterations, max trajectories)
         while current_iteration < max_iterations and len(self.network.trajectories) < self.network.max_trajectories:
            
-            #take score before, create a trajectory
+            # take score before, create a trajectory
             score_before = self.network.get_score()
             trajectory = Greedy_algo.create_trajectory(self.network, trajectory_count, used)
 
-            #updating the used dict in the network
+            # updating the used dict in the network
             for connection in trajectory.route:
                 self.network.used[connection] += 1
 
-            #add trajectory to network
+            # add trajectory to network
             self.network.trajectories.append(trajectory)
 
-            #take score after appending to network
+            # take score after appending to network
             score_after = self.network.get_score()
 
-            #remove trajectory if score did not increase, increase iteration
+            # remove trajectory if score did not increase, increase iteration
             if score_before >= score_after:
                 current_iteration += 1
                 self.network.trajectories.remove(trajectory)
 
-                #reset the connections to be used one time less when trajectory is removed
+                # reset the connections to be used one time less when trajectory is removed
                 for connection in trajectory.route:
                     self.network.used[connection] -= 1
 
             else:
-                #change name of next trajectory
+                # change name of next trajectory
                 trajectory_count += 1
 
         return self.network
