@@ -121,7 +121,7 @@ To run the code, 5 input arguments are required:
 All arguments are set to default setting. Manual changes can be made, for example by entering:
 
 ```
-python main.py -sn random -algo hillclimber
+python main.py -sn random -algo evolution
 ```
 
 All default settings and options per argument can be accessed by entering:

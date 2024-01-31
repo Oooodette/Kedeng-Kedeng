@@ -29,7 +29,7 @@ def run_experiment():
     best_network= None
     previous_score = 0
 
-    for x in range(2):
+    for x in range(10):
         print(f' current run: {count}')
         random_algo = Random_algo(network)
         test_network = random_algo.create_network()
@@ -43,7 +43,7 @@ def run_experiment():
         count += 1
         count_list.append(count)
         previous_score = score
-        
+    
 
     plt.hist(hillclimber_list, bins = 1000)
     plt.savefig('data/hill_histogram.png')
