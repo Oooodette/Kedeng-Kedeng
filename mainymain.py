@@ -36,30 +36,41 @@ if __name__ == "__main__":
     # test_network = random_algo.create_network()
     # vis.plot_all(stations_df, connections_df, 'data\gadm41_NLD_1.json', test_network.used, test_network.trajectories, test_network.stations) 
     
-    # hillclimber_list = []
-    # count = 0
-    # for x in range(1000):
-    #     print(count)
-    network = Network(connections_df, stations_df, max_trajectories_nl, max_trajectory_time_nl)
-    random_algo = Random_algo(network)
+    hillclimber_list = []
+    count_list = []
+    count = 0
+    best_network= None
+    previous_score = 0
 
-    test_network = random_algo.create_network()
-    vis.plot_all(stations_df, connections_df, 'data\gadm41_NLD_1.json', test_network.used, test_network.trajectories, test_network.stations) 
-    hillclimber = Hillclimber(test_network, 1000)
-
-    newie = hillclimber.run() 
-
-    score = newie.get_score()
-     
-        # hillclimber_list.append(score)
+    for x in range(10):
+        print(count)
+        network = Network(connections_df, stations_df, max_trajectories_nl, max_trajectory_time_nl)
+        random_algo = Random_algo(network)
+        test_network = random_algo.create_network()
+        # vis.plot_all(stations_df, connections_df, 'data\gadm41_NLD_1.json', test_network.used, test_network.trajectories, test_network.stations) 
+        hillclimber = Hillclimber(test_network, 1000)
+        newie = hillclimber.run() 
+        score = newie.get_score()
+        if score > previous_score: 
+            best_network = newie
+        hillclimber_list.append(score)
     
-    #     count += 1
+        count += 1
+        count_list.append(count)
+        previous_score = score
+        
+    # dictionary of lists
+    # dict = {'count': count_list, 'score': hillclimber_list}
+    # df = pd.DataFrame(dict)
+        
+    # # saving the dataframe
+    # df.to_csv('data/histogram.csv')
 
-    # print(hillclimber_list)
-    # plt.hist(hillclimber_list, bins = 1000)
-    # plt.show()
+    print(hillclimber_list)
+    plt.hist(hillclimber_list, bins = 1000)
+    plt.show()
 
-  
+    vis.plot_all(stations_df, connections_df, 'data\gadm41_NLD_1.json', best_network.used, best_network.trajectories, best_network.stations)
     # hillclimber_solution = hillclimber.run()
     # # Create network from our data
     
@@ -80,7 +91,7 @@ if __name__ == "__main__":
     
     #visualize
     
-    vis.plot_all(stations_df, connections_df, 'data\gadm41_NLD_1.json', newie.used, newie.trajectories, newie.stations)
+    
     # # vis.visualize_stations_connections(test_network.stations_df, test_network.connections_df)
     # # vis.visualize_network(test_network.stations_df, test_network.connections_df, 'data\output.csv')
 

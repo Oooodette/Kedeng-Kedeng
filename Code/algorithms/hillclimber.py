@@ -78,32 +78,65 @@ class Hillclimber():
 
         return actionlist[number]
     
-    def pick_best_trajectory(self, heuristic):
+    def pick_best_trajectory(self, heuristic:bool) -> Trajectory:
+        """
+        Creates 10 possible trajectories to add and selects the one that would improve the score most. Heuristic applied that if a start-
+        or endstation is one that has an uneven number of open connections, it gets extra points.
+        
+        Args: 
+        - heuristic(bool): value saying if heuristic should be applied
+        Returns:
+        - best_trajectory(trajectory instance): trajectory that would show the best score improvement if added.
+        """
         add_traj = {}
 
+        # create 10 trajectories
         for x in range(10):
-            used_copy = self.network.used.copy()
-            trajectory = Greedy_algo.create_trajectory(self.network, random.randint, used_copy) 
+
+            # use greedy algo to create trajectories
+            # used_copy = self.network.used.copy()
+            trajectory = Random_algo.create_trajectory(self.network)#, random.randint, used_copy)
+
+            # make a list of all connections that are used by this trajectory that were not already in the network 
             used_connections_traj = [connection for connection in  trajectory.route if self.network.used[connection] == 0]
+
+            # list of all connections used by the network
             used_connections_netw = [connection for connection, value in self.network.used.items() if value != 0] 
+
+            # calculate possible score if trajectory is added
             all_connections = used_connections_traj + used_connections_netw 
             new_fraction = len(all_connections) / len(self.network.connections) 
             possible_score= new_fraction * 10000 - (100 + trajectory.time)
             
-            
+            # check if begin- or endstation currently has uneven open connections and if so, add 1000 points
             if heuristic: 
-                available_connections_start = self.network.available_connections[trajectory.stations[0]] 
-                available_connections_end = self.network.available_connections[trajectory.stations[-1]]
-                open_connections_start = [connection for connection in available_connections_start if self.network.used[connection] == 0]
-                open_connections_end = [connection for connection in available_connections_end if self.network.used[connection] == 0] 
-                if len(open_connections_start) % 2 != 0 or len(open_connections_end) % 2 != 0:
+                if self.uneven_open_connections(trajectory):
                     possible_score += 1000
 
             add_traj[trajectory] = possible_score
 
+        # pick best fit
         best_trajectory =  max(add_traj, key=add_traj.get) 
 
         return best_trajectory
+    def uneven_open_connections(self, trajectory: Trajectory) -> bool: 
+        """
+        Check if current open connections for end- and startstation is an uneven number. 
+        
+        Args: 
+        - trajectory(Trajectory instance): trajectory that needs assessment
+        Returns:
+        - bool: true if either end- or startstation of trajectory has an uneven number of open connections.
+        """
+        # get start and end station of trajectory
+        available_connections_start = self.network.available_connections[trajectory.stations[0]] 
+        available_connections_end = self.network.available_connections[trajectory.stations[-1]]
+
+        # collect open connections of both stations
+        open_connections_start = [connection for connection in available_connections_start if self.network.used[connection] == 0]
+        open_connections_end = [connection for connection in available_connections_end if self.network.used[connection] == 0] 
+
+        return (len(open_connections_start) % 2 != 0) or (len(open_connections_end) % 2 != 0)
 
     def pick_random_trajectory(self):
         pick = random.randint(0,len(self.network.trajectories)-1)
@@ -173,18 +206,29 @@ class Hillclimber():
                 self.network.used[connection] -= 1
 
     def calc_acception(self, previous_score, current_temp):
-        diff = previous_score - self.network.get_score()
+        diff = previous_score - self.network.get_score() 
+
+        if previous_score < 0 and self.network.get_score() <0:
+            diff *= -1
+
         print(diff, 'diff')
         # calculate metropolis acceptance criterion
-        metropolis = np.exp(-(diff / current_temp))
+        acceptance = 2**( diff / current_temp)
 
-        return metropolis
+        return acceptance
     
     def remove_connections(self, amount, trajectory): 
-        
+        removed_time = 0
         shorter_traj = copy.deepcopy(trajectory)
-        shorter_traj.route = shorter_traj.route[:-amount]
+
+        for connection in shorter_traj.route[-amount:]:
+
+            removed_time += connection.time
+        shorter_traj.route = (shorter_traj.route[:-amount]) 
+
+        shorter_traj.time -= removed_time
         self.replace(shorter_traj, trajectory) 
+        # print(len(shorter_traj.route), len(trajectory.route))
 
         return shorter_traj
     
@@ -195,14 +239,13 @@ class Hillclimber():
         current_station = new_trajectory.stations[-1]
         previous_connection = new_trajectory.route[-1]
         # if new_trajectory.time < 120:
-        print(new_trajectory.time)
+        # print(new_trajectory.time) 
         
-        while new_trajectory.time < self.network.max_trajectory_time and addition <= amount:
+        while new_trajectory.time < self.network.max_trajectory_time and addition < amount:
             new_connection = Random_algo.pick_valid_connection(self.network, current_station, previous_connection, new_trajectory.time) 
             
             # if a valid connection is found, change the current station to the next station of this connection
             if new_connection != None:
-                print('hi')
 
                 current_station = Random_algo.determine_station(current_station, new_connection)
             
@@ -214,23 +257,22 @@ class Hillclimber():
                 previous_connection = new_connection 
 
             addition += 1
-        print(len(new_trajectory.route), len(trajectory.route))
+        
         self.replace(new_trajectory, trajectory) 
 
         return new_trajectory
 
     def run(self):
-        print('old_score', self.network.get_score())
 
         tries = 0 
         previous_score = self.network.get_score()
-        temp = 1000
+        temp = 80
 
 
         while tries < self.attempts:
             
             # calculate temperature for current try
-            current_temp = temp / float(tries + 1)
+            current_temp = temp * 0.99
 
             if tries < self.attempts/2:
 
@@ -257,29 +299,31 @@ class Hillclimber():
                 action = random.choice(['add', 'remove']) 
 
                 # adapt the trajectory and calculate the acceptance chance
-                if action == 'remove': 
-                    print('remove')
+                if action == 'remove' and len(trajectory_pick.route) > amount + 1: 
                     new_trajectory = self.remove_connections(amount, trajectory_pick)
 
                 else: 
-                    print('add')
-                    print('score before add', self.network.get_score())
                     new_trajectory = self.add_connections(amount, trajectory_pick)
-                    print('score after add', self.network.get_score())
+
 
                 # calculate acceptance possibility
                 metropolis = self.calc_acception(previous_score, current_temp)
-                print(metropolis)
+                print(metropolis, 'metropolis')
+                print(current_temp, 'temp')
+
                 # check if score improves and undo your actions if it does not
-                if self.improving(previous_score)  or random.random() < metropolis: 
+                if self.improving(previous_score)  or random.random() < metropolis:
                     pass
                 else:
                     self.replace(trajectory_pick, new_trajectory)
+                    
+
+
 
                 tries +=1 
             previous_score = self.network.get_score()
 
-        print(previous_score)
+        # print(previous_score)
         return self.network
 
         # while tries < self.attempts:
