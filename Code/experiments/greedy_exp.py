@@ -13,7 +13,6 @@ def run_experiment():
         Returns:
         - Variables of the best network of the 10,000
         - Averages of all 10,000 networks
-        - Visualization of the best network
         - Histogram of the scores of the 10,000 networks 
         """
 

@@ -14,7 +14,6 @@ def run_experiment():
     Returns;
     - Variables of the best network of the 10,000
     - Averages of all 10,000 networks
-    - Visualization of the best network
     - Histogram of the scores of the 10,000 networks
     """
     
@@ -58,7 +57,7 @@ def run_experiment():
         nrs_trajectories.append(len(test_network.trajectories))
         fractions.append(fraction)
 
-        # save network if new score is higher than previous high
+        # save network if new score is higher than previous network
         if new_score > score:
             final_network = test_network
             score = new_score
