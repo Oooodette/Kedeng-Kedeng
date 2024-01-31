@@ -26,7 +26,7 @@ def run_experiment():
 
     network = Network(connections_df, stations_df, max_trajectories_nl, max_trajectory_time_nl)
 
-    for i in range(10):
+    for i in range(10000):
         print(f'current run: {i}')
         greedy_network = Greedy_algo(network)
         test_network = greedy_network.create_network()
@@ -41,6 +41,8 @@ def run_experiment():
         scores.append(new_score)
         nrs_trajectories.append(len(test_network.trajectories))
         fractions.append(fraction)
+
+        print(i, new_score)
 
         if new_score > score:
             final_network = test_network

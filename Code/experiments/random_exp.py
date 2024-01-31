@@ -25,10 +25,13 @@ def run_experiment():
     connections_df = pd.read_csv('data\ConnectiesNationaal.csv')
     stations_df = pd.read_csv('data\StationsNationaal.csv')
 
-    network = Network(connections_df, stations_df, max_trajectories_nl, max_trajectory_time_nl)
 
     #create 10000 networks
     for i in range(10000):
+        print(f'current run: {i}')
+
+        network = Network(connections_df, stations_df, max_trajectories_nl, max_trajectory_time_nl)
+
         random_network = Random_algo(network)
         test_network = random_network.create_network()
 
