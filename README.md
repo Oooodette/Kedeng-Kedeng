@@ -14,7 +14,7 @@ Score formula: K = p * 10000 - (N*100 + min)
 - p = fraction of connections that have been driven
 - T = number of trajectories in the network
 - min = total time of the network in minutes
- ** Goal: maximize score ** 
+ __Goal: maximize score__ 
 
 #### Subcases
 There are two subcases with different constraints;
