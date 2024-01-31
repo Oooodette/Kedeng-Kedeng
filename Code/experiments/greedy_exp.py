@@ -5,61 +5,61 @@ from ..visualize import new_visualize as vis
 import  pandas as pd
 import matplotlib.pyplot as plt
 
-def test_function(number): 
-    for x in range(number):
-        print('hello')
-# #defining parameters for different datasets
-# max_trajectories_holland = 7
-# max_trajectory_time_holland = 120
-# max_trajectories_nl = 20
-# max_trajectory_time_nl = 180
-
-# #initialize score and lists to append to 
-# score = 0
-# scores = []
-# nrs_trajectories = []
-# fractions = []
-
-# #read in data
-# connections_df = pd.read_csv('data\ConnectiesNationaal.csv')
-# stations_df = pd.read_csv('data\StationsNationaal.csv')
-
-# network = Network(connections_df, stations_df, max_trajectories_nl, max_trajectory_time_nl)
-
-# for i in range(10000):
-#     greedy_network = Greedy_algo(network)
-#     test_network = greedy_network.create_network()
-
-#     new_score = test_network.get_score()
-
-#     # retrieve nr of trajectories, fraction
-#     used_connections = [connection for connection, value in test_network.used.items() if value != 0]
-#     fraction = (len(used_connections)) / len(test_network.connections)
+def run_experiment():
+    """run experiment using the random algorithm"""
     
-#     #append score, nr of trajectories, fraction of connections driven
-#     scores.append(new_score)
-#     nrs_trajectories.append(len(test_network.trajectories))
-#     fractions.append(fraction)
+    #defining parameters for different datasets
+    max_trajectories_holland = 7
+    max_trajectory_time_holland = 120
+    max_trajectories_nl = 20
+    max_trajectory_time_nl = 180
 
-#     if new_score > score:
-#         final_network = test_network
-#         score = new_score
+    #initialize score and lists to append to 
+    score = 0
+    scores = []
+    nrs_trajectories = []
+    fractions = []
 
-# #determining the fraction of driven connections
-# used_connections = [connection for connection, value in final_network.used.items() if value != 0]
-# fraction = (len(used_connections)) / len(final_network.connections)
+    #read in data
+    connections_df = pd.read_csv('data\ConnectiesNationaal.csv')
+    stations_df = pd.read_csv('data\StationsNationaal.csv')
 
-# #printing relevant outputs
-# print(f'Best network has score {final_network.get_score()}')
-# print(f'Best network has {len(final_network.trajectories)} trajectories')
-# print(f'Best network has fraction {fraction}')
+    network = Network(connections_df, stations_df, max_trajectories_nl, max_trajectory_time_nl)
 
-# print(f'Average score is {sum(scores) / len(scores)}')
-# print(f'Average number of trajectories is {sum(nrs_trajectories) / len(nrs_trajectories)}')
-# print(f'Average fraction is {sum(fraction) / len(fraction)}')
+    for i in range(10000):
+        greedy_network = Greedy_algo(network)
+        test_network = greedy_network.create_network()
 
-# #creating histogram
-# plt.hist(scores, bins=1000)
-# plt.xlim(4000, 7000)
-# plt.show()
+        new_score = test_network.get_score()
+
+        # retrieve nr of trajectories, fraction
+        used_connections = [connection for connection, value in test_network.used.items() if value != 0]
+        fraction = (len(used_connections)) / len(test_network.connections)
+        
+        #append score, nr of trajectories, fraction of connections driven
+        scores.append(new_score)
+        nrs_trajectories.append(len(test_network.trajectories))
+        fractions.append(fraction)
+
+        if new_score > score:
+            final_network = test_network
+            score = new_score
+
+    #determining the fraction of driven connections
+    used_connections = [connection for connection, value in final_network.used.items() if value != 0]
+    fraction = (len(used_connections)) / len(final_network.connections)
+
+    #printing relevant outputs
+    print(f'Best network has score {final_network.get_score()}')
+    print(f'Best network has {len(final_network.trajectories)} trajectories')
+    print(f'Best network has fraction {fraction}')
+
+    print(f'Average score is {sum(scores) / len(scores)}')
+    print(f'Average number of trajectories is {sum(nrs_trajectories) / len(nrs_trajectories)}')
+    print(f'Average fraction is {sum(fraction) / len(fraction)}')
+
+    #creating histogram
+    plt.hist(scores, bins=1000)
+    plt.xlim(4000, 7000)
+    plt.show()
 
