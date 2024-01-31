@@ -2,7 +2,7 @@ from code.classes import Station, Connection, Trajectory, Network
 from code.algorithms.random_algo import Random_algo
 from code.algorithms.greedy_algo import Greedy_algo
 from code.algorithms.hillclimber import Hillclimber
-from code.algorithms.evolution_algo import Evolution_algo
+from code.algorithms.Evolution_algo import Evolution_algo
 from code.visualize import new_visualize as vis
 import code.experiments.greedy_exp as greedy_exp
 import code.experiments.evolution_exp as evol_exp
