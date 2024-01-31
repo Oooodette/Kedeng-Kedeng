@@ -4,7 +4,9 @@ from code.algorithms.greedy_algo import Greedy_algo
 from code.algorithms.hillclimber import Hillclimber
 from code.algorithms.Evolution_algo import Evolution_algo
 from code.visualize import new_visualize as vis
-from code.experiments.greedy_exp import test_function
+import code.experiments.greedy_exp as greedy_exp
+# import code.experiments.evolution_exp as evol_exp
+import code.experiments.random_exp as random_exp
 import argparse
 import pandas as pd
 
@@ -71,10 +73,17 @@ if __name__ == "__main__":
     parser.add_argument("-algo", "--algorithm", nargs='?', default = 'hillclimber',  type = str, help = "algorithm to use for optimization (hillclimber, greedy or evolution). default = %(default)s")
     parser.add_argument("-exp", "--experiment", action='store_true')
     args = parser.parse_args()
-    # print(args)
+    
     if args.experiment:
         experiment = input("which experiment do you want to run?")
-        test_function(5)
+        if experiment == 'random':
+            random_exp.run_experiment()
+        elif experiment == 'greedy':
+            greedy_exp.run_experiment()
+        elif experiment == 'evolution':
+            evol_exp.run_experiment()
+        else:
+            pass
         exit()
     # Ask questions interactively
     if args.output is None:

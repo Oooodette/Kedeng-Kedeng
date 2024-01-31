@@ -26,7 +26,8 @@ def run_experiment():
 
     network = Network(connections_df, stations_df, max_trajectories_nl, max_trajectory_time_nl)
 
-    for i in range(10000):
+    for i in range(10):
+        print(f'current run: {i}')
         greedy_network = Greedy_algo(network)
         test_network = greedy_network.create_network()
 
@@ -56,7 +57,7 @@ def run_experiment():
 
     print(f'Average score is {sum(scores) / len(scores)}')
     print(f'Average number of trajectories is {sum(nrs_trajectories) / len(nrs_trajectories)}')
-    print(f'Average fraction is {sum(fraction) / len(fraction)}')
+    print(f'Average fraction is {sum(fractions) / len(fractions)}')
 
     #creating histogram
     plt.hist(scores, bins=1000)

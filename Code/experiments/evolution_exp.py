@@ -1,5 +1,5 @@
 from code.classes import Station, Connection, Trajectory, Network
-from code.algorithms.evolution_algo import Evolution_algo
+from code.algorithms.Evolution_algo import Evolution_algo
 # from code.visualize import visualize as vis
 from code.visualize import new_visualize as vis
 

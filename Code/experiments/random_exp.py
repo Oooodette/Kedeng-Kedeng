@@ -58,7 +58,7 @@ def run_experiment():
 
     print(f'Average score is {sum(scores) / len(scores)}')
     print(f'Average number of trajectories is {sum(nrs_trajectories) / len(nrs_trajectories)}')
-    print(f'Average fraction is {sum(fraction) / len(fraction)}')
+    print(f'Average fraction is {sum(fractions) / len(fractions)}')
 
     #creating histogram
     plt.hist(scores, bins=1000)
