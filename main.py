@@ -66,8 +66,8 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--output", nargs='?', default = 'output.csv', type=str , help = "output file (csv). default = %(default)s")
     parser.add_argument("-vo", "--visualize_output", nargs='?',default = 'visualize.png', type=str,  help = "filename for the visualization of the network. default = %(default)s")
     parser.add_argument("-a", "--area",  nargs='?', default = 'nederland', type=str,  help="area to make network in (holland or nederland). default = %(default)s")
-    parser.add_argument("-sn", "--start_network", nargs='?', default = 'greedy', type=str, help="algorithm to use for start network (random, greedy or hillclimber). default = %(default)s")
-    parser.add_argument("-algo", "--algorithm", nargs='?', default = 'greedy',  type = str, help = "algorithm to use for optimization (hillclimber, greedy or evolution). default = %(default)s")
+    parser.add_argument("-sn", "--start_network", nargs='?', default = 'random', type=str, help="algorithm to use for start network (random, greedy or hillclimber). default = %(default)s")
+    parser.add_argument("-algo", "--algorithm", nargs='?', default = 'hillclimber',  type = str, help = "algorithm to use for optimization (hillclimber, greedy or evolution). default = %(default)s")
     # Read arguments from command line
     args = parser.parse_args()
 
