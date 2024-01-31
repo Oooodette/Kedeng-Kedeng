@@ -14,7 +14,8 @@ class Greedy_algo():
     Methods:
     - pick_start_station() - picking a starting station for a trajectory (random or heuristic)
     - determine_new_station() - returns the connected station from using a connection
-    - look_forward() - looks four connections ahead to and scores undriven connections with 1
+    - one_forward_look() - part of look_forward(); looks one connection ahead
+    - look_forward() - looks two connections ahead, using one_look_forward(), and scores undriven connections with 4 and 1
     - pick_connection() - picks a valid connection without looking forward
     - create_trajectory() - creates a trajectory based on either look_forward or pick_connection
     - create_network() - creates a network consisting of multiple trajectories

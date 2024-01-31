@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
     network = Network(connections_df, stations_df, max_trajectories_nl, max_trajectory_time_nl)
     
-    for i in range(100):
+    for i in range(1):
         greedy = Greedy_algo(network)
 
         # Create network from our data
