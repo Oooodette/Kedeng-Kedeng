@@ -96,11 +96,11 @@ class Random_algo():
         - new_trajectory(trajectory object)
         """
         station_list = network.stations
+        
         # initialize variables
         current_station = Random_algo.pick_station(station_list)
         previous_connection = None
         time = 0
-        # trajectory_time = random.randint(0, network.max_trajectory_time)
         trajectory_stations = [current_station]
         trajectory_route = []
 

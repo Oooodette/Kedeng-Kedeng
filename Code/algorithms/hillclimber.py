@@ -22,9 +22,11 @@ class Hillclimber():
         - replace: replace existing trajectory with new trajectory while score is improving
     """
     
-    def __init__(self, network: Network, attempts) -> None:
+    def __init__(self, network: Network, attempts, start_temp: int) -> None:
         self.network = network
         self.attempts = attempts 
+        self.temp = start_temp
+        self.scorelist = []
     
     def improving(self, previous_score):
         return self.network.get_score() > previous_score
@@ -94,8 +96,8 @@ class Hillclimber():
         for x in range(10):
 
             # use greedy algo to create trajectories
-            # used_copy = self.network.used.copy()
-            trajectory = Random_algo.create_trajectory(self.network)#, random.randint, used_copy)
+            used_copy = self.network.used.copy()
+            trajectory = Greedy_algo.create_trajectory(self.network, random.randint, used_copy)
 
             # make a list of all connections that are used by this trajectory that were not already in the network 
             used_connections_traj = [connection for connection in  trajectory.route if self.network.used[connection] == 0]
@@ -205,187 +207,21 @@ class Hillclimber():
             if action == 'remove':
                 self.network.used[connection] -= 1
 
-    def calc_acception(self, previous_score, current_temp):
-        diff = previous_score - self.network.get_score() 
-
-        if previous_score < 0 and self.network.get_score() <0:
-            diff *= -1
-
-        print(diff, 'diff')
-        # calculate metropolis acceptance criterion
-        acceptance = 2**( diff / current_temp)
-
-        return acceptance
-    
-    def remove_connections(self, amount, trajectory): 
-        removed_time = 0
-        shorter_traj = copy.deepcopy(trajectory)
-
-        for connection in shorter_traj.route[-amount:]:
-
-            removed_time += connection.time
-        shorter_traj.route = (shorter_traj.route[:-amount]) 
-
-        shorter_traj.time -= removed_time
-        self.replace(shorter_traj, trajectory) 
-        # print(len(shorter_traj.route), len(trajectory.route))
-
-        return shorter_traj
-    
-    def add_connections(self, amount, trajectory):
-        
-        addition = 0
-        new_trajectory = copy.deepcopy(trajectory)
-        current_station = new_trajectory.stations[-1]
-        previous_connection = new_trajectory.route[-1]
-        # if new_trajectory.time < 120:
-        # print(new_trajectory.time) 
-        
-        while new_trajectory.time < self.network.max_trajectory_time and addition < amount:
-            new_connection = Random_algo.pick_valid_connection(self.network, current_station, previous_connection, new_trajectory.time) 
-            
-            # if a valid connection is found, change the current station to the next station of this connection
-            if new_connection != None:
-
-                current_station = Random_algo.determine_station(current_station, new_connection)
-            
-                # add station, connection and time to trajectory	
-                new_trajectory.stations.append(current_station) 
-                new_trajectory.route.append(new_connection) 
-                new_trajectory.time += new_connection.time 
-                
-                previous_connection = new_connection 
-
-            addition += 1
-        
-        self.replace(new_trajectory, trajectory) 
-
-        return new_trajectory
-
     def run(self):
 
         tries = 0 
         previous_score = self.network.get_score()
-        temp = 80
-
 
         while tries < self.attempts:
-            
-            # calculate temperature for current try
-            current_temp = temp * 0.99
-
-            if tries < self.attempts/2:
-
-
-                action = self.pick_action()
-                add_traj, remove_traj, change = self.act(action)
-                metropolis = self.calc_acception(previous_score, current_temp)
-
-                
-                if self.improving(previous_score) or random.random() < metropolis: 
-                    pass
-
-                else:
-                    if change:
-                        self.undo(action, add_traj, remove_traj)
-                tries +=1 
-                previous_score = self.network.get_score()
-            
-            else:
-
-                # pick a random trajectory to adapt and select randomly whether it will be shortened, or lengthened
-                trajectory_pick = self.pick_random_trajectory()
-                amount = random.randint(1,3) 
-                action = random.choice(['add', 'remove']) 
-
-                # adapt the trajectory and calculate the acceptance chance
-                if action == 'remove' and len(trajectory_pick.route) > amount + 1: 
-                    new_trajectory = self.remove_connections(amount, trajectory_pick)
-
-                else: 
-                    new_trajectory = self.add_connections(amount, trajectory_pick)
-
-
-                # calculate acceptance possibility
-                metropolis = self.calc_acception(previous_score, current_temp)
-                print(metropolis, 'metropolis')
-                print(current_temp, 'temp')
-
-                # check if score improves and undo your actions if it does not
-                if self.improving(previous_score)  or random.random() < metropolis:
-                    pass
-                else:
-                    self.replace(trajectory_pick, new_trajectory)
-                    
-
-
-
-                tries +=1 
+            self.scorelist.append(previous_score)
             previous_score = self.network.get_score()
-
-        # print(previous_score)
+            action = self.pick_action()
+            add_traj, remove_traj, change = self.act(action)
+            if self.improving(previous_score):
+                pass
+            else:
+                if change:
+                    self.undo(action, add_traj, remove_traj)
+            tries +=1 
+        
         return self.network
-
-        # while tries < self.attempts:
-        #     trajectory_pick = self.pick_random_trajectory()
-        #     amount = random.randint(1,3) 
-        #     action = random.choice(['add', 'remove'])
-            
-        #     # calculate temperature for current epoch
-        #     t = temp / float(tries + 1)
-
-
-        #     # calculate metropolis acceptance criterion
-        #     metropolis = np.exp(-diff / t)
-            
-        #     if action == 'remove' and len(trajectory_pick.route) > amount + 1:
-                
-        #         shorter_traj = copy.deepcopy(trajectory_pick)
-        #         shorter_traj.route = shorter_traj.route[:-amount]
-        #         self.replace(shorter_traj, trajectory_pick) 
-        #         diff = previous_score - self.network.get_score() 
-        #         if self.improving(previous_score): # or random.random() < metropolis: 
-        #             pass
-        #         else:
-        #             self.replace(trajectory_pick, shorter_traj)
-
-        #     if action == 'add':
-        #         addition = 0
-        #         new_trajectory = copy.deepcopy(trajectory_pick)
-        #         current_station = new_trajectory.stations[-1]
-        #         previous_connection = new_trajectory.route[-1]
-                
-        #         while new_trajectory.time < self.network.max_trajectory_time and addition <= amount:
-        #             new_connection = Random_algo.pick_valid_connection(self.network.available_connections[current_station], previous_connection, trajectory_pick.time) 
-                
-        #             # if a valid connection is found, change the current station to the next station of this connection
-        #             if new_connection != None:
-                        
-        #                 current_station = Random_algo.determine_station(current_station, new_connection)
-        #                 new_trajectory.time += new_connection.time 
-
-        #                 # add station and connection to trajectory	
-        #                 new_trajectory.stations.append(current_station)
-        #                 new_trajectory.route.append(new_connection) 
-                        
-        #                 previous_connection = new_connection 
-
-        #             addition += 1
-
-        #         for trajectory in self.network.trajectories:
-        #             print(len(trajectory.route), 'before')
-        #         self.replace(new_trajectory, trajectory_pick)
-        #         for trajectory in self.network.trajectories:
-        #             print(len(trajectory.route), 'after')
-        #         diff = previous_score - self.network.get_score() 
-        #         if self.improving(previous_score): # or random.random() < metropolis: 
-        #             pass    
-        #         else:
-        #             self.replace(trajectory_pick, new_trajectory)
-        #         previous_score = self.network.get_score()
-        #     tries +=1 
-        #     print(tries)
-
-        #     previous_score = self.network.get_score()
-       
-

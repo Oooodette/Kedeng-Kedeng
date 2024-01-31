@@ -6,6 +6,7 @@ import numpy as np
 import math
 import random
 from matplotlib.pyplot import cm
+
 def visualize_stations_connections(stations_df, connections_df,ax):
     """visualize all stations and their connections"""
 
