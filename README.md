@@ -85,11 +85,11 @@ Specifications of certain algorithms;
 
  * /code: bevat alle code van het project
     * /code/classes: contains the code of the classes used in the project (described above)
+    * /code/experiments: contains all experiments that were done using the algorithms
     * /code/algorithms: contains the code of the algorithms used in this project (described above)
     * /code/visualize: contains the code for using the visualisation
  * /data: contains the datafiles necessary for running algorithms and datafiles for using the visualisation
  * /docs: contains a number of documents regarding statespace explaination, baseline algorithm and such 
-
 
 #### Requirements
 This project is written using Python 3.9;
