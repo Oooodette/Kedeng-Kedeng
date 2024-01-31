@@ -3,7 +3,6 @@ from code.algorithms.random_algo import Random_algo
 from code.algorithms.greedy_algo import Greedy_algo
 from code.algorithms.hillclimber import Hillclimber
 from code.algorithms.Evolution_algo import Evolution_algo
-# from code.visualize import visualize as vis
 from code.visualize import new_visualize as vis
 import argparse
 import pandas as pd
@@ -29,6 +28,7 @@ def main(output, area, start_network, algorithm):
     if start_network == 'random':
         print('Creating random network.')
         random_algo = Random_algo(network)
+
         # Create network from our data
         network = random_algo.create_network()
 
@@ -39,7 +39,7 @@ def main(output, area, start_network, algorithm):
 
     if algorithm == 'hillclimber':
         print('Optimizing with hillclimber')
-        hillclimber = Hillclimber(network, 1000)
+        hillclimber = Hillclimber(network, 1000, algorithm)
         network = hillclimber.run()
 
     elif algorithm == 'evolution': 
@@ -64,7 +64,7 @@ if __name__ == "__main__":
     # Adding arguments
     parser.add_argument("output",nargs='?', help = "output file (csv)")
     parser.add_argument("-a", "--area",  nargs='?', type=str,  help="area to make network in (holland or nederland)")
-    parser.add_argument("-sn", "--start_network", nargs='?',  type=str, help="algorithm to use for start network (random or greedy)")
+    parser.add_argument("-sn", "--start_network", nargs='?',  type=str, help="algorithm to use for start network (random, greedy or hillclimber)")
     parser.add_argument("-algo", "--algorithm", nargs='?',  type = str, help = "algorithm to use for optimization (hillclimber or evolution)")
     # Read arguments from command line
     args = parser.parse_args()

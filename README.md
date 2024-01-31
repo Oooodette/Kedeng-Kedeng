@@ -36,7 +36,13 @@ Classes in this project:
 
 #### Algorithms
 Specifications of certain algorithms;
-- random_alg: random algorithm that creates a network in a random way, until all connections have been used. For a trajectory the startstation and connections are randomly chosen. Trajectory length is set to the max. The network will get a random number of trajectories.
+- random_algo: 
+    1) create an empty network
+    2) pick a random start station 
+    3) pick a random next connection from this station
+    4) keep picking connections until maximum trajectory time is reached
+    5) keep creating these random trajectories for a random amount of times between 0 and the maximum number of trajectories allowed
+
 
 - greedy_algo: greedy algorithm that creates a network in a greedy way. The way decisions are made in the following way;
     1) startstation is chosen randomly
@@ -46,6 +52,11 @@ Specifications of certain algorithms;
 
 
  - hillclimber:
+    1) start with a random network
+    2) choose between three actions: add a trajectory, remove a trajectory or replace a trajectory
+    3) perform this action and check whether score has improved
+    4) if score did not improve, undo your previous action
+    5) continue this loop for an 'attempts' number of iterations
 
 
  - evolution_algo: evolution algorithm that creates a network using multiple generations of networks and an evolution 
