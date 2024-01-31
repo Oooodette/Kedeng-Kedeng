@@ -9,9 +9,10 @@ class Hillclimber():
     Class Hillclimber: algorithm that keeps randomly changing a small part of a network until score doesn't improve anymore;
     
     Attributes:
-    - random: an instance of the random_algo class that was created beforehand.
-    - attempts: amount of times hillclimber tries to improve the score until stopping.
-    - scorelist: list of scores per iteration
+    - network (Network instance): Network to be optimized
+    - attempts (int): amount of times hillclimber tries to improve the score until stopping
+    - scorelist (list): list of scores per iteration
+    - algorithm (str): algorithm to be used for trajectory creation
 
     Methods:
     - improving - determine whether current change improves total network score
@@ -25,11 +26,12 @@ class Hillclimber():
     - run - run the hillclimber algorithm for an 'attempts' number of iterations
     """
     
-    def __init__(self, network: Network, attempts: int) -> None:
+    def __init__(self, network: Network, attempts: int, algorithm: str) -> None:
         self.network = network
         self.attempts = attempts 
         self.scorelist = []
-    
+        self.algorithm = algorithm
+
     def improving(self, previous_score: int) -> bool:
         return self.network.get_score() > previous_score
 
@@ -94,8 +96,11 @@ class Hillclimber():
         for x in range(10):
 
             # use greedy algo to create trajectories
-            used_copy = self.network.used.copy()
-            trajectory = Greedy_algo.create_trajectory(self.network, random.randint, used_copy)
+            if self.algorithm == 'greedy':
+                used_copy = self.network.used.copy()
+                trajectory = Greedy_algo.create_trajectory(self.network, random.randint, used_copy)
+            else: 
+                trajectory = Random_algo.create_trajectory(self.network) 
 
             # make a list of all connections that are used by this trajectory that were not already in the network 
             used_connections_traj = [connection for connection in  trajectory.route if self.network.used[connection] == 0]
