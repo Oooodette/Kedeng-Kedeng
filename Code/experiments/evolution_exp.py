@@ -1,6 +1,6 @@
 from ..algorithms.random_algo import Random_algo
 from ..algorithms.greedy_algo import Greedy_algo
-from ..algorithms.Evolution_algo import Evolution_algo
+from ..algorithms.evolution_algo import Evolution_algo
 
 from ..classes.network import Network, Trajectory
 # from code.visualize import visualize as vis
