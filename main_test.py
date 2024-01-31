@@ -25,7 +25,7 @@ if __name__ == "__main__":
     #looping until criteria are met
     # while score < minimal_score:
     network = Network(connections_df, stations_df, max_trajectories_nl, max_trajectory_time_nl)
-    evo_algo = Evolution_algo(network, 1)
+    evo_algo = Evolution_algo(network, 10)
 
     # Create network from our data
     test_network = evo_algo.last_man_standing()
@@ -33,10 +33,8 @@ if __name__ == "__main__":
 
     nr_traj = len(test_network.trajectories)
 
-    iterations += 1
 
     #printing #iterations, number of trajectories and score of the network
-    print(f'number of iterations: {iterations}')
     print(f'number of trajectories in network: {nr_traj}')
     print(f'score of the network {score}')
 

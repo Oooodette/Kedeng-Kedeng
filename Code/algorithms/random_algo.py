@@ -12,7 +12,7 @@ class Random_algo():
         self.available_connections = {} 
 
     @staticmethod
-    def pick_valid_connection(all_connections, previous_connection, time):
+    def pick_valid_connection(network, current_station, previous_connection, time):
         """"
         Pick a new connection to add to the trajectory that does not pass the time limit or is the same connection as the previous one (i.e.
         makes the train go back)
@@ -28,6 +28,7 @@ class Random_algo():
         """
         chosen = False
 
+        all_connections = network.available_connections[current_station]
         # if no valid connection exists, return None
         chosen_connection = None
         connection_copy = copy.copy(all_connections)
@@ -39,7 +40,8 @@ class Random_algo():
             connection_copy.remove(connection_copy[pick])
 
             # check to see if the connection is correct
-            if time + new_connection.time < 120 and new_connection != previous_connection:
+            if time + new_connection.time < network.max_trajectory_time and new_connection != previous_connection:
+                print('hey')
                 chosen = True
                 chosen_connection = new_connection
         
@@ -99,11 +101,11 @@ class Random_algo():
         time = 0
         # trajectory_time = random.randint(0, network.max_trajectory_time)
         trajectory_stations = [current_station]
-        trajectory_connections = []
+        trajectory_route = []
 
         # only add more connections if total time is below 120
         while time < network.max_trajectory_time:
-            new_connection = Random_algo.pick_valid_connection(network.available_connections[current_station], previous_connection, time) 
+            new_connection = Random_algo.pick_valid_connection(network, current_station, previous_connection, time) 
            
             # if a valid connection is found, change the current station to the next station of this connection
             if new_connection != None:
@@ -113,20 +115,20 @@ class Random_algo():
 
                 # add station and connection to trajectory	
                 trajectory_stations.append(current_station)
-                trajectory_connections.append(new_connection) 
-
+                trajectory_route.append(new_connection) 
+                
                 # update previous connection
                 previous_connection = new_connection 
-            
+
             # if no valid connection is found, break the loop
             else:
                 break
             
         # create new trajectory instance
-        new_trajectory = Trajectory('x', trajectory_stations, [], time)
+
+        new_trajectory = Trajectory('x', trajectory_stations, trajectory_route, time)
             
-        # add used connections to route attribute of trajectory
-        new_trajectory.route = trajectory_connections
+        
 
         return new_trajectory
 

@@ -17,3 +17,6 @@ class Connection():
     
     def __repr__(self):
         return str(self.station1) + str(self.station2)
+    
+    def __eq__(self, other):
+        return self.__class__ == other.__class__ and self.station1 == other.station1 and self.station2 == other.station2

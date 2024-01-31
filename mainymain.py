@@ -1,5 +1,6 @@
 from code.classes import Station, Connection, Trajectory, Network
 from code.algorithms.random_algo import Random_algo
+from code.algorithms.greedy_algo import Greedy_algo
 from code.algorithms.hillclimber import Hillclimber
 # from code.visualize import visualize as vis
 from code.visualize import new_visualize as vis
@@ -43,8 +44,8 @@ if __name__ == "__main__":
     random_algo = Random_algo(network)
 
     test_network = random_algo.create_network()
-
-    hillclimber = Hillclimber(test_network, 2000)
+    vis.plot_all(stations_df, connections_df, 'data\gadm41_NLD_1.json', test_network.used, test_network.trajectories, test_network.stations) 
+    hillclimber = Hillclimber(test_network, 1000)
 
     newie = hillclimber.run() 
 
