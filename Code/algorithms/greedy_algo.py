@@ -9,7 +9,7 @@ import copy
 class Greedy_algo():
     """
     Class greedy_algo, modifies/creates a network using a greedy algorithm.
-    
+
     Attributes:
     - network (network object)
 
@@ -238,9 +238,9 @@ class Greedy_algo():
         # define trajectory name
         trajectory_count = 1
 
-        # define how many times to keep trying to add a trajectory 
+        # define how many times to keep trying to add a trajectory when the previous did not increase the score
         current_iteration = 0
-        max_iterations = 100
+        max_iterations = 3
         traj_count = 0
 
         used = copy.copy(self.network.used)
