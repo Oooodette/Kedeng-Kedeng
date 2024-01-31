@@ -83,7 +83,7 @@ if __name__ == "__main__":
             greedy_exp.run_experiment()
         elif experiment == 'evolution':
             evol_exp.run_experiment()
-        elif: experiment == 'hillclimber':
+        elif experiment == 'hillclimber':
             hill_exp.run_experiment()
             
         exit()
