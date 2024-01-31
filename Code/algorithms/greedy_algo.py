@@ -1,4 +1,4 @@
-from ..classes.network import Network, Trajectory
+from ..classes.network import Network, Trajectory, Station, Connection
 from ..algorithms.random_algo import Random_algo
 
 import pandas as pd
@@ -22,7 +22,7 @@ class Greedy_algo():
     - create_network() - creates a network consisting of multiple trajectories
     """
 
-    def __init__(self, network: Network):
+    def __init__(self, network: Network) -> None:
         """
         Initializing the algorithm by adding an empty network, which will be modified
         """
@@ -30,7 +30,7 @@ class Greedy_algo():
         self.network = copy.deepcopy(network)
 
     @staticmethod
-    def pick_start_station(network: Network):
+    def pick_start_station(network: Network) -> Station:
         """
         Picking a start station randomly.
 
@@ -44,7 +44,7 @@ class Greedy_algo():
         return start_station
    
     @staticmethod
-    def one_forward_look(network: Network, trajectory, current_station, potential, used, potential_time, score_potential, score_increase):
+    def one_forward_look(network: Network, trajectory, current_station, potential, used, potential_time, score_potential, score_increase) -> tuple(Station, Connection, dict, int, int):
         """
         Looks one connection in the 'future' from current_station, evaluates all options;
 
@@ -80,7 +80,7 @@ class Greedy_algo():
         return x_gen_station, x_gen_potentials, used, potential_time, score_potential
 
     @staticmethod
-    def reset_forward_look(used, potential_time, potential):
+    def reset_forward_look(used, potential_time, potential) -> tuple(dict, int):
         """
         Resetting the variables of the potentials
 
@@ -100,7 +100,7 @@ class Greedy_algo():
         return used, potential_time
 
     @staticmethod
-    def look_forward(network: Network, trajectory, used):
+    def look_forward(network: Network, trajectory, used) -> Connection:
         """
         Look forward from the current station, gives score to a connection in the future if connection is undriven.
 
@@ -158,7 +158,7 @@ class Greedy_algo():
             return None
     
     @staticmethod
-    def update_trajectory(network: Network, trajectory, current_station, new_connection, used):
+    def update_trajectory(network: Network, trajectory, current_station, new_connection, used) -> dict:
         """
         Updates attributes of a trajectory based on current_station and the new connection that will be added.
 
@@ -186,7 +186,7 @@ class Greedy_algo():
         return used
 
     @staticmethod
-    def create_trajectory(network: Network, trajectory_count, used):
+    def create_trajectory(network: Network, trajectory_count, used) -> Trajectory:
         """
         Create a trajectory by sequencing connections.
 
@@ -227,7 +227,7 @@ class Greedy_algo():
     
         return trajectory
 
-    def create_network(self):
+    def create_network(self) -> Network:
         """
         Create a network by combining multiple trajectories;
             greedy element: only add a trajectory if the newly created trajectory increases the score of the network.
