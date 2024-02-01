@@ -29,7 +29,7 @@ def run_experiment():
     best_network= None
     previous_score = 0
 
-    for x in range(10):
+    for x in range(1000):
         print(f' current run: {count}')
         random_algo = Random_algo(network)
         test_network = random_algo.create_network()
